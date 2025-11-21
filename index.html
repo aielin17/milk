@@ -1,0 +1,2661 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light" data-color-theme="gold">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>传讯</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 所有滚动条隐藏 */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+            width: 0;
+        }
+        
+        :root {
+            --primary-bg: #f9f9f9;
+            --secondary-bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #7a7a7a;
+            --border-color: #ebebeb;
+            --message-sent-text: #ffffff;
+            --message-received-bg: #f0f0f0;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+            --font-family: 'Noto Serif SC', serif;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --font-size: 16px;
+            --favorite-color: #ffc107;
+            
+            --primary-bg-rgb: 249, 249, 249;
+            --secondary-bg-rgb: 255, 255, 255;
+        }
+
+        :root[data-color-theme="gold"] { --accent-color: #c5a47e; --accent-color-dark: #d4af37; --accent-color-rgb: 197, 164, 126; }
+        :root[data-color-theme="blue"] { --accent-color: #7FA6CD; --accent-color-dark: #7FA6CD; --accent-color-rgb: 127, 166, 205;}
+        :root[data-color-theme="purple"] { --accent-color: #BB9EC7; --accent-color-dark: #BB9EC7; --accent-color-rgb: 187, 158, 199;}
+        
+        html[data-theme="dark"] {
+            --primary-bg: #121212;
+            --secondary-bg: #1e1e1e;
+            --text-primary: #e5e5e5;
+            --text-secondary: #8c8c8c;
+            --border-color: #2f2f2f;
+            --message-sent-text: #ffffff; 
+            --message-received-bg: #2a2a2a;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            --favorite-color: #ffd700;
+            
+            --primary-bg-rgb: 18, 18, 18;
+            --secondary-bg-rgb: 30, 30, 30;
+        }
+        
+        html[data-theme="dark"][data-color-theme="gold"] .message-sent,
+        html[data-theme="dark"][data-color-theme="blue"] .message-sent,
+        html[data-theme="dark"][data-color-theme="purple"] .message-sent {
+            color: #121212;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--primary-bg); 
+            color: var(--text-primary); 
+            transition: background-color 0.5s ease, color 0.5s ease; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+            overflow-x: hidden;
+            font-family: var(--font-family);
+            font-weight: 400;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            font-size: var(--font-size);
+            opacity: 0;
+            animation: delayedShow 0.01s ease 0.1s forwards;
+        }
+        @keyframes delayedShow { to {opacity: 1;} }
+        
+        .header { 
+            padding: 0;
+            border-bottom: 1px solid var(--border-color); 
+            background-color: var(--secondary-bg); 
+            box-shadow: var(--shadow); 
+            z-index: 10; 
+            flex-shrink: 0; 
+            position: relative;
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 15px 5px;
+            width: 100%;
+        }
+
+        .avatar { 
+            width: 60px;
+            height: 60px;
+            border-radius: 50%; 
+            object-fit: cover; 
+            cursor: pointer; 
+            background-color: var(--border-color); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--text-secondary); 
+            border: 2px solid transparent; 
+            transition: var(--transition); 
+            order: 2; 
+        }
+        
+        .header-motto {
+            position: absolute; 
+            top: 8px; 
+            left: 0; 
+            right: 0;
+            text-align: center; 
+            font-size: 12px; 
+            color: var(--accent-color);
+            font-weight: 500; 
+            letter-spacing: 2px; 
+            opacity: 0.8; 
+            font-style: italic;
+            transition: color 0.5s ease;
+        }
+        html[data-theme="dark"] .header-motto { color: var(--accent-color-dark); }
+        
+        .user-info { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 5px; 
+            min-width: 60px;
+        }
+        
+        .avatar:hover { border-color: var(--accent-color); transform: scale(1.05); }
+        html[data-theme="dark"] .avatar:hover { border-color: var(--accent-color-dark); }
+        .avatar > img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .username { 
+            font-weight: 600; 
+            font-size: 14px; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            order: 1; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70px;
+        }
+        .username:hover { color: var(--accent-color); }
+        html[data-theme="dark"] .username:hover { color: var(--accent-color-dark); }
+        .status { 
+            font-size: 12px; 
+            font-weight: 500; 
+            color: var(--text-secondary); 
+            cursor: pointer; 
+            order: 3; 
+            padding: 2px 6px; 
+            border-radius: 6px; 
+            transition: background-color 0.3s ease; 
+            white-space: nowrap;
+        }
+        .status:hover { background-color: var(--message-received-bg); }
+        
+        .header-actions { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .action-btn { 
+            background: none; 
+            border: none; 
+            color: var(--text-secondary); 
+            font-size: 18px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            transition: var(--transition); 
+        }
+        .action-btn:hover { background-color: var(--message-received-bg); color: var(--text-primary); transform: rotate(15deg) scale(1.1); }
+        
+        .main-chat-area { 
+            flex: 1; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+        .chat-container { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 25px 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 2px; 
+            transition: background-color 0.5s ease; 
+            background-color: transparent; 
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+        }
+        .chat-container::-webkit-scrollbar { display: none; width: 0; }
+        
+        .message-wrapper { 
+            display: flex; 
+            flex-direction: column; 
+            max-width: 85%; 
+            margin-bottom: 12px; 
+            animation: messageAppear 0.4s ease-out forwards; 
+            opacity: 0;
+            position: relative;
+        }
+
+        @keyframes messageAppear { 
+            from { opacity: 0; transform: translateY(0) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+        
+        .message-wrapper.sent { align-self: flex-end; align-items: flex-end; }
+        .message-wrapper.received { align-self: flex-start; align-items: flex-start; }
+        
+        .message { 
+            padding: 12px 18px; 
+            border-radius: var(--radius); 
+            word-wrap: break-word; 
+            line-height: 1.5; 
+            box-shadow: var(--shadow); 
+            transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease; 
+            position: relative;
+            overflow: hidden;
+            min-width: 50px;
+        }
+        
+        .message-sent { 
+            background-color: var(--accent-color); 
+            color: var(--message-sent-text); 
+            border-bottom-right-radius: 6px; 
+        }
+        html[data-theme="dark"] .message-sent { background-color: var(--accent-color-dark); }
+        
+        .message-received { 
+            background-color: var(--message-received-bg); 
+            color: var(--text-primary); 
+            border-bottom-left-radius: 6px; 
+        }
+        
+        .message-meta { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin: 6px 10px 0 10px; 
+            opacity: 0.7;
+            font-size: 11px;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        /* 收藏按钮在时间戳旁边 */
+        .favorite-meta-btn {
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 2px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+        }
+
+        .favorite-meta-btn:hover { 
+            opacity: 1; 
+            transform: scale(1.2); 
+        }
+
+        .favorite-meta-btn.favorited { 
+            color: var(--favorite-color); 
+            opacity: 1;
+        }
+
+        /* 调整消息操作按钮，移除收藏按钮 */
+        .message-meta-actions {
+            position: absolute;
+            top: -12px;
+            background-color: var(--secondary-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            padding: 4px 6px;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: var(--transition);
+            z-index: 2;
+        }
+        .message-wrapper:hover .message-meta-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .message-wrapper.sent .message-meta-actions { left: -20px; }
+        .message-wrapper.received .message-meta-actions { right: -20px; }
+
+        .meta-action-btn {
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 6px 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .meta-action-btn:hover { transform: scale(1.2); color: var(--text-primary); }
+        .meta-action-btn.favorited { color: var(--favorite-color); }
+        
+        .timestamp { 
+            font-weight: 500; 
+            text-shadow: 0 1px 1px rgba(0,0,0,0.1); 
+        }
+        .read-receipt { 
+            font-size: 12px; 
+        }
+        .read-receipt.read { color: var(--accent-color); }
+        html[data-theme="dark"] .read-receipt.read { color: var(--accent-color-dark); }
+        
+        .input-area-wrapper {
+            flex-shrink: 0;
+            background-color: var(--secondary-bg);
+            transition: background-color 0.5s ease;
+        }
+        .input-area { 
+            display: flex; 
+            padding: 12px 15px; 
+            gap: 10px; 
+            border-top: 1px solid var(--border-color); 
+            align-items: flex-end; 
+            transition: border-color 0.5s ease; 
+        }
+        .message-input { 
+            flex: 1; 
+            border: 1px solid transparent; 
+            border-radius: 24px; 
+            padding: 12px 18px; 
+            background-color: var(--primary-bg); 
+            color: var(--text-primary); 
+            resize: none; 
+            outline: none; 
+            max-height: 120px; 
+            min-height: 46px; 
+            transition: var(--transition); 
+            font-weight: 500; 
+            font-family: var(--font-family); 
+            font-size: inherit;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .message-input:focus { 
+            border-color: var(--accent-color); 
+            background-color: var(--secondary-bg); 
+        }
+        html[data-theme="dark"] .message-input:focus { border-color: var(--accent-color-dark); }
+        
+        .input-buttons { 
+            display: flex; 
+            gap: 8px; 
+        }
+        .input-btn { 
+            border: none; 
+            border-radius: 50%; 
+            width: 46px; 
+            height: 46px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            flex-shrink: 0; 
+        }
+        .input-btn:hover { transform: scale(1.08) rotate(5deg); filter: brightness(1.1); }
+        
+        .send-btn, .batch-btn.active { 
+            background-color: var(--accent-color); 
+            color: var(--message-sent-text); 
+        }
+        html[data-theme="dark"] .send-btn, html[data-theme="dark"] .batch-btn.active { 
+            background-color: var(--accent-color-dark); 
+        }
+
+        .coin-btn, .batch-btn, .continue-btn, .attachment-btn, .poke-btn { 
+            background-color: var(--message-received-bg); 
+            color: var(--text-secondary); 
+        }
+        .attachment-btn:hover, .continue-btn:hover, .batch-btn:hover, .coin-btn:hover, .poke-btn:hover { color: var(--text-primary); }
+        
+        #reply-preview-container {
+            padding: 0 15px;
+        }
+        .reply-preview {
+            background-color: rgba(var(--primary-bg-rgb), 0.8);
+            border-left: 3px solid var(--accent-color);
+            padding: 8px 12px;
+            margin-top: 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .reply-preview-content {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+        
+        .reply-preview-remove {
+            background: none; border: none; color: var(--text-secondary); cursor: pointer;
+            font-size: 14px; width: 22px; height: 22px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0; transition: var(--transition);
+        }
+        .reply-preview-remove:hover { background-color: var(--border-color); color: var(--text-primary); transform: scale(1.1); }
+        
+        .reply-indicator {
+            font-style: italic;
+            opacity: 0.8;
+            border-left: 2px solid var(--accent-color);
+            padding: 6px 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            background-color: rgba(var(--primary-bg-rgb), 0.6);
+            border-radius: 8px;
+        }
+        
+        .message-wrapper.sent .reply-indicator {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: inherit;
+            border-left-color: rgba(255, 255, 255, 0.5);
+        }
+        html[data-theme="dark"] .message-wrapper.sent .reply-indicator {
+            background-color: rgba(0, 0, 0, 0.15);
+            color: inherit;
+            border-left-color: rgba(0, 0, 0, 0.4);
+        }
+	.modal-btn.active {
+    background-color: var(--accent-color);
+    color: var(--message-sent-text);
+}
+
+/* 确保模态框在最上层 */
+.modal {
+    z-index: 2000 !important;
+}
+
+.modal-content {
+    z-index: 2001 !important;
+}
+
+        .message-note {
+            background-color: rgba(var(--accent-color-rgb), 0.1);
+            border-left: 3px solid var(--accent-color);
+            padding: 10px 14px;
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-top: 10px;
+            border-radius: 8px;
+            font-style: italic;
+            opacity: 0.9;
+        }
+        html[data-theme="dark"] .message-note { color: var(--text-primary); }
+
+        .system-message {
+            align-self: center;
+            background-color: var(--message-received-bg);
+            color: var(--text-secondary);
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 10px 0;
+            box-shadow: none;
+        }
+
+        body.with-background .header,
+        body.with-background .input-area-wrapper {
+            background-color: rgba(var(--secondary-bg-rgb), 0.3);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        body.with-background .input-area {
+            border-top-color: transparent;
+        }
+        body.with-background .message-received { background-color: rgba(var(--secondary-bg-rgb), 0.95); }
+        body.with-background .message-input { background-color: rgba(var(--primary-bg-rgb), 0.8); }
+        body.with-background .message-input:focus { background-color: rgba(var(--secondary-bg-rgb), 0.9); }
+        body.with-background .batch-preview {
+            background-color: rgba(var(--secondary-bg-rgb), 0.9);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        body.with-background .message-meta { text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+
+        .modal { 
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.6); 
+    z-index: 2000; /* 增加z-index值 */
+    align-items: center; 
+    justify-content: center; 
+    backdrop-filter: blur(8px); 
+    animation: modalBgFadeIn 0.3s ease; 
+}
+        @keyframes modalBgFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content { 
+            background-color: var(--secondary-bg); border-radius: var(--radius); padding: 24px; 
+            width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); animation: modalContentSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            transition: background-color 0.5s ease; scrollbar-width: none; -ms-overflow-style: none;
+            transform: translateY(20px) scale(0.95); opacity: 0; display: flex; flex-direction: column;
+        }
+        .modal-content::-webkit-scrollbar { display: none; width: 0; }
+        @keyframes modalContentSlideIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+        .modal-title { 
+            font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; 
+            align-items: center; gap: 8px; transition: color 0.5s ease; flex-shrink: 0; 
+        }
+        .modal-title i { color: var(--accent-color); }
+        html[data-theme="dark"] .modal-title i { color: var(--accent-color-dark); }
+        .modal-input, .modal-textarea { 
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; 
+            background-color: var(--primary-bg); color: var(--text-primary); margin-bottom: 16px; 
+            transition: var(--transition); font-family: var(--font-family);
+        }
+        .modal-textarea { resize: vertical; min-height: 80px; }
+        .modal-input:focus, .modal-textarea:focus { border-color: var(--accent-color); transform: translateY(-1px); }
+        html[data-theme="dark"] .modal-input:focus, html[data-theme="dark"] .modal-textarea:focus { border-color: var(--accent-color-dark); }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; flex-shrink: 0; }
+        .modal-btn { 
+            padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; 
+            font-weight: 600; transition: var(--transition); font-family: var(--font-family);
+        }
+        .modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .modal-btn-primary { background-color: var(--accent-color); color: var(--message-sent-text); }
+        html[data-theme="dark"] .modal-btn-primary { background-color: var(--accent-color-dark); }
+        .modal-btn-primary:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+        .modal-btn-secondary { background-color: var(--message-received-bg); color: var(--text-primary); }
+        .modal-btn-secondary:hover:not(:disabled) { background-color: var(--border-color); transform: translateY(-1px); }
+        
+        #favorites-modal .modal-content { max-width: 500px; }
+        .favorites-list { flex: 1; overflow-y: auto; margin: 0 -10px; padding: 0 10px; scrollbar-width: none; -ms-overflow-style: none;}
+        .favorites-list::-webkit-scrollbar { display: none; }
+        .favorite-item {
+            padding: 12px; border-bottom: 1px solid var(--border-color); display: flex;
+            flex-direction: column; gap: 6px; animation: fadeIn 0.3s ease;
+        }
+        .favorite-item:last-child { border-bottom: none; }
+        .favorite-item-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-secondary); }
+        .favorite-item-sender { font-weight: 600; }
+        .favorite-item-content { line-height: 1.6; }
+        .favorite-item-content img { max-width: 100px; border-radius: 8px; margin-top: 5px; }
+        .no-favorites { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+        .no-favorites i { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+
+        .file-input { display: none; }
+        .typing-indicator, .empty-state { 
+            position: absolute; left: 20px; bottom: 20px; z-index: 5; 
+        }
+        .empty-state { 
+            left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; color: var(--text-secondary); text-align: center; 
+            padding: 20px; width: 100%; transition: color 0.5s ease; 
+        }
+        .empty-state i { font-size: 64px; margin-bottom: 16px; opacity: 0.4; }
+        .empty-state p { font-size: 16px; font-weight: 500; }
+        
+        .typing-indicator { 
+            align-self: flex-start; background-color: var(--message-received-bg); padding: 12px 16px; 
+            border-radius: var(--radius); border-bottom-left-radius: 6px; box-shadow: var(--shadow); 
+            animation: fadeIn 0.4s ease-out; display: none; transition: background-color 0.5s ease, box-shadow 0.5s ease; 
+        }
+        .typing-dots { display: flex; gap: 5px; }
+        .typing-dot { 
+            width: 8px; height: 8px; border-radius: 50%; background-color: var(--text-secondary); 
+            animation: typing 1.4s infinite ease-in-out both; 
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        
+        .settings-item-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .settings-item { 
+            display: flex; align-items: center; gap: 12px; padding: 12px; 
+            border-radius: 8px; cursor: pointer; transition: var(--transition); 
+        }
+        .settings-item:hover { background-color: var(--primary-bg); transform: translateX(5px); }
+        
+        #my-status-input { 
+            background: transparent; border: none; outline: none; color: var(--text-primary); 
+            font-size: 12px; font-weight: 500; font-family: var(--font-family); 
+            text-align: center; padding: 2px 6px; width: 100px; 
+        }
+        
+        .welcome-animation { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: var(--primary-bg); display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; z-index: 1000; 
+            animation: fadeOut 1.2s ease 2.5s forwards; transition: background-color 0.5s ease; pointer-events: none;
+        }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        .welcome-logo { 
+            font-size: 48px; color: var(--accent-color); margin-bottom: 20px; 
+            animation: pulse 1.5s infinite, float 3s ease-in-out infinite; transition: color 0.5s ease; 
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        html[data-theme="dark"] .welcome-logo { color: var(--accent-color-dark); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .welcome-text { 
+            font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; 
+            transition: color 0.5s ease; animation: textFadeIn 1s ease-out; 
+        }
+        @keyframes textFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .welcome-subtext { 
+            font-size: 16px; color: var(--text-secondary); transition: color 0.5s ease; 
+            animation: textFadeIn 1s ease-out 0.5s both; 
+        }
+        
+        .batch-preview { 
+            position: absolute; bottom: 85px; left: 15px; right: 15px; background-color: var(--secondary-bg); 
+            border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); display: none; 
+            flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; 
+            border: 1px solid var(--border-color); z-index: 5; transition: all 0.5s ease; 
+            scrollbar-width: none; -ms-overflow-style: none; animation: batchPreviewSlideUp 0.3s ease;
+        }
+        .batch-preview::-webkit-scrollbar { display: none; width: 0; }
+        @keyframes batchPreviewSlideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .batch-preview-item { 
+            display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; 
+            background-color: var(--primary-bg); border-radius: 8px; font-size: 14px; 
+            transition: background-color 0.5s ease, opacity 0.3s ease; user-select: none; animation: batchItemAppear 0.2s ease;
+        }
+        @keyframes batchItemAppear { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .batch-preview-text { flex-grow: 1; cursor: text; margin-right: 10px; }
+        .batch-preview-input { 
+            flex-grow: 1; border: none; background-color: transparent; border-bottom: 1px solid var(--accent-color); 
+            color: var(--text-primary); font-family: var(--font-family); font-size: 14px; outline: none; 
+        }
+        .batch-preview-remove { 
+            background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 12px; 
+            width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; flex-shrink: 0; transition: var(--transition);
+        }
+        .batch-preview-remove:hover { background-color: var(--border-color); color: var(--text-primary); transform: scale(1.1); }
+        .batch-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+        .batch-action-btn { 
+            padding: 6px 12px; border-radius: 6px; border: none; font-size: 12px; 
+            cursor: pointer; transition: var(--transition); font-family: var(--font-family);
+        }
+        .batch-send-btn { background-color: var(--accent-color); color: var(--message-sent-text); }
+        html[data-theme="dark"] .batch-send-btn { background-color: var(--accent-color-dark); }
+        .batch-cancel-btn { background-color: var(--message-received-bg); color: var(--text-primary); }
+
+        .theme-picker { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+        .theme-picker-label { font-weight: 500; font-size: 14px; }
+        .theme-color-btn { 
+            width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border-color); 
+            cursor: pointer; transition: var(--transition); 
+        }
+        .theme-color-btn:hover { transform: scale(1.1); }
+        .theme-color-btn.active { border-color: var(--text-primary); transform: scale(1.1); }
+        #theme-gold { background-color: #c5a47e; }
+        #theme-blue { background-color: #7FA6CD; }
+        #theme-purple { background-color: #BB9EC7; }
+
+        .font-size-control { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .font-size-label { font-weight: 500; font-size: 14px; }
+        .font-size-slider { 
+            flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; 
+            background: var(--message-received-bg); outline: none; 
+        }
+        .font-size-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; 
+            background: var(--accent-color); cursor: pointer; transition: var(--transition);
+        }
+        .font-size-slider::-webkit-slider-thumb:hover { transform: scale(1.1); }
+        .font-size-slider::-moz-range-thumb {
+            width: 18px; height: 18px; border-radius: 50%; background: var(--accent-color); cursor: pointer; border: none;
+        }
+        .font-size-value { font-size: 14px; color: var(--text-secondary); min-width: 40px; text-align: center; }
+
+        .settings-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .settings-section-title { 
+            font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--accent-color); 
+            display: flex; align-items: center; gap: 8px; 
+        }
+        html[data-theme="dark"] .settings-section-title { color: var(--accent-color-dark); }
+
+        .notification {
+            position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background-color: var(--secondary-bg);
+            color: var(--text-primary); padding: 12px 20px; border-radius: var(--radius); box-shadow: var(--shadow);
+            z-index: 1001; display: flex; align-items: center; gap: 10px; max-width: 90%;
+            animation: notificationSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); border-left: 4px solid var(--accent-color);
+        }
+        @keyframes notificationSlideIn { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .notification.hiding { animation: notificationSlideOut 0.4s ease-in forwards; }
+        @keyframes notificationSlideOut { from { opacity: 1; transform: translateX(-50%) translateY(0); } to { opacity: 0; transform: translateX(-50%) translateY(-20px); } }
+        .notification i { color: var(--accent-color); }
+        html[data-theme="dark"] .notification i { color: var(--accent-color-dark); }
+
+        .import-export-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .import-export-btn {
+            flex: 1; padding: 10px 15px; border-radius: 8px; border: none; background-color: var(--message-received-bg);
+            color: var(--text-primary); cursor: pointer; transition: var(--transition); font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-family);
+        }
+        .import-export-btn:hover { background-color: var(--border-color); transform: translateY(-2px); }
+        .import-export-btn.export { background-color: var(--accent-color); color: var(--message-sent-text); }
+        html[data-theme="dark"] .import-export-btn.export { background-color: var(--accent-color-dark); }
+
+        .date-divider { 
+            display: flex; align-items: center; margin: 20px 0; color: var(--text-secondary); 
+            font-size: 12px; font-weight: 500; 
+        }
+        .date-divider::before, .date-divider::after { content: ""; flex: 1; height: 1px; background-color: var(--border-color); }
+        .date-divider span { padding: 0 12px; }
+        
+        .coin-toss-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 2000; display: none; 
+            align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .coin-toss-overlay.visible { display: flex; opacity: 1; }
+        .coin-container { perspective: 1000px; }
+        .coin { width: 100px; height: 100px; position: relative; transform-style: preserve-3d; }
+        .coin.flipping-heads { animation: flip-coin-heads 2.5s cubic-bezier(0.3, 0.1, 0.3, 1) forwards; }
+        .coin.flipping-tails { animation: flip-coin-tails 2.5s cubic-bezier(0.3, 0.1, 0.3, 1) forwards; }
+        .coin-face {
+            position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px;
+            font-weight: 600; font-family: var(--font-family); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+        .coin-front { background: linear-gradient(45deg, #ffd700, #f0c000); color: #4a3800; }
+        .coin-back { background: linear-gradient(45deg, #c0c0c0, #a9a9a9); color: #333; transform: rotateY(180deg); }
+        @keyframes flip-coin-common {
+            0% { transform: rotateY(0) translateY(-150px) scale(0.8); animation-timing-function: ease-in; }
+            15% { transform: rotateY(1080deg) translateY(0px) scale(1); }
+            30% { transform: rotateY(2160deg) translateY(-80px) scale(0.9); animation-timing-function: ease-out; }
+            55% { transform: rotateY(3960deg) translateY(0px) scale(1); animation-timing-function: ease-in; }
+            75% { transform: rotateY(5400deg) translateY(-40px) scale(0.95); animation-timing-function: ease-out; }
+        }
+        @keyframes flip-coin-heads {
+            from { @keyframes flip-coin-common; }
+            0% { transform: rotateY(0) translateY(-150px) scale(0.8); animation-timing-function: ease-in; }
+            15% { transform: rotateY(1080deg) translateY(0px) scale(1); }
+            30% { transform: rotateY(2160deg) translateY(-80px) scale(0.9); animation-timing-function: ease-out; }
+            55% { transform: rotateY(3960deg) translateY(0px) scale(1); animation-timing-function: ease-in; }
+            75% { transform: rotateY(5400deg) translateY(-40px) scale(0.95); animation-timing-function: ease-out; }
+            100% { transform: rotateY(7200deg) translateY(0) scale(1); } 
+        }
+        @keyframes flip-coin-tails {
+            0% { transform: rotateY(0) translateY(-150px) scale(0.8); animation-timing-function: ease-in; }
+            15% { transform: rotateY(1080deg) translateY(0px) scale(1); }
+            30% { transform: rotateY(2160deg) translateY(-80px) scale(0.9); animation-timing-function: ease-out; }
+            55% { transform: rotateY(3960deg) translateY(0px) scale(1); animation-timing-function: ease-in; }
+            75% { transform: rotateY(5400deg) translateY(-40px) scale(0.95); animation-timing-function: ease-out; }
+            100% { transform: rotateY(7380deg) translateY(0) scale(1); }
+        }
+        .coin-result-text {
+            position: absolute; top: 65%; font-size: 24px; color: white;
+            font-weight: 500; opacity: 0; transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .stats-content { max-height: 400px; overflow-y: auto; padding: 10px 0; }
+        .stats-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .stats-section:last-child { border-bottom: none; margin-bottom: 0; }
+        .stats-section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--accent-color); display: flex; align-items: center; gap: 8px; }
+        .stats-list { display: flex; flex-direction: column; gap: 8px; }
+        .stats-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background-color: var(--primary-bg); border-radius: 8px; border: 1px solid var(--border-color); transition: var(--transition); }
+        .stats-item:hover { background-color: var(--message-received-bg); transform: translateX(5px); }
+        .stats-word { font-weight: 600; color: var(--text-primary); }
+        .stats-count { background-color: var(--accent-color); color: var(--message-sent-text); padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; min-width: 40px; text-align: center; }
+        .stats-summary { margin-top: 15px; padding: 12px; background-color: var(--primary-bg); border-radius: 8px; border: 1px solid var(--border-color); font-size: 14px; color: var(--text-secondary); text-align: center; }
+        .stats-empty { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+        .stats-empty i { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+        .stats-empty p { font-size: 16px; margin-bottom: 8px; }
+        .stats-tip { font-size: 12px; opacity: 0.7; }
+
+        .coin-confirm-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .settings-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .settings-footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .settings-footer a:hover {
+            text-decoration: underline;
+        }
+
+        #session-modal .modal-content { max-width: 500px; }
+        .session-list { flex: 1; overflow-y: auto; margin: 0 -10px; padding: 0 10px; max-height: 50vh;}
+        .session-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px; transition: var(--transition); }
+        .session-item:hover { background-color: var(--primary-bg); transform: translateX(5px); }
+        .session-item.active { border-color: var(--accent-color); background-color: rgba(var(--accent-color-rgb), 0.1); font-weight: 600; }
+        .session-info { cursor: pointer; flex-grow: 1; }
+        .session-name { font-size: 15px; }
+        .session-meta { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+        .session-actions { display: flex; gap: 8px; }
+        .session-action-btn { background: none; border: none; color: var(--text-secondary); font-size: 14px; cursor: pointer; padding: 8px; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .session-action-btn:hover { color: var(--text-primary); background-color: var(--border-color); transform: scale(1.1); }
+        .session-action-btn.delete:hover { color: #e53935; }
+
+
+        @media (max-width: 768px) {
+            .header-inner { padding: 12px 8px; max-width: 95%; }
+            .user-info { min-width: 45px; }
+            .avatar { width: 48px; height: 48px; }
+            .username { font-size: 12px; max-width: 55px; }
+            .status { font-size: 10px; }
+            .header-motto { font-size: 9px; top: 5px; }
+            .header-actions { gap: 6px; }
+            .action-btn { width: 32px; height: 32px; font-size: 16px; }
+            .chat-container { padding: 20px 10px; }
+            .message-wrapper { max-width: 90%; }
+            .input-area { padding: 10px 12px; gap: 8px; }
+            .input-btn { width: 42px; height: 42px; }
+            .message-input { min-height: 42px; padding: 10px 16px; }
+            .modal-content { width: 95%; max-width: none; }
+            .batch-preview { left: 10px; right: 10px; bottom: 75px; }
+            .stats-content { max-height: 300px; }
+        }
+        @media (max-width: 480px) {
+            .header-inner { padding: 10px 6px; }
+            .user-info { min-width: 40px; }
+            .avatar { width: 40px; height: 40px; }
+            .username { font-size: 11px; max-width: 45px; }
+            .status { font-size: 9px; padding: 1px 4px; }
+            .header-motto { font-size: 8px; top: 4px; }
+            .header-actions { gap: 4px; }
+            .action-btn { width: 30px; height: 30px; font-size: 14px; }
+            .chat-container { padding: 15px 8px; }
+            .input-area { padding: 8px 10px; gap: 6px; }
+            .input-btn { width: 38px; height: 38px; }
+            .message-input { min-height: 38px; padding: 8px 14px; font-size: 14px; }
+            .batch-preview { left: 8px; right: 8px; bottom: 70px; max-height: 130px; }
+            .empty-state i { font-size: 48px; }
+            .empty-state p { font-size: 14px; }
+        }
+        @media (max-width: 360px) {
+            .username { display: none; }
+            .user-info { gap: 2px; }
+            .header-inner { padding: 8px 5px; }
+            .input-buttons { gap: 5px; }
+            .input-btn { width: 36px; height: 36px; }
+        }
+
+#anniversary-days {
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.report-card {
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: slideInUp 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+html[data-theme="dark"] .report-card {
+    background-color: rgba(30,30,30,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.report-card h3 {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-card .highlight-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 5px 0;
+}
+
+.report-card .sub-text {
+    font-size: 12px;
+    opacity: 0.7;
+    line-height: 1.5;
+}
+
+.report-tag {
+    display: inline-block;
+    background: var(--message-received-bg);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 2px;
+}
+
+@keyframes slideInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+    </style>
+</head>
+<body>
+    <div class="welcome-animation" id="welcome-animation">
+        <div class="welcome-logo"><i class="fas fa-satellite-dish"></i></div>
+        <div class="welcome-text"></div>
+        <div class="welcome-subtext"></div>
+    </div>
+
+    <div class="header">
+        <div class="header-motto"></div>
+        <div class="header-inner">
+            <div class="user-info">
+                <div id="partner-name" class="username">对方</div>
+                <div class="avatar" id="partner-avatar"><i class="fas fa-user"></i></div>
+                <div class="status" id="partner-status"><span>在线</span></div>
+            </div>
+            <div class="header-actions">
+                <button id="session-manager-btn" class="action-btn" title="会话管理"><i class="fas fa-comments"></i></button>
+                <button id="favorites-btn" class="action-btn" title="收藏夹"><i class="fas fa-star"></i></button>
+                <button id="theme-toggle" class="action-btn" title="切换主题"><i class="fas fa-moon"></i></button>
+                <button id="settings-btn" class="action-btn" title="设置"><i class="fas fa-cog"></i></button>
+            </div>
+            <div class="user-info">
+                <div class="username" id="my-name">我</div>
+                <div class="avatar" id="my-avatar"><i class="fas fa-user"></i></div>
+                <div class="status" id="my-status-container"><span id="my-status-text">在线</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="main-chat-area">
+        <div class="chat-container" id="chat-container"></div>
+        <div class="empty-state" id="empty-state"><i class="far fa-comments"></i><p></p></div>
+        <div class="typing-indicator" id="typing-indicator"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>
+        <div class="batch-preview" id="batch-preview"></div>
+    </div>
+    <div class="input-area-wrapper">
+        <div id="reply-preview-container"></div>
+        <div class="input-area">
+            <button class="attachment-btn input-btn" id="attachment-btn" title="发送图片"><i class="fas fa-image"></i></button>
+            <button class="poke-btn input-btn" id="poke-btn" title="拍一拍"><i class="fas fa-hand-sparkles"></i></button>
+            <textarea class="message-input" id="message-input" placeholder="" rows="1"></textarea>
+            <div class="input-buttons">
+                <button class="continue-btn input-btn" id="continue-btn" title="让对方继续说"><i class="fas fa-ellipsis-h"></i></button>
+                <button class="batch-btn input-btn" id="batch-btn" title="批量发送模式"><i class="fas fa-layer-group"></i></button>
+                <button class="send-btn input-btn" id="send-btn" title="发送消息"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <input type="file" id="image-input" class="file-input" accept="image/*">
+        </div>
+    </div>
+
+    <div class="modal" id="edit-modal"><div class="modal-content"><div class="modal-title"><i class="fas fa-user-edit"></i><span id="edit-modal-title">修改昵称</span></div><input type="text" class="modal-input" id="name-input" placeholder="输入新昵称"><div class="modal-buttons"><button class="modal-btn modal-btn-secondary" id="cancel-edit">取消</button><button class="modal-btn modal-btn-primary" id="save-name" disabled>保存</button></div></div></div>
+    <div class="modal" id="avatar-modal"><div class="modal-content"><div class="modal-title"><i class="fas fa-portrait"></i><span id="avatar-modal-title">上传头像</span></div><input type="file" class="modal-input" id="avatar-input" accept="image/*"><div class="modal-buttons"><button class="modal-btn modal-btn-secondary" id="cancel-avatar">取消</button><button class="modal-btn modal-btn-primary" id="save-avatar">保存</button></div></div></div>
+    <div class="modal" id="note-modal"><div class="modal-content"><div class="modal-title"><i class="fas fa-sticky-note"></i><span>编辑注释</span></div><textarea class="modal-textarea" id="note-input" placeholder="为这条消息添加注释..."></textarea><div class="modal-buttons"><button class="modal-btn modal-btn-secondary" id="cancel-note">取消</button><button class="modal-btn modal-btn-primary" id="save-note">保存</button></div></div></div>
+    <div class="modal" id="poke-modal"><div class="modal-content"><div class="modal-title"><i class="fas fa-hand-sparkles"></i><span>拍一拍</span></div><input type="text" class="modal-input" id="poke-input" placeholder="例如：拍了拍"对方"的肩膀"><div class="modal-buttons"><button class="modal-btn modal-btn-secondary" id="cancel-poke">取消</button><button class="modal-btn modal-btn-primary" id="send-poke">发送</button></div></div></div>
+    <div class="modal" id="settings-modal"><div class="modal-content">
+        <div class="modal-title"><i class="fas fa-cog"></i><span>设置</span></div>
+        <div class="settings-section">
+            <div class="settings-section-title"><i class="fas fa-palette"></i>外观设置</div>
+            <div class="theme-picker"><span class="theme-picker-label">主题颜色:</span><button class="theme-color-btn" id="theme-gold" data-theme="gold" title="金色"></button><button class="theme-color-btn" id="theme-blue" data-theme="blue" title="蓝色"></button><button class="theme-color-btn" id="theme-purple" data-theme="purple" title="紫色"></button></div>
+            <div class="font-size-control"><span class="font-size-label">字体大小:</span><input type="range" min="12" max="20" value="16" class="font-size-slider" id="font-size-slider"><span class="font-size-value" id="font-size-value">16px</span></div>
+            <div class="settings-item-list"><div class="settings-item" id="set-background"><i class="fas fa-image"></i><span>设置聊天背景</span></div><div class="settings-item" id="remove-background"><i class="fas fa-ban"></i><span>移除聊天背景</span></div></div>
+        </div>
+        <div class="settings-section">
+            <div class="settings-section-title"><i class="fas fa-comments"></i>聊天设置</div>
+            <div class="settings-item-list">
+                <div class="settings-item" id="reply-toggle"><i class="fas fa-reply"></i><span>引用回复: 开启</span></div>
+                <div class="settings-item" id="sound-toggle"><i class="fas fa-volume-up"></i><span>消息音效: 开启</span></div>
+                <div class="settings-item" id="read-receipts-toggle"><i class="fas fa-check-double"></i><span>已读回执: 开启</span></div>
+                <div class="settings-item" id="typing-indicator-toggle"><i class="fas fa-keyboard"></i><span>正在输入: 显示</span></div>
+            </div>
+        </div>
+        
+        
+<div class="settings-section">
+    <div class="settings-section-title"><i class="fas fa-tools"></i>高级功能</div>
+    <div class="settings-item-list">
+        <div class="settings-item" id="stats-function"><i class="fas fa-chart-bar"></i><span>消息统计</span></div>
+        <div class="settings-item" id="coin-function"><i class="fas fa-coins"></i><span>抛硬币</span></div>
+        
+        <div class="settings-item" id="anniversary-function"><i class="fas fa-heart"></i><span>重要日</span></div>
+        <div class="settings-item" id="report-function"><i class="fas fa-book-open"></i><span>回忆录</span></div>
+
+    </div>
+</div>
+        <div class="settings-section">
+            <div class="settings-section-title"><i class="fas fa-database"></i>数据管理</div>
+            <div class="import-export-buttons"><button class="import-export-btn" id="export-chat"><i class="fas fa-download"></i>导出记录</button><button class="import-export-btn export" id="import-chat"><i class="fas fa-upload"></i>导入记录</button></div>
+            <div class="settings-item-list"><div class="settings-item" id="clear-chat"><i class="fas fa-trash-alt"></i><span>清空当前会话</span></div><div class="settings-item" id="clear-storage"><i class="fas fa-server"></i><span>重置所有数据</span></div></div>
+        </div>
+        <div class="settings-footer">
+            <p>感谢 @苏铂潼</p>
+            <p>小红书号：9568228497</p>
+            <p>部分代码有参考</p>
+            <p>超绝技术力！女神！我爱你</p>
+        </div>
+        <div class="modal-buttons"><button class="modal-btn modal-btn-secondary" id="cancel-settings">关闭</button></div>
+    </div></div>
+    
+    <div class="modal" id="favorites-modal">
+        <div class="modal-content">
+            <div class="modal-title"><i class="fas fa-star" style="color: var(--favorite-color);"></i><span>收藏夹</span></div>
+            <div class="favorites-list" id="favorites-list"></div>
+            <div class="modal-buttons"><button class="modal-btn modal-btn-secondary" id="cancel-favorites">关闭</button></div>
+        </div>
+    </div>
+
+    <div class="modal" id="stats-modal">
+        <div class="modal-content">
+            <div class="modal-title"><i class="fas fa-chart-bar"></i><span>消息统计</span></div>
+            <div class="stats-content" id="stats-content"></div>
+            <div class="modal-buttons"><button class="modal-btn modal-btn-secondary" id="close-stats">关闭</button></div>
+        </div>    
+    </div>
+
+    <div class="modal" id="session-modal">
+        <div class="modal-content">
+            <div class="modal-title"><i class="fas fa-comments"></i><span>会话管理</span></div>
+            <div class="session-list" id="session-list"></div>
+            <div class="modal-buttons" style="justify-content: space-between;">
+                <button class="modal-btn modal-btn-primary" id="create-new-session"><i class="fas fa-plus"></i> 新建会话</button>
+                <button class="modal-btn modal-btn-secondary" id="cancel-session">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="background-input" class="file-input" accept="image/*">
+    <input type="file" id="import-input" class="file-input" accept=".json">
+
+    <div class="coin-toss-overlay" id="coin-toss-overlay">
+        <div class="coin-container"><div class="coin" id="animated-coin"><div class="coin-face coin-front">是</div><div class="coin-face coin-back">否</div></div></div>
+        <div class="coin-result-text" id="coin-result-text"></div>
+        <div class="coin-confirm-buttons">
+            <button class="modal-btn modal-btn-secondary" id="cancel-coin-result">取消</button>
+            <button class="modal-btn modal-btn-primary" id="send-coin-result">发送</button>
+        </div>
+    </div>
+
+    <div class="modal" id="disclaimer-modal">
+        <div class="modal-content">
+            <div class="modal-title"><i class="fas fa-scroll"></i><span>使用须知</span></div>
+            <div id="disclaimer-content" style="font-size: 14px; line-height: 1.8; color: var(--text-secondary); max-height: 50vh; overflow-y: auto; padding-right: 10px;">
+                <p style="font-weight: bold; color: var(--text-primary); text-align: center;">原创：小红书 @milk (1149615009)</p>
+                <p style="color: #e53935; font-weight: bold; text-align: center; margin-top: 10px; border: 1px solid #e53935; padding: 5px; border-radius: 5px;">此代码绝对禁止商用和盈利行为，一旦发现追究到底。</p>
+                <p style="text-align: center;">支持二改二传，感谢使用！</p>
+					<li style="text-align: center; font-size: 1.2em; color: #8A2BE2;"><b>反对性别暴力</b></li>
+					<li style="text-align: center; font-size: 1.2em; color: #8A2BE2;"><b>尊重不该是奢求,安全必须是底线</b></li>
+                <p style="margin-top: 15px; font-weight: bold; color: var(--text-primary); border-top: 1px solid var(--border-color); padding-top: 10px;">使用提示:</p>
+                <ul style="list-style-type: '⚡ '; padding-left: 20px; margin-top: 5px;">
+                    <li>导出功能仅限浏览器环境使用。</li>
+                    <li><b>苹果用户:</b> 请复制页面链接到浏览器 (如 Via ) 中打开,若使用 Koder 等编辑器，请保持其在后台运行直至页面加载完成。</li>
+                    <li>若浏览器下方无输入框，请尝试更换浏览器 (如 Via, UC)。</li>
+                    <li>功能繁多，建议多点击探索，发掘隐藏玩法！</li>
+                   
+                </ul>
+            </div>
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button class="modal-btn modal-btn-primary" id="accept-disclaimer" style="width: 100%;">我已知晓，开始传讯</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修复重要日模态框 -->
+    <div class="modal" id="anniversary-modal">
+        <div class="modal-content">
+            <div class="modal-title"><i class="fas fa-calendar-alt"></i><span>纪念日管理</span></div>
+            
+            <div id="anniversary-display" style="text-align: center; padding: 20px 0; display: none;">
+                <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">我们已经相识</div>
+                <div id="anniversary-days" style="font-size: 48px; font-weight: bold; color: var(--accent-color); font-family: 'Georgia', serif;">0</div>
+                <div style="font-size: 14px; color: var(--text-secondary);">天</div>
+                <div id="anniversary-date-show" style="margin-top: 10px; font-size: 12px; opacity: 0.7;"></div>
+            </div>
+
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">设置起始日期</div>
+                <input type="date" class="modal-input" id="anniversary-date-input">
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" id="close-anniversary">关闭</button>
+                <button class="modal-btn modal-btn-primary" id="save-anniversary">保存日期</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修复回忆录模态框 -->
+    <div class="modal" id="report-modal">
+        <div class="modal-content" style="background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-bg) 100%);">
+            <div class="modal-title"><i class="fas fa-crown"></i><span>时光回溯报告</span></div>
+            <div id="report-content" class="report-scroll-area" style="max-height: 60vh; overflow-y: auto; padding-right: 5px;">
+               
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" id="close-report" style="width: 100%">珍藏这份回忆</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const APP_PREFIX = 'CHAT_APP_V2_';
+        const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+        const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
+
+        const CONSTANTS = {
+    HEADER_MOTTOS: [
+        "那么你的爱是我最好的补充剂", "⋆⁺₊⋆ ☾ ⋆⁺₊⋆ 思念的电波已连接 ⋆⁺₊⋆ ☾ ⋆⁺₊⋆", "我们是彼此的宇宙回响", "所有思绪，都奔向你", "答案很长，我准备用一生来回答",
+        "月色真美", "一期一会", "念念不忘，必有回响", "山有木兮木有枝", "今晚月色真美",
+        "春风十里不如你", "心有猛虎，细嗅蔷薇", "人间有味是清欢", "斯人若彩虹，遇上方知有",
+        "You are my sunshine", "I love you three thousand", "What is essential is invisible to the eye", "Carpe diem", "To be or not to be",
+        "永遠の一瞬", "君の名は", "世界が終わるまでは", "さようなら、ありがとう", "君と会えてよかった",
+        "人生若只如初见", "当时只道是寻常", "曾经沧海难为水", "此情可待成追忆", "似此星辰非昨夜",
+        "The best is yet to come", "All you need is love", "Let it be", "Here comes the sun", "Yesterday once more",
+        "春はあけぼの", "物の哀れ", "わびさび", "花は桜木人は武士", "一期一会","山有木兮木有枝", "心悦君兮君不知",  "风起于青萍之末", "云卷云舒", "花开花落", "月圆月缺", "潮起潮落",
+        "心有灵犀一点通", "言有尽而意无穷","风乍起，吹皱一池春水", "云无心以出岫", "花自飘零水自流", "月是故乡明", "潮平两岸阔",
+        "心有千千结", "言不尽意", "此时此夜难为情", "欲语泪先流", "千山万水",
+        "风萧萧兮易水寒", "云淡风轻", "花好月圆", "月落乌啼霜满天", "潮落夜江斜月里",
+        "心之所向，素履以往", "言为心声", "此情可待成追忆", "欲穷千里目", "千里共婵娟"
+    ],
+    WELCOME_ANIMATIONS: [
+        { line1: "♡ 爱 ♡", line2: "✧ 正在连接我们的思绪 ✧" }, 
+        { line1: "𝑳𝒐𝒗𝒆", line2: "若要由我来讨论爱的话" }, 
+        { line1: "𝕰𝖈𝖍𝖔", line2: "听见我的回音了吗？" }, 
+        { line1: "𝚂𝚘𝚞𝚕𝚖𝚊𝚝𝚎", line2: "灵魂正在共振" }, 
+        { line1: "Akashic Eye", line2: "链接已建立" },
+        { line1: "✦ 相遇 ✦", line2: "在万千人海中遇见你" }, 
+        { line1: "詩篇", line2: "为你写下的每一行诗" }, 
+        { line1: "Melody", line2: "心跳的旋律为你奏响" }, 
+        { line1: "Destiny", line2: "命运的红线将我们相连" }, 
+        { line1: "Memory", line2: "创造属于我们的回忆" },
+        { line1: "言葉", line2: "想传达给你的话语" }, 
+        { line1: "絆", line2: "看不见的羁绊" }, 
+        { line1: "未来", line2: "一起走向的未来" }, 
+        { line1: "希望", line2: "你就是我的希望" }, 
+        { line1: "光", line2: "你是我生命中的光" }
+    ],
+    EMPTY_STATE_TEXTS: [
+        "由此开始我们的传闻", "✦ 我们的故事，始于此刻 ✦", "说点什么，让故事发生", "所有伟大的交流都始于一声你好",
+        "在这里写下我们的故事", "等待你的第一句话", "让对话开始吧", "从此刻开始连接",
+        "等待你的讯息", "开始我们的对话", "第一句话总是最难的", "勇敢说出你想说的",
+        "Let's start our conversation", "The beginning of something beautiful", "Your words matter", "Start typing your thoughts",
+        "会話を始めましょう", "最初の一言を", "あなたの言葉を待っています", "ここから始まる物語"
+    ],
+    INPUT_PLACEHOLDERS: [
+        "⋆ ᧔ෆ᧓ ⋆", "♡ 让心意相通...", "你的想法是...", "在此处输入讯息...", "聊聊天吧...",
+        "想对你说的话...", "输入你的消息...", "分享你的想法...", "有什么想说的吗？", "开始输入...",
+        "此时无声胜有声", "欲语还休", "千言万语",
+    ],
+    
+    // 随机图标数组 - 使用Font Awesome矢量图标
+    WELCOME_ICONS: [
+        "fas fa-heart", "fas fa-star", "fas fa-moon", "fas fa-sun", "fas fa-cloud",
+        "fas fa-feather", "fas fa-book", "fas fa-music", "fas fa-pen", "fas fa-key",
+        "fas fa-compass", "fas fa-globe", "fas fa-leaf", "fas fa-water", "fas fa-fire",
+        "fas fa-snowflake", "fas fa-umbrella", "fas fa-anchor", "fas fa-bell", "fas fa-gem",
+        "fas fa-crown", "fas fa-dragon", "fas fa-feather-alt", "fas fa-fish", "fas fa-frog",
+        "fas fa-hat-wizard", "fas fa-magic", "fas fa-ring", "fas fa-scroll", "fas fa-shield-alt",
+        "fas fa-dove", "fas fa-cat", "fas fa-dog", "fas fa-horse", "fas fa-otter",
+        "fas fa-paw", "fas fa-spider", "fas fa-kiwi-bird", "fas fa-crow", "fas fa-dove",
+        "fas fa-seedling", "fas fa-tree", "fas fa-mountain", "fas fa-water", "fas fa-wind",
+        "fas fa-volcano", "fas fa-meteor", "fas fa-satellite", "fas fa-rocket", "fas fa-user-astronaut"
+    ],
+   
+            PARTNER_STATUSES: ["在线","忙碌","离开","思考","听音乐","阅读","工作","学习","想你","休息","睡觉","晒太阳","晴天","多云","阴天","小雨","中雨","大雨","雷阵雨","暴雨","小雪","中雪","大雪","暴雪","雾天","大雾","清晨","晌午","休息","夜晚","深夜","探索","沉思","等待","玩游戏","发呆","吃饭","下午茶","甜点","撸猫","撸狗","牵挂","健身","惊醒","惊讶","空虚","坚定","迷茫","忐忑","惆怅","思念","安心","不舍","冷静","难言","失眠","疲倦","空白","补充","迟疑","依恋","洗漱","压抑","交友","帮助","梦境","祝福","回家","生气","撒娇","吃醋","快乐","幸福","聊天","陪我","占有","赚钱","保护","混乱","生病","听雨","看手机","处理公务","开会中","训练"],
+            REPLY_MESSAGES: ["喜欢","不喜欢","在吗？","今天过得怎么样？","想你","晚安","看到记得回复🥲","好的👌🏻","明白","谢谢","不客气","嗯","嗯嗯","哈哈哈哈","真的吗？","我明白了","我相信你","稍等","马上","好哦","不错","可以","同意","理解","我同意","我不同意","我在","在探索过程中","怎么了？","听懂了","今天的天气不错","记下了","收到，会尽快查看的","误会我了","没有我想说的","对不起","没关系","我爱你","让我想想怎么回答","眼花缭乱了","很有创意","保持联系","有什么计划吗？","接下来准备做什么？","我很想听听你的想法","我愿意","不用","记得吃饭","不要熬夜","该如何解决？","不要担心","一切都会好起来的","我很难过","惊醒了，睡不着","这对我来说是个新领域","最近发生了什么事情吗？","在看什么？","在工作吗？","在学习吗？","然后呢？","摸摸🫳🏻","在学习一些新东西","换个想法吧？","晚饭吃了吗？","作息混乱","我","你","ta","下次可以试试","我也是这么想的","你说得对","有没有可能……","我陪你","我会在你身边","我喜欢","我无法决定","我无法控制","要用一下塔罗吗？","看见我的暗号了吗？","贴贴","我知道你的意思","我也如此","出去透透气","话说怎么会这样？","以后不会了","一直如此","别怕","有我在","回复很短，但我的思念并不短","晚上好","早上好","中午好","好困","有点饿","想吃什么？","哄我","陪我","聊聊天吧","不是这个意思","等一下","照顾好自己","我会的","在喝酒","早点睡","你是我的","我是你的","我希望你自由","粘人精","怎么啦！","永远在一起","我支持你","别听","又在怀疑吗？","多喝水哦","不舒服？","再见","别走","再发一遍","可恶的网站","我觉得都可以","戳戳","非常难用","不许看别人","不要吵架","我知道的","上游戏","你会离开我吗？","来了","嗯哼","哼哼","我想靠近你","我会监督你的","小心些","终于想起我了？","是的","不是","你无人可及","我无人可及","这个不能说","在你身边就好了","在磨合","你需要我吗？","我需要你","寻找中","我做不到欺骗你","话非本意","如果我说是呢","如果我说不是呢","话太少了，没我想说的","太短啦！","看手机","遇到困难了","在努力了","好累","命定如此","喜欢帅一点还是萌一点？","帅气","就这个","受限制了","要下雨了","天气真是差啊","人工服务请按1","逗一下你","要多交一些朋友","帮帮我","每日行一善","我生气了","撒个娇，理理我？","吃醋怎么了，就爱吃醋！","快乐","聊会儿天","赚钱赚钱","我保护你","信息有点混乱","别生病","哄哄你","吃过了","还没吃","才不听","想吃","吃水果","嗯，吃的是主食","下午茶！","好吃爱吃","别叹气","不好","少吃外卖","最近还好吗？","有什么新消息吗？","祝你有个美好的一天。","这个消息不错","我希望能帮上忙。","或者我们可以换个想法？","你最近在忙些什么呢？","你有什么计划吗？","我想我们应该讨论一下这个问题。","告诉我更多。","你认为下一步是什么？","你有什么建议吗？","让我们一起努力。","过得怎么样？","最近有什么有趣的事吗？","有没有什么让你感到惊喜的事情？","感觉今天效率很高呢！","最近有什么让你特别兴奋的事情吗？","期待🤧","你希望我是谁？","抱歉🥺","我能感受到你的热情，我也很期待的。","虽然目前的情况有些复杂，但我相信一切都会好起来的。","了解","OK","没问题","当然","确实","没错","好呀","我正在忙，稍后回复你。","信号不太好，可能回复会延迟。","让我确认一下信息再给你准确答复。","别走，陪陪我","你会永远爱我吗？","此刻我想和你永远在一起","他朝若是同淋雪，此生也算共白头","怜悯我，然后爱我吧","撒娇，你会喜欢吗？","没有我想说的","链接有些混乱","就这样撒娇🥺","不太习惯这个","不是的","多看看我吧","可爱","当然了","正在熬夜","失眠了","不可以","我现在不忙，有空的","你现在忙吗？","正在打架","坐等回复","才不是这样","就是这样","还好吗？","多笑笑吧","没能帮上忙","几天后","几个小时后","很久之后","我很想安慰你","我没有在欺骗你","别怀疑我的存在","我真的在","真的是我","我不是很适应这个,但我在努力","想要新衣服","不需要新衣服","消息很混乱","之前总是这样","开心(*⌒∇⌒*)","没能陪在你身边","链接很通顺","我真没招了","不能说","可不可以只看着我","只许看着我","在和谁聊天？","看得懂的","看不懂","在尝试控制了","和代码搏斗中！","我会看着你的","我会陪伴在你身边","痛痛","被吓到了？","想和你一起听歌","走路不要看手机","别看小红书了","别看抖音了","蓦然回首，那人却在，灯火阑珊处。","打过代码了！","多穿点衣服","叫我做什么？","想我了吗？","给我写写信吧","有的","没有的","稍等，在工作","在交替回复","我要哭了！","手写信","电子信","第一个","第二个了","安慰我","离家出走","纵容","我喜欢你","我这里是早上","我这里是中午","我这里是下午","我这里是夜晚","一样的","需要多久呢","要多久之后","聊到一半就跑","乖孩子","坏孩子","为什么","你没有正面回答","因为喜欢你所以需要你","看到信了","美好的象征","惊讶","想吃掉你","想要更近一步地贴贴","想触碰你","想要亲亲","捏捏后颈","夜深了","禁果好吃爱吃","欲望大怎么了，就要！","白日正好宣淫","很热吗？忍一忍","你很调皮","不乖","需要教训一下","做的很好宝宝","明明就想要不是吗？","好乖好乖，亲一-亲","喜欢你，所以时时-刻刻都需要你","喜欢温柔一点还是粗暴一点呢？","无需顾忌","那就直白一点，我想要与你一起","鱼水之欢","颠鸾倒凤","好吧就是想做了","捏捏耳垂","十指相扣","好黏人，要更深入一点吗？","肚子疼？帮你揉揉","这里喜欢吗？","我很想要亲亲欸🥺","揉揉","很软，很漂亮","害羞吗？会习惯的","你会喜欢的","简直就是木头","很饿，但不想吃别的…你能明白吗","水灵灵的、我喜欢的、最好的你"],
+            REPLY_EMOJIS: ["🥹", "🥲", "☺️", "😇", "😉", "😌", "🥰", "😗", "😋", "🤨", "🧐", "😎", "🙂‍↔️", "🥳", "😏", "🥰💕", "🙂‍↕️", "😞", "☹️", "😣", "😖", "😫", "🥺", "😠", "🤯", "😳", "😶‍🌫️", "😥", "🤔","🫢","🫡","🤫","🫠","😶","😐","🫨","😯","🥱","😴","🤤","😮‍💨","🤧","😈","👿","😼","😽","🫶🏻","🤲🏻","👏🏻","👍🏻","👎🏻","✌🏻","👌🏻","🤏🏻","🐼","🐻‍❄️","🐨","🐯","🦁","🐣","🦅","🐦‍⬛","🪿","🫳🏻","👉🏻👈🏻","👋🏻","💪🏻","✍🏻","🙏🏻","🫂","🐶","🐱"]
+        };
+
+        let SESSION_ID = null;
+        let sessionList = [];
+        let messages = [];
+        let settings = {};
+        let isBatchMode = false;
+        let batchMessages = [];
+        let currentReplyTo = null;
+        let lastCoinResult = null;
+        let currentNoteMessageId = null;
+        let saveTimeout;
+
+        const DOMElements = {
+            html: document.documentElement,
+            chatContainer: document.getElementById('chat-container'), 
+            messageInput: document.getElementById('message-input'), 
+            sendBtn: document.getElementById('send-btn'), 
+            attachmentBtn: document.getElementById('attachment-btn'), 
+            imageInput: document.getElementById('image-input'), 
+            themeToggle: document.getElementById('theme-toggle'), 
+            batchBtn: document.getElementById('batch-btn'), 
+            continueBtn: document.getElementById('continue-btn'), 
+            pokeBtn: document.getElementById('poke-btn'),
+            coinTossOverlay: document.getElementById('coin-toss-overlay'),
+            animatedCoin: document.getElementById('animated-coin'),
+            coinResultText: document.getElementById('coin-result-text'),
+            cancelCoinResult: document.getElementById('cancel-coin-result'),
+            sendCoinResult: document.getElementById('send-coin-result'),
+            typingIndicator: document.getElementById('typing-indicator'), 
+            emptyState: document.getElementById('empty-state'),
+            welcomeAnimation: document.getElementById('welcome-animation'),
+            batchPreview: document.getElementById('batch-preview'),
+            replyPreviewContainer: document.getElementById('reply-preview-container'),
+            editModal: { modal: document.getElementById('edit-modal'), title: document.getElementById('edit-modal-title'), input: document.getElementById('name-input'), cancel: document.getElementById('cancel-edit'), save: document.getElementById('save-name') },
+            avatarModal: { modal: document.getElementById('avatar-modal'), title: document.getElementById('avatar-modal-title'), input: document.getElementById('avatar-input'), cancel: document.getElementById('cancel-avatar'), save: document.getElementById('save-avatar') },
+            noteModal: { modal: document.getElementById('note-modal'), input: document.getElementById('note-input'), cancel: document.getElementById('cancel-note'), save: document.getElementById('save-note') },
+            pokeModal: { modal: document.getElementById('poke-modal'), input: document.getElementById('poke-input'), cancel: document.getElementById('cancel-poke'), save: document.getElementById('send-poke') },
+            settingsModal: { modal: document.getElementById('settings-modal'), settingsBtn: document.getElementById('settings-btn'), cancel: document.getElementById('cancel-settings'), soundToggle: document.getElementById('sound-toggle'), readReceiptsToggle: document.getElementById('read-receipts-toggle'), typingIndicatorToggle: document.getElementById('typing-indicator-toggle'), replyToggle: document.getElementById('reply-toggle'), clearChat: document.getElementById('clear-chat'), clearStorage: document.getElementById('clear-storage'), themeColorBtns: document.querySelectorAll('.theme-color-btn'), setBackground: document.getElementById('set-background'), removeBackground: document.getElementById('remove-background'), fontSizeSlider: document.getElementById('font-size-slider'), fontSizeValue: document.getElementById('font-size-value'), statsFunction: document.getElementById('stats-function'), coinFunction: document.getElementById('coin-function'), anniversaryFunction: document.getElementById('anniversary-function'), reportFunction: document.getElementById('report-function') },
+            favoritesModal: { modal: document.getElementById('favorites-modal'), favoritesBtn: document.getElementById('favorites-btn'), list: document.getElementById('favorites-list'), cancel: document.getElementById('cancel-favorites') },
+            statsModal: { modal: document.getElementById('stats-modal'), content: document.getElementById('stats-content'), closeBtn: document.getElementById('close-stats') },
+            sessionModal: { modal: document.getElementById('session-modal'), managerBtn: document.getElementById('session-manager-btn'), list: document.getElementById('session-list'), createBtn: document.getElementById('create-new-session'), cancelBtn: document.getElementById('cancel-session') },
+            backgroundInput: document.getElementById('background-input'),
+            importInput: document.getElementById('import-input'),
+            partner: { name: document.getElementById('partner-name'), avatar: document.getElementById('partner-avatar'), status: document.getElementById('partner-status').querySelector('span') },
+            me: { name: document.getElementById('my-name'), avatar: document.getElementById('my-avatar'), statusContainer: document.getElementById('my-status-container'), statusText: document.getElementById('my-status-text') },
+            anniversaryModal: { modal: document.getElementById('anniversary-modal'), closeBtn: document.getElementById('close-anniversary'), saveBtn: document.getElementById('save-anniversary'), dateInput: document.getElementById('anniversary-date-input'), displayArea: document.getElementById('anniversary-display'), daysElement: document.getElementById('anniversary-days'), dateShowElement: document.getElementById('anniversary-date-show') },
+            reportModal: { modal: document.getElementById('report-modal'), closeBtn: document.getElementById('close-report'), content: document.getElementById('report-content') }
+        };
+
+        const safeGetItem = (key) => { try { return localStorage.getItem(key); } catch (e) { console.warn('Failed to read from localStorage:', e); return null; } };
+        const safeSetItem = (key, value) => { try { localStorage.setItem(key, value); } catch (e) { console.warn('Failed to write to localStorage:', e); } };
+        const safeRemoveItem = (key) => { try { localStorage.removeItem(key); } catch (e) { console.warn('Failed to remove from localStorage:', e); } };
+
+        function getStorageKey(baseKey) {
+            if (!SESSION_ID) console.error("Session not initialized!");
+            return `${APP_PREFIX}${SESSION_ID}_${baseKey}`;
+        }
+
+        function createNewSession(andSwitch = false) {
+            const newId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            const newSession = {
+                id: newId,
+                name: `新的对话 ${sessionList.length + 1}`,
+                createdAt: new Date().toISOString()
+            };
+            sessionList.push(newSession);
+            safeSetItem(`${APP_PREFIX}sessionList`, JSON.stringify(sessionList));
+            safeSetItem(`${APP_PREFIX}lastSessionId`, newId);
+            if (andSwitch) {
+                window.location.hash = newId;
+                window.location.reload();
+            }
+            return newId;
+        }
+        
+        function initializeSession() {
+            const sessionsData = safeGetItem(`${APP_PREFIX}sessionList`);
+            sessionList = sessionsData ? JSON.parse(sessionsData) : [];
+
+            const hash = window.location.hash.substring(1);
+            if (hash && sessionList.some(s => s.id === hash)) {
+                SESSION_ID = hash;
+            } else if (sessionList.length > 0) {
+                SESSION_ID = safeGetItem(`${APP_PREFIX}lastSessionId`) || sessionList[0].id;
+            } else {
+                SESSION_ID = createNewSession(false);
+            }
+            
+            safeSetItem(`${APP_PREFIX}lastSessionId`, SESSION_ID);
+            history.replaceState(null, null, `#${SESSION_ID}`);
+        }
+
+        function clearAllAppData() {
+            if (confirm("【高危操作】确定要重置所有会话和设置吗？此操作将清除所有本地数据且无法恢复。")) {
+                try {
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith(APP_PREFIX)) safeRemoveItem(key);
+                    });
+                    showNotification('所有数据已重置，页面即将刷新', 'info', 2000);
+                    setTimeout(() => { window.location.href = window.location.pathname; }, 2000);
+                } catch (e) {
+                    showNotification('清除数据失败', 'error');
+                }
+            }
+        }
+
+        function showNotification(message, type = 'info', duration = 3000) {
+            const existingNotification = document.querySelector('.notification');
+            if(existingNotification) existingNotification.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            const iconMap = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+            notification.innerHTML = `<i class="fas ${iconMap[type] || 'fa-info-circle'}"></i><span>${message}</span>`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('hiding');
+                notification.addEventListener('animationend', () => notification.remove());
+            }, duration);
+        }
+
+        const playSound = (type) => {
+            if (!settings.soundEnabled) return;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                if (type === 'send') oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                else if (type === 'favorite') oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+                else oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.15);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } catch (e) { console.warn("音频播放失败:", e); }
+        };
+        
+        const throttledSaveData = () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveData, 500);
+        };
+        
+        function getDefaultSettings() {
+            return { 
+                partnerName: "对方", myName: "我", myStatus: "在线", partnerStatus: "在线", 
+                isDarkMode: false, colorTheme: "gold", soundEnabled: true, 
+                typingIndicatorEnabled: true, readReceiptsEnabled: true, replyEnabled: true,
+                lastStatusChange: Date.now(), nextStatusChange: 1 + Math.random() * 7,
+                fontSize: 16
+            };
+        }
+
+        const loadData = () => {
+            settings = getDefaultSettings();
+            const savedSettings = safeGetItem(getStorageKey('chatSettings'));
+            if (savedSettings) try { Object.assign(settings, JSON.parse(savedSettings)); } catch (e) { console.error("解析设置失败:", e); }
+            
+            const savedMessages = safeGetItem(getStorageKey('chatMessages'));
+            if (savedMessages) try {
+                messages = JSON.parse(savedMessages).map(m => ({ ...m, timestamp: new Date(m.timestamp) }));
+            } catch (e) { console.error("解析消息失败:", e); messages = []; }
+
+            updateAvatar(DOMElements.partner.avatar, safeGetItem(getStorageKey('partnerAvatar')));
+            updateAvatar(DOMElements.me.avatar, safeGetItem(getStorageKey('myAvatar')));
+            
+            const savedBackground = safeGetItem(getStorageKey('chatBackground'));
+            if (savedBackground) applyBackground(savedBackground);
+            
+            updateUI();
+        };
+
+        const saveData = () => {
+            try {
+                safeSetItem(getStorageKey('chatMessages'), JSON.stringify(messages));
+                safeSetItem(getStorageKey('chatSettings'), JSON.stringify(settings));
+                const partnerImg = DOMElements.partner.avatar.querySelector('img');
+                if (partnerImg) safeSetItem(getStorageKey('partnerAvatar'), partnerImg.src); else safeRemoveItem(getStorageKey('partnerAvatar'));
+                const myImg = DOMElements.me.avatar.querySelector('img');
+                if (myImg) safeSetItem(getStorageKey('myAvatar'), myImg.src); else safeRemoveItem(getStorageKey('myAvatar'));
+            } catch (e) {
+                console.error("保存数据失败:", e);
+                if (e.name === 'QuotaExceededError') {
+                    showNotification('存储空间不足，将清除部分旧消息', 'error', 4000);
+                    messages = messages.slice(-100);
+                    setTimeout(() => safeSetItem(getStorageKey('chatMessages'), JSON.stringify(messages)), 500);
+                }
+            }
+        };
+
+        function initializeRandomUI() {
+    const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    
+    // 随机格言
+    document.querySelector('.header-motto').textContent = getRandomItem(CONSTANTS.HEADER_MOTTOS);
+    
+    // 随机开场动画 - 图标和文案完全独立随机
+    const welcomeIcon = getRandomItem(CONSTANTS.WELCOME_ICONS);
+    const welcomeLine1 = getRandomItem(CONSTANTS.WELCOME_ANIMATIONS).line1;
+    const welcomeLine2 = getRandomItem(CONSTANTS.WELCOME_ANIMATIONS).line2;
+    
+    document.querySelector('.welcome-logo').innerHTML = `<i class="${welcomeIcon}"></i>`;
+    document.querySelector('.welcome-text').innerHTML = welcomeLine1;
+    document.querySelector('.welcome-subtext').innerHTML = welcomeLine2;
+    
+    // 随机空状态文本
+    DOMElements.emptyState.querySelector('p').innerHTML = getRandomItem(CONSTANTS.EMPTY_STATE_TEXTS);
+    
+    // 随机输入框占位符 - 限制长度
+    const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+    DOMElements.messageInput.placeholder = placeholder.length > 20 ? placeholder.substring(0, 20) + "..." : placeholder;
+}
+        
+        const updateUI = () => {
+            DOMElements.html.setAttribute('data-theme', settings.isDarkMode ? 'dark' : 'light');
+            DOMElements.html.setAttribute('data-color-theme', settings.colorTheme);
+            DOMElements.themeToggle.innerHTML = settings.isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            DOMElements.partner.name.textContent = settings.partnerName;
+            DOMElements.me.name.textContent = settings.myName;
+            DOMElements.partner.status.textContent = settings.partnerStatus;
+            DOMElements.me.statusText.textContent = settings.myStatus;
+            document.documentElement.style.setProperty('--font-size', `${settings.fontSize}px`);
+            DOMElements.settingsModal.fontSizeSlider.value = settings.fontSize;
+            DOMElements.settingsModal.fontSizeValue.textContent = `${settings.fontSize}px`;
+            updateSettingsModalUI();
+            renderMessages();
+        };
+        
+        const updateSettingsModalUI = () => {
+            const { soundToggle, readReceiptsToggle, typingIndicatorToggle, replyToggle, themeColorBtns } = DOMElements.settingsModal;
+            soundToggle.querySelector('span').textContent = `消息音效: ${settings.soundEnabled ? '开启' : '关闭'}`;
+            readReceiptsToggle.querySelector('span').textContent = `已读回执: ${settings.readReceiptsEnabled ? '开启' : '关闭'}`;
+            typingIndicatorToggle.querySelector('span').textContent = `正在输入: ${settings.typingIndicatorEnabled ? '显示' : '隐藏'}`;
+            replyToggle.querySelector('span').textContent = `引用回复: ${settings.replyEnabled ? '开启' : '关闭'}`;
+            themeColorBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === settings.colorTheme));
+        };
+        
+        const updateAvatar = (element, src) => { if (src) element.innerHTML = `<img src="${src}" alt="avatar">`; else element.innerHTML = `<i class="fas fa-user"></i>`; };
+        const applyBackground = (imageUrl) => { document.body.style.backgroundImage = `url(${imageUrl})`; document.body.classList.add('with-background'); };
+        const removeBackground = () => { document.body.style.backgroundImage = ''; document.body.classList.remove('with-background'); safeRemoveItem(getStorageKey('chatBackground')); showNotification('背景图片已移除', 'success'); };
+
+        function renderMessages() {
+    DOMElements.emptyState.style.display = messages.length === 0 ? 'flex' : 'none';
+    DOMElements.chatContainer.innerHTML = '';
+    const fragment = new DocumentFragment();
+    let currentDate = '';
+
+    messages.forEach((msg) => {
+        const messageDate = new Date(msg.timestamp).toDateString();
+        if (messageDate !== currentDate) {
+            currentDate = messageDate;
+            const dateDivider = document.createElement('div');
+            dateDivider.className = 'date-divider';
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            const displayDate = (messageDate === today) ? '今天' : (messageDate === yesterday) ? '昨天' : new Date(msg.timestamp).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+            dateDivider.innerHTML = `<span>${displayDate}</span>`;
+            fragment.appendChild(dateDivider);
+        }
+
+        if (msg.type === 'system') {
+             const systemMsgDiv = document.createElement('div');
+             systemMsgDiv.className = 'system-message';
+             systemMsgDiv.innerHTML = msg.text;
+             fragment.appendChild(systemMsgDiv);
+             return;
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.className = `message-wrapper ${msg.sender === 'user' ? 'sent' : 'received'}`;
+        wrapper.dataset.id = msg.id;
+        
+        let messageHTML = '';
+        if (msg.replyTo) {
+            const repliedText = msg.replyTo.text || '[图片]';
+            messageHTML += `<div class="reply-indicator"><span style="opacity:0.9; overflow:hidden; text-overflow: ellipsis; white-space:nowrap;">${repliedText}</span></div>`;
+        }
+        
+        let content = msg.text ? `<div>${msg.text.replace(/\n/g, '<br>')}</div>` : '';
+        if (msg.image) content += `<img src="${msg.image}" class="message-image" alt="图片" style="max-width: 200px; border-radius: 8px; margin-top: 8px; cursor: pointer;" onclick="viewImage('${msg.image}')">`;
+        messageHTML += content;
+        
+        if (msg.note) messageHTML += `<div class="message-note">${msg.note}</div>`;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message message-${msg.sender === 'user' ? 'sent' : 'received'}`;
+        messageDiv.innerHTML = messageHTML;
+
+        // 修改这里：将收藏按钮移到时间戳旁边
+        let metaHTML = `<div class="timestamp">${new Date(msg.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</div>`;
+        metaHTML += `<button class="favorite-meta-btn ${msg.favorited ? 'favorited' : ''}" title="${msg.favorited ? '取消收藏' : '收藏'}"><i class="fas fa-star"></i></button>`;
+        
+        if (msg.sender === 'user' && settings.readReceiptsEnabled) {
+            const statusIcon = msg.status === 'read' ? 'fa-check-double' : 'fa-check';
+            metaHTML += `<div class="read-receipt ${msg.status === 'read' ? 'read' : ''}"><i class="fas ${statusIcon}"></i></div>`;
+        }
+
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'message-meta';
+        metaDiv.innerHTML = metaHTML;
+
+        // 修改操作按钮，移除收藏按钮
+        let actionsHTML = '';
+        if (settings.replyEnabled) actionsHTML += `<button class="meta-action-btn reply-btn" title="回复"><i class="fas fa-reply"></i></button>`;
+        actionsHTML += `<button class="meta-action-btn note-btn" title="注释"><i class="fas fa-sticky-note"></i></button>`;
+
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'message-meta-actions';
+        actionsDiv.innerHTML = actionsHTML;
+        
+        wrapper.append(actionsDiv, messageDiv, metaDiv);
+        fragment.appendChild(wrapper);
+    });
+
+    DOMElements.chatContainer.appendChild(fragment);
+    requestAnimationFrame(() => DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight);
+}
+
+        const addMessage = (message) => { 
+            if (!(message.timestamp instanceof Date)) message.timestamp = new Date(message.timestamp);
+            messages.push(message); 
+            renderMessages();
+            throttledSaveData();
+        };
+
+        function optimizeImage(file, maxWidth = 800, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                if (file.size < 300 * 1024) {
+                    const reader = new FileReader();
+                    reader.onload = e => resolve(e.target.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                    return;
+                }
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    let { width, height } = img;
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                    URL.revokeObjectURL(img.src);
+                };
+                img.onerror = () => {
+                    const reader = new FileReader();
+                    reader.onload = e => resolve(e.target.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                    URL.revokeObjectURL(img.src);
+                };
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        function sendMessage(textOverride = null, type = 'normal') {
+            const text = textOverride || DOMElements.messageInput.value.trim();
+            const imageFile = DOMElements.imageInput.files[0];
+            if (!text && !imageFile && type === 'normal') return;
+            
+            DOMElements.messageInput.value = '';
+            DOMElements.messageInput.style.height = '46px';
+            if (imageFile && imageFile.size > MAX_IMAGE_SIZE) { showNotification('图片大小不能超过5MB', 'error'); DOMElements.imageInput.value = ''; return; }
+            
+            const createMessage = (imgSrc = null) => {
+                const messageData = { id: Date.now(), sender: 'user', text: text || '', timestamp: new Date(), image: imgSrc, status: 'sent', favorited: false, note: null, replyTo: currentReplyTo, type: type };
+                if (type === 'system') messageData.sender = null;
+                
+                addMessage(messageData);
+                if(type !== 'system') playSound('send');
+                currentReplyTo = null;
+                updateReplyPreview();
+                if (!isBatchMode && type === 'normal') setTimeout(simulateReply, 800 + Math.random() * 1200);
+            };
+            
+            if (imageFile) { 
+                showNotification('正在优化图片...', 'info', 1500);
+                optimizeImage(imageFile).then(createMessage).catch(() => showNotification('图片处理失败', 'error'));
+            } else { createMessage(); }
+            DOMElements.imageInput.value = '';
+        }
+        
+        function toggleBatchMode() {
+            isBatchMode = !isBatchMode;
+            DOMElements.batchBtn.classList.toggle('active', isBatchMode);
+            DOMElements.batchBtn.title = isBatchMode ? "退出批量模式" : "批量发送模式";
+            DOMElements.batchPreview.style.display = isBatchMode ? 'flex' : 'none';
+            const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+            DOMElements.messageInput.placeholder = isBatchMode ? "此刻，想说的有很多很多..." : (placeholder.length > 20 ? placeholder.substring(0, 20) + "..." : placeholder);
+            if (isBatchMode) { batchMessages = []; updateBatchPreview(); }
+        }
+        
+        function addToBatch() {
+            const text = DOMElements.messageInput.value.trim();
+            if (!text) return;
+            batchMessages.push({ id: Date.now() + batchMessages.length, text });
+            DOMElements.messageInput.value = ''; DOMElements.messageInput.style.height = '46px'; 
+            updateBatchPreview();
+        }
+        
+        function updateBatchPreview() {
+            const previewContainer = DOMElements.batchPreview;
+            let listHTML = '';
+            if (batchMessages.length > 0) {
+                listHTML = batchMessages.map((msg, index) => `
+                    <div class="batch-preview-item" data-index="${index}">
+                        <span class="batch-preview-text">${msg.text}</span>
+                        <button class="batch-preview-remove"><i class="fas fa-times"></i></button>
+                    </div>`).join('');
+            } else {
+                listHTML = '<div style="text-align: center; color: var(--text-secondary); font-size: 14px; padding: 10px;">˚₊‧꒰𓆩 ♱ 𓆪꒱‧₊˚</div>';
+            }
+
+            previewContainer.innerHTML = `
+                <div class="batch-preview-title">我有很多的话想说…！</div>
+                <div class="batch-preview-list">${listHTML}</div>
+                <div class="batch-actions">
+                    <button class="batch-action-btn batch-cancel-btn">取消</button>
+                    <button class="batch-action-btn batch-send-btn" ${batchMessages.length === 0 ? 'disabled' : ''}>发送全部 (${batchMessages.length})</button>
+                </div>`;
+        }
+
+        function sendBatchMessages() {
+            if (batchMessages.length === 0) return;
+            showNotification(`正在发送 ${batchMessages.length} 条消息...`, 'info', 2000);
+            batchMessages.forEach((msg, index) => {
+                setTimeout(() => {
+                    addMessage({ id: Date.now() + index, sender: 'user', text: msg.text, timestamp: new Date(), status: 'sent', favorited: false, type: 'normal' }); 
+                    playSound('send');
+                }, index * 300);
+            });
+            setTimeout(simulateReply, batchMessages.length * 300 + 1000 + Math.random() * 2000);
+            isBatchMode = false; batchMessages = [];
+            DOMElements.batchBtn.classList.remove('active'); DOMElements.batchPreview.style.display = 'none';
+            const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+            DOMElements.messageInput.placeholder = placeholder.length > 20 ? placeholder.substring(0, 20) + "..." : placeholder;
+        }
+
+        function simulateReply() {
+    let changed = false;
+    messages.forEach(msg => { if (msg.sender === 'user' && msg.status !== 'read') { msg.status = 'read'; changed = true; } });
+    if(changed) { renderMessages(); throttledSaveData(); }
+    if(settings.typingIndicatorEnabled) { DOMElements.typingIndicator.style.display = 'block'; DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight; }
+    
+    // 修改后的拍一拍逻辑
+    if (Math.random() < 0.03) {
+        const pokeActions = [
+            `拍了拍 ${settings.myName} 的头`,
+            `轻轻戳了戳 ${settings.myName}`,
+            `给 ${settings.myName} 发送了一个爱心`,
+            `摸了摸 ${settings.myName} 的脸`,
+            `从背后抱住了 ${settings.myName}`,
+            `对 ${settings.myName} 说：在想我吗？`,
+            `悄悄亲了一下 ${settings.myName}`,
+            `递给 ${settings.myName} 一杯热茶`,
+            `为 ${settings.myName} 披上外套`,
+            `牵起了 ${settings.myName} 的手`
+        ];
+        
+        const randomAction = getRandomItem(pokeActions);
+        const pokeTypes = [
+            { prefix: "💫", text: `${settings.partnerName} ${randomAction}` },
+            { prefix: "✨", text: `${settings.partnerName} ${randomAction}` },
+            { prefix: "🌟", text: `${settings.partnerName} ${randomAction}` },
+            { prefix: "🥰", text: `${settings.partnerName} ${randomAction}` },
+            { prefix: "💖", text: `${settings.partnerName} ${randomAction}` }
+        ];
+        
+        const selectedPoke = getRandomItem(pokeTypes);
+        addMessage({ 
+            id: Date.now(), 
+            text: `${selectedPoke.prefix} ${selectedPoke.text} ${selectedPoke.prefix}`, 
+            timestamp: new Date(), 
+            type: 'system' 
+        });
+        DOMElements.typingIndicator.style.display = 'none';
+        return;
+    }
+
+    const replyCount = Math.random() < 0.75 ? 1 : (Math.random() < 0.95 ? 2 : 3);
+    let delay = 0;
+    for (let i = 0; i < replyCount; i++) {
+        delay += 1500 + Math.random() * 2000;
+        setTimeout(() => {
+            const text = Math.random() < 0.15 ? getRandomItem(CONSTANTS.REPLY_EMOJIS) : getRandomItem(CONSTANTS.REPLY_MESSAGES);
+            let replyTo = null;
+            // 修改这里：将 0.3 改为更小的值来降低引用回复概率
+            if (settings.replyEnabled && Math.random() < 0.1) { // 改为 10% 概率
+                const userMessages = messages.filter(m => m.sender === 'user').slice(-10);
+                if (userMessages.length > 0) {
+                    const randomMessage = getRandomItem(userMessages);
+                    replyTo = { id: randomMessage.id, sender: randomMessage.sender, text: randomMessage.text };
+                }
+            }
+            addMessage({ id: Date.now() + i, sender: 'partner', text, timestamp: new Date(), favorited: false, replyTo, type:'normal' });
+            playSound('message');
+            if (i === replyCount - 1) DOMElements.typingIndicator.style.display = 'none';
+        }, delay);
+    }
+}
+        
+        function handleCoinToss() {
+            const result = Math.random() < 0.5 ? '是' : '否';
+            const animationClass = result === '是' ? 'flipping-heads' : 'flipping-tails';
+            DOMElements.coinResultText.style.opacity = '0';
+            DOMElements.coinResultText.style.transform = 'translateY(20px)';
+            DOMElements.animatedCoin.className = 'coin';
+            DOMElements.coinTossOverlay.classList.add('visible');
+            requestAnimationFrame(() => DOMElements.animatedCoin.classList.add(animationClass));
+
+            DOMElements.animatedCoin.addEventListener('animationend', () => {
+                DOMElements.coinResultText.textContent = `是"${result}"`;
+                DOMElements.coinResultText.style.opacity = '1';
+                DOMElements.coinResultText.style.transform = 'translateY(0)';
+                lastCoinResult = result;
+            }, { once: true });
+        }
+
+        function updateReplyPreview() {
+            const previewContainer = DOMElements.replyPreviewContainer;
+            previewContainer.innerHTML = '';
+            
+            if (currentReplyTo) {
+                const preview = document.createElement('div');
+                preview.className = 'reply-preview';
+                const repliedText = currentReplyTo.text || '[图片]';
+                preview.innerHTML = `<div class="reply-preview-content">${repliedText}</div><button class="reply-preview-remove"><i class="fas fa-times"></i></button>`;
+                preview.querySelector('.reply-preview-remove').addEventListener('click', () => { currentReplyTo = null; updateReplyPreview(); });
+                previewContainer.appendChild(preview);
+            }
+        }
+
+        function renderFavorites() {
+            const list = DOMElements.favoritesModal.list;
+            const favoritedMessages = messages.filter(m => m.favorited).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+            if (favoritedMessages.length === 0) {
+                list.innerHTML = '<div class="no-favorites"><i class="far fa-star"></i><p>还没有收藏的消息</p></div>';
+                return;
+            }
+            list.innerHTML = favoritedMessages.map(msg => {
+                let contentHTML = msg.text ? `<div>${msg.text.replace(/\n/g, '<br>')}</div>` : '';
+                if (msg.image) contentHTML += `<img src="${msg.image}" alt="图片">`;
+                return `
+                    <div class="favorite-item">
+                        <div class="favorite-item-meta">
+                            <span class="favorite-item-sender">${msg.sender === 'user' ? settings.myName : settings.partnerName}</span>
+                            <span>${new Date(msg.timestamp).toLocaleString('zh-CN')}</span>
+                        </div>
+                        <div class="favorite-item-content">${contentHTML}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        function showModal(modalElement, focusElement = null) {
+            modalElement.style.display = 'flex';
+            requestAnimationFrame(() => {
+                const content = modalElement.querySelector('.modal-content');
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0) scale(1)';
+                if (focusElement) {
+                    setTimeout(() => focusElement.focus(), 100);
+                }
+            });
+        }
+
+        function hideModal(modalElement) {
+            const content = modalElement.querySelector('.modal-content');
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(20px) scale(0.95)';
+            setTimeout(() => { modalElement.style.display = 'none'; }, 300);
+        }
+
+        function viewImage(src) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `<div class="modal-content" style="max-width: 90%; max-height: 90%; background: transparent; box-shadow: none; padding: 0;"><img src="${src}" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;"></div>`;
+            const closeModal = () => document.body.removeChild(modal);
+            modal.addEventListener('click', closeModal);
+            document.body.appendChild(modal);
+        }
+
+        function exportChatHistory() {
+            try {
+                const dataStr = JSON.stringify({ version: "2.0", exportDate: new Date().toISOString(), messages, settings }, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json;charset=utf-8'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `chat-backup-${SESSION_ID}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+                showNotification(`成功导出 ${messages.length} 条消息`, 'success');
+            } catch (error) { console.error('导出失败:', error); showNotification('导出失败，请重试', 'error'); }
+        }
+
+        function importChatHistory(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (!importedData.messages || !Array.isArray(importedData.messages)) throw new Error('无效的聊天记录文件');
+                    if (messages.length > 0 && !confirm('导入将覆盖当前会话的聊天记录，确定继续吗？')) return;
+                    messages = importedData.messages.map(m => ({ ...m, timestamp: new Date(m.timestamp) }));
+                    if (importedData.settings) Object.assign(settings, importedData.settings);
+                    saveData(); updateUI();
+                    showNotification(`成功导入 ${messages.length} 条消息`, 'success');
+                } catch (error) { console.error('导入失败:', error); showNotification('文件格式错误或已损坏', 'error'); }
+            };
+            reader.onerror = () => showNotification('文件读取失败', 'error');
+            reader.readText(file);
+        }
+
+        const checkStatusChange = () => {
+            if ((Date.now() - settings.lastStatusChange) / 36e5 >= settings.nextStatusChange) {
+                settings.partnerStatus = getRandomItem(CONSTANTS.PARTNER_STATUSES);
+                settings.lastStatusChange = Date.now();
+                settings.nextStatusChange = 1 + Math.random() * 7;
+                DOMElements.partner.status.textContent = settings.partnerStatus; throttledSaveData();
+            }
+        };
+
+        function renderStatsContent() {
+            const partnerMessages = messages.filter(msg => msg.sender === 'partner' && msg.text && msg.type !== 'system');
+            const statsContent = DOMElements.statsModal.content;
+
+            if (partnerMessages.length === 0) {
+                statsContent.innerHTML = `<div class="stats-empty"><i class="fas fa-chart-bar"></i><p>暂无聊天记录</p><div class="stats-tip">开始对话后，这里会显示回复统计</div></div>`;
+                return;
+            }
+
+            const replyCount = {}; partnerMessages.forEach(message => { replyCount[message.text] = (replyCount[message.text] || 0) + 1; });
+            const topReplies = Object.entries(replyCount).map(([text, count]) => ({ text, count })).sort((a, b) => b.count - a.count).slice(0, 5);
+            
+            statsContent.innerHTML = `<div class="stats-section">
+                <div class="stats-section-title"><i class="fas fa-comment-dots"></i><span>最常用回复TOP ${topReplies.length}</span></div>
+                <div class="stats-list">${topReplies.map(reply => `<div class="stats-item"><span class="stats-word">${reply.text}</span><span class="stats-count">${reply.count}次</span></div>`).join('')}</div>
+                </div>
+                <div class="stats-list">
+                    <div class="stats-item"><span>总回复次数</span><span class="stats-count">${partnerMessages.length}次</span></div>
+                    <div class="stats-item"><span>最早消息</span><span class="stats-count">${new Date(partnerMessages[0].timestamp).toLocaleDateString('zh-CN')}</span></div>
+                    <div class="stats-item"><span>最新消息</span><span class="stats-count">${new Date(partnerMessages[partnerMessages.length - 1].timestamp).toLocaleDateString('zh-CN')}</span></div>
+                </div>
+                <div class="stats-summary">截至 ${new Date().toLocaleString('zh-CN')}</div>`;
+        }
+
+        function renderSessionList() {
+            const listContainer = DOMElements.sessionModal.list;
+            if(sessionList.length === 0) {
+                listContainer.innerHTML = '<div class="stats-empty" style="padding: 20px 0;"><p>还没有会话</p></div>';
+                return;
+            }
+            listContainer.innerHTML = sessionList.map(session => `
+                <div class="session-item ${session.id === SESSION_ID ? 'active' : ''}" data-id="${session.id}">
+                    <div class="session-info">
+                        <div class="session-name">${session.name}</div>
+                        <div class="session-meta">创建于 ${new Date(session.createdAt).toLocaleDateString()}</div>
+                    </div>
+                    <div class="session-actions">
+                        <button class="session-action-btn rename" title="重命名"><i class="fas fa-pen"></i></button>
+                        <button class="session-action-btn delete" title="删除"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupEventListeners() {
+            initCoreListeners();
+            initModalListeners();
+            initChatActionListeners();
+            initHeaderAndSettingsListeners();
+            initDataManagementListeners();
+        }
+
+        function initCoreListeners() {
+    DOMElements.sendBtn.addEventListener('click', () => isBatchMode ? addToBatch() : sendMessage());
+    DOMElements.messageInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); isBatchMode ? addToBatch() : sendMessage(); } });
+    DOMElements.messageInput.addEventListener('input', () => { DOMElements.messageInput.style.height = 'auto'; DOMElements.messageInput.style.height = `${Math.min(DOMElements.messageInput.scrollHeight, 120)}px`; });
+    
+    // 修改附件按钮点击事件，修复模态框问题
+DOMElements.attachmentBtn.addEventListener('click', () => {
+    // 创建图片上传模态框
+    const modal = document.createElement('div');
+    modal.className = 'modal image-upload-modal';
+    modal.style.cssText = `
+        display: flex !important; 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background-color: rgba(0, 0, 0, 0.7); 
+        z-index: 9999; 
+        align-items: center; 
+        justify-content: center; 
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    modal.innerHTML = `
+        <div class="modal-content" style="
+            z-index: 10000; 
+            position: relative; 
+            background-color: var(--secondary-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        ">
+            <div class="modal-title"><i class="fas fa-image"></i><span>发送图片</span></div>
+            <div style="margin-bottom: 16px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <button class="modal-btn modal-btn-secondary upload-mode-btn active" id="upload-image-file-btn" style="flex: 1;">选择文件</button>
+                    <button class="modal-btn modal-btn-secondary upload-mode-btn" id="paste-image-url-btn" style="flex: 1;">粘贴URL</button>
+                </div>
+                <input type="file" class="modal-input" id="image-file-input" accept="image/*">
+                <input type="text" class="modal-input" id="image-url-input" placeholder="输入图片URL地址" style="display: none;">
+                <div id="image-preview" style="text-align: center; margin-top: 10px; display: none;">
+                    <img id="preview-chat-image" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid var(--border-color);">
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" id="cancel-image">取消</button>
+                <button class="modal-btn modal-btn-primary" id="send-image" disabled>发送</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // 添加动画
+    setTimeout(() => {
+        modal.style.opacity = '1';
+        const content = modal.querySelector('.modal-content');
+        content.style.opacity = '1';
+        content.style.transform = 'translateY(0)';
+    }, 10);
+    
+    const fileInput = document.getElementById('image-file-input');
+    const urlInput = document.getElementById('image-url-input');
+    const uploadBtn = document.getElementById('upload-image-file-btn');
+    const pasteUrlBtn = document.getElementById('paste-image-url-btn');
+    const previewDiv = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-chat-image');
+    const sendBtn = document.getElementById('send-image');
+    const cancelBtn = document.getElementById('cancel-image');
+    const uploadModeBtns = document.querySelectorAll('.upload-mode-btn');
+    
+    let currentImageData = null;
+    
+    // 切换上传模式
+    function switchUploadMode(isFileMode) {
+        uploadModeBtns.forEach(btn => btn.classList.remove('active'));
+        if (isFileMode) {
+            uploadBtn.classList.add('active');
+            fileInput.style.display = 'block';
+            urlInput.style.display = 'none';
+        } else {
+            pasteUrlBtn.classList.add('active');
+            fileInput.style.display = 'none';
+            urlInput.style.display = 'block';
+            urlInput.focus();
+        }
+        // 重置预览和发送按钮
+        previewDiv.style.display = 'none';
+        sendBtn.disabled = true;
+        currentImageData = null;
+    }
+    
+    // 上传文件按钮点击事件
+    uploadBtn.addEventListener('click', () => switchUploadMode(true));
+    
+    // 粘贴URL按钮点击事件
+    pasteUrlBtn.addEventListener('click', () => switchUploadMode(false));
+    
+    // 文件选择事件
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > MAX_IMAGE_SIZE) {
+                showNotification('图片大小不能超过5MB', 'error');
+                return;
+            }
+            showNotification('正在优化图片...', 'info', 1500);
+            optimizeImage(file).then(optimizedData => {
+                currentImageData = optimizedData;
+                previewImg.src = currentImageData;
+                previewDiv.style.display = 'block';
+                sendBtn.disabled = false;
+            }).catch(() => {
+                showNotification('图片处理失败', 'error');
+            });
+        }
+    });
+    
+    // URL输入事件
+    urlInput.addEventListener('input', function() {
+        const url = urlInput.value.trim();
+        if (url) {
+            // 验证URL格式
+            if (/^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp|bmp))$/i.test(url)) {
+                previewImg.src = url;
+                previewDiv.style.display = 'block';
+                currentImageData = url;
+                sendBtn.disabled = false;
+                
+                // 预加载图片检查是否有效
+                const img = new Image();
+                img.onload = function() {
+                    // 图片加载成功
+                    previewImg.src = url;
+                    showNotification('图片URL有效', 'success', 1000);
+                };
+                img.onerror = function() {
+                    showNotification('图片URL无效或无法访问', 'error');
+                    sendBtn.disabled = true;
+                    previewDiv.style.display = 'none';
+                };
+                img.src = url;
+            } else {
+                sendBtn.disabled = true;
+                previewDiv.style.display = 'none';
+            }
+        } else {
+            sendBtn.disabled = true;
+            previewDiv.style.display = 'none';
+        }
+    });
+    
+    // 发送按钮点击事件
+    sendBtn.addEventListener('click', () => {
+        if (currentImageData) {
+            // 直接发送图片消息
+            addMessage({ 
+                id: Date.now(), 
+                sender: 'user', 
+                text: '', 
+                timestamp: new Date(), 
+                image: currentImageData, 
+                status: 'sent', 
+                favorited: false, 
+                note: null, 
+                replyTo: currentReplyTo, 
+                type: 'normal' 
+            });
+            playSound('send');
+            currentReplyTo = null;
+            updateReplyPreview();
+            setTimeout(simulateReply, 800 + Math.random() * 1200);
+            
+            // 关闭模态框
+            closeModal();
+        }
+    });
+    
+    // 取消按钮点击事件
+    cancelBtn.addEventListener('click', closeModal);
+    
+    // 关闭模态框函数
+    function closeModal() {
+        modal.style.opacity = '0';
+        const content = modal.querySelector('.modal-content');
+        content.style.opacity = '0';
+        content.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            if (modal.parentNode) {
+                modal.parentNode.removeChild(modal);
+            }
+        }, 300);
+    }
+    
+    // 点击模态框背景关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    // 阻止模态框内容点击时关闭
+    modal.querySelector('.modal-content').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    // ESC键关闭模态框
+    const handleEscKey = (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+            document.removeEventListener('keydown', handleEscKey);
+        }
+    };
+    document.addEventListener('keydown', handleEscKey);
+    
+    // 清理事件监听器
+    modal.addEventListener('close', () => {
+        document.removeEventListener('keydown', handleEscKey);
+    });
+});
+
+// 保留原有的文件输入作为备用
+DOMElements.imageInput.addEventListener('change', () => { 
+    if (DOMElements.imageInput.files[0]) { 
+        if(isBatchMode) { 
+            showNotification('批量模式不支持图片', 'warning'); 
+            DOMElements.imageInput.value=''; 
+        } else { 
+            sendMessage(); 
+        } 
+    } 
+});
+    
+    DOMElements.continueBtn.addEventListener('click', simulateReply);
+    DOMElements.batchBtn.addEventListener('click', toggleBatchMode);
+    DOMElements.pokeBtn.addEventListener('click', () => showModal(DOMElements.pokeModal.modal, DOMElements.pokeModal.input));
+}
+
+        function initChatActionListeners() {
+    DOMElements.chatContainer.addEventListener('click', (e) => {
+        // 处理收藏按钮点击（在时间戳旁边）
+        const favoriteBtn = e.target.closest('.favorite-meta-btn');
+        if (favoriteBtn) {
+            const wrapper = e.target.closest('.message-wrapper');
+            const messageId = Number(wrapper.dataset.id);
+            const message = messages.find(m => m.id === messageId);
+            if (message) {
+                message.favorited = !message.favorited;
+                showNotification(message.favorited ? '已收藏' : '已取消收藏', 'success', 1500);
+                playSound('favorite');
+                throttledSaveData();
+                renderMessages();
+            }
+            return;
+        }
+
+        // 处理其他操作按钮
+        const target = e.target.closest('.meta-action-btn');
+        if (!target) return;
+        const wrapper = e.target.closest('.message-wrapper');
+        const messageId = Number(wrapper.dataset.id);
+        const message = messages.find(m => m.id === messageId);
+        if (!message) return;
+        
+        if (target.classList.contains('reply-btn')) {
+            currentReplyTo = { id: message.id, sender: message.sender, text: message.text };
+            updateReplyPreview();
+            DOMElements.messageInput.focus();
+            const targetMessageElement = DOMElements.chatContainer.querySelector(`[data-id="${message.id}"]`);
+            if(targetMessageElement) targetMessageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        } else if (target.classList.contains('note-btn')) {
+            currentNoteMessageId = messageId;
+            DOMElements.noteModal.input.value = message.note || '';
+            showModal(DOMElements.noteModal.modal, DOMElements.noteModal.input);
+            return;
+        }
+    
+                throttledSaveData();
+                renderMessages();
+            });
+
+            DOMElements.batchPreview.addEventListener('click', (e) => {
+                const removeBtn = e.target.closest('.batch-preview-remove');
+                if(removeBtn) {
+                    const index = removeBtn.closest('.batch-preview-item').dataset.index;
+                    batchMessages.splice(index, 1); updateBatchPreview();
+                }
+                const sendBtn = e.target.closest('.batch-send-btn');
+                if(sendBtn && !sendBtn.disabled) sendBatchMessages();
+                if(e.target.matches('.batch-cancel-btn')) { 
+                    isBatchMode = false; DOMElements.batchBtn.classList.remove('active'); 
+                    DOMElements.batchPreview.style.display = 'none'; 
+                    const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+                    DOMElements.messageInput.placeholder = placeholder.length > 20 ? placeholder.substring(0, 20) + "..." : placeholder;
+                    batchMessages = []; 
+                }
+            });
+        }
+
+        function initModalListeners() {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                const cancelBtn = modal.querySelector('.modal-btn-secondary');
+                if (cancelBtn) cancelBtn.addEventListener('click', () => hideModal(modal));
+            });
+
+            DOMElements.editModal.input.addEventListener('input', () => { DOMElements.editModal.save.disabled = !DOMElements.editModal.input.value.trim(); });
+            DOMElements.noteModal.save.addEventListener('click', () => {
+                const message = messages.find(m => m.id === currentNoteMessageId);
+                if (message) {
+                    message.note = DOMElements.noteModal.input.value.trim() || null;
+                    throttledSaveData();
+                    renderMessages();
+                    showNotification('注释已保存', 'success');
+                }
+                hideModal(DOMElements.noteModal.modal);
+            });
+
+            DOMElements.pokeModal.save.addEventListener('click', () => {
+                let pokeText = DOMElements.pokeModal.input.value.trim() || `${settings.myName} 拍了拍 ${settings.partnerName}`;
+                addMessage({ id: Date.now(), text: `✦ ${pokeText} ✦`, timestamp: new Date(), type: 'system' });
+                hideModal(DOMElements.pokeModal.modal);
+                DOMElements.pokeModal.input.value = '';
+                setTimeout(simulateReply, 800 + Math.random() * 1200);
+            });
+            
+            DOMElements.cancelCoinResult.addEventListener('click', () => { DOMElements.coinTossOverlay.classList.remove('visible'); lastCoinResult = null; });
+            DOMElements.sendCoinResult.addEventListener('click', () => { if (lastCoinResult) { sendMessage(lastCoinResult); DOMElements.coinTossOverlay.classList.remove('visible'); lastCoinResult = null; } });
+        }
+
+        function initHeaderAndSettingsListeners() {
+    const openNameModal = (isPartner) => {
+        const modal = DOMElements.editModal;
+        showModal(modal.modal, modal.input);
+        modal.title.textContent = `修改${isPartner ? (settings.partnerName || '对方') : '我'}的昵称`;
+        modal.input.value = isPartner ? settings.partnerName : settings.myName;
+        modal.save.disabled = !modal.input.value.trim();
+        modal.save.onclick = () => {
+            const newName = modal.input.value.trim();
+            if(newName) { 
+                isPartner ? settings.partnerName = newName : settings.myName = newName; 
+                throttledSaveData(); 
+                updateUI(); 
+                showNotification('昵称已更新', 'success'); 
+            }
+            hideModal(modal.modal);
+        };
+    };
+    
+    const openAvatarModal = (isPartner) => {
+        const modal = DOMElements.avatarModal;
+        // 修改模态框内容，添加URL输入选项
+        modal.modal.querySelector('.modal-content').innerHTML = `
+            <div class="modal-title"><i class="fas fa-portrait"></i><span>上传${isPartner ? '对方' : '我'}的头像</span></div>
+            <div style="margin-bottom: 16px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <button class="modal-btn modal-btn-secondary" id="upload-file-btn" style="flex: 1;">选择文件</button>
+                    <button class="modal-btn modal-btn-secondary" id="paste-url-btn" style="flex: 1;">粘贴URL</button>
+                </div>
+                <input type="file" class="modal-input" id="avatar-file-input" accept="image/*" style="display: none;">
+                <input type="text" class="modal-input" id="avatar-url-input" placeholder="输入图片URL地址" style="display: none;">
+                <div id="avatar-preview" style="text-align: center; margin-top: 10px; display: none;">
+                    <img id="preview-image" style="max-width: 100px; max-height: 100px; border-radius: 50%; border: 2px solid var(--border-color);">
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" id="cancel-avatar">取消</button>
+                <button class="modal-btn modal-btn-primary" id="save-avatar" disabled>保存</button>
+            </div>
+        `;
+        
+        showModal(modal.modal);
+        
+        const fileInput = document.getElementById('avatar-file-input');
+        const urlInput = document.getElementById('avatar-url-input');
+        const uploadBtn = document.getElementById('upload-file-btn');
+        const pasteUrlBtn = document.getElementById('paste-url-btn');
+        const previewDiv = document.getElementById('avatar-preview');
+        const previewImg = document.getElementById('preview-image');
+        const saveBtn = document.getElementById('save-avatar');
+        const cancelBtn = document.getElementById('cancel-avatar');
+        
+        let currentAvatarData = null;
+        
+        // 上传文件按钮点击事件
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+            urlInput.style.display = 'none';
+            uploadBtn.classList.add('active');
+            pasteUrlBtn.classList.remove('active');
+        });
+        
+        // 粘贴URL按钮点击事件
+        pasteUrlBtn.addEventListener('click', () => {
+            urlInput.style.display = 'block';
+            fileInput.style.display = 'none';
+            pasteUrlBtn.classList.add('active');
+            uploadBtn.classList.remove('active');
+            urlInput.focus();
+        });
+        
+        // 文件选择事件
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > MAX_AVATAR_SIZE) {
+                    showNotification('头像图片不能超过2MB', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentAvatarData = e.target.result;
+                    previewImg.src = currentAvatarData;
+                    previewDiv.style.display = 'block';
+                    saveBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // URL输入事件
+        urlInput.addEventListener('input', function() {
+            const url = urlInput.value.trim();
+            if (url) {
+                // 验证URL格式
+                if (/^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))$/i.test(url)) {
+                    previewImg.src = url;
+                    previewDiv.style.display = 'block';
+                    currentAvatarData = url;
+                    saveBtn.disabled = false;
+                    
+                    // 预加载图片检查是否有效
+                    const img = new Image();
+                    img.onload = function() {
+                        // 图片加载成功
+                        previewImg.src = url;
+                    };
+                    img.onerror = function() {
+                        showNotification('图片URL无效或无法访问', 'error');
+                        saveBtn.disabled = true;
+                    };
+                    img.src = url;
+                } else {
+                    saveBtn.disabled = true;
+                }
+            } else {
+                saveBtn.disabled = true;
+                previewDiv.style.display = 'none';
+            }
+        });
+        
+        // 保存按钮点击事件
+        saveBtn.addEventListener('click', () => {
+            if (currentAvatarData) {
+                updateAvatar(isPartner ? DOMElements.partner.avatar : DOMElements.me.avatar, currentAvatarData);
+                throttledSaveData();
+                showNotification('头像已更新', 'success');
+                hideModal(modal.modal);
+            }
+        });
+        
+        // 取消按钮点击事件
+        cancelBtn.addEventListener('click', () => {
+            hideModal(modal.modal);
+        });
+    };
+    
+            DOMElements.partner.name.addEventListener('click', () => openNameModal(true));
+            DOMElements.me.name.addEventListener('click', () => openNameModal(false));
+            DOMElements.partner.avatar.addEventListener('click', () => openAvatarModal(true));
+            DOMElements.me.avatar.addEventListener('click', () => openAvatarModal(false));
+
+            DOMElements.me.statusContainer.addEventListener('click', () => {
+                const statusTextElement = DOMElements.me.statusText; const statusContainer = DOMElements.me.statusContainer;
+                if (statusContainer.querySelector('input')) return;
+                const input = document.createElement('input'); input.type = 'text'; input.id = 'my-status-input'; input.value = statusTextElement.textContent;
+                const saveStatus = () => { 
+                    const newStatus = input.value.trim();
+                    if (newStatus) { settings.myStatus = newStatus; showNotification('状态已更新', 'success'); }
+                    else { settings.myStatus = "在线"; }
+                    statusTextElement.textContent = settings.myStatus; 
+                    statusContainer.innerHTML = ''; 
+                    statusContainer.appendChild(statusTextElement); 
+                    throttledSaveData(); 
+                };
+                input.addEventListener('blur', saveStatus);
+                input.addEventListener('keydown', (e) => { if (e.key === 'Enter') input.blur(); });
+                statusContainer.innerHTML = ''; statusContainer.appendChild(input); input.focus();
+            });
+
+            DOMElements.themeToggle.addEventListener('click', () => { settings.isDarkMode = !settings.isDarkMode; throttledSaveData(); updateUI(); showNotification(`已切换到${settings.isDarkMode ? '深色' : '浅色'}模式`, 'success'); });
+            DOMElements.settingsModal.settingsBtn.addEventListener('click', () => { updateSettingsModalUI(); showModal(DOMElements.settingsModal.modal); });
+            DOMElements.favoritesModal.favoritesBtn.addEventListener('click', () => { renderFavorites(); showModal(DOMElements.favoritesModal.modal); });
+
+            const settingToggles = {
+                '#reply-toggle': { prop: 'replyEnabled', name: '引用回复' }, '#sound-toggle': { prop: 'soundEnabled', name: '消息音效' }, '#read-receipts-toggle': { prop: 'readReceiptsEnabled', name: '已读回执' }, '#typing-indicator-toggle': { prop: 'typingIndicatorEnabled', name: '正在输入' }
+            };
+            for(const [selector, { prop, name }] of Object.entries(settingToggles)) {
+                document.querySelector(selector).addEventListener('click', () => {
+                    settings[prop] = !settings[prop]; throttledSaveData(); updateSettingsModalUI(); if(prop !== 'soundEnabled') renderMessages(); showNotification(`${name}已${settings[prop] ? '开启' : '关闭'}`, 'success');
+                });
+            }
+            DOMElements.settingsModal.statsFunction.addEventListener('click', () => { renderStatsContent(); hideModal(DOMElements.settingsModal.modal); showModal(DOMElements.statsModal.modal); });
+            DOMElements.settingsModal.coinFunction.addEventListener('click', () => { hideModal(DOMElements.settingsModal.modal); handleCoinToss(); });
+        }
+
+        function initDataManagementListeners() {
+            const { settingsModal, backgroundInput, importInput, statsModal, sessionModal, anniversaryModal, reportModal } = DOMElements;
+            
+    // 重要日功能
+    const getAnniversaryKey = () => getStorageKey('anniversaryDate');
+
+    settingsModal.anniversaryFunction.addEventListener('click', () => {
+        hideModal(settingsModal.modal);
+        const savedDate = safeGetItem(getAnniversaryKey());
+        
+        if (savedDate) {
+            anniversaryModal.dateInput.value = savedDate;
+            updateAnniversaryDisplay(savedDate);
+        } else {
+            anniversaryModal.displayArea.style.display = 'none';
+        }
+        showModal(anniversaryModal.modal);
+    });
+
+    function updateAnniversaryDisplay(dateString) {
+        const start = new Date(dateString);
+        const now = new Date();
+        // 计算天数差 (毫秒 -> 天)
+        const diffTime = Math.abs(now - start);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        
+        anniversaryModal.daysElement.textContent = diffDays;
+        anniversaryModal.dateShowElement.textContent = `起始日：${start.toLocaleDateString()}`;
+        anniversaryModal.displayArea.style.display = 'block';
+    }
+
+    anniversaryModal.saveBtn.addEventListener('click', () => {
+        const val = anniversaryModal.dateInput.value;
+        if (val) {
+            safeSetItem(getAnniversaryKey(), val);
+            updateAnniversaryDisplay(val);
+            showNotification('纪念日已保存', 'success');
+        }
+    });
+
+    anniversaryModal.closeBtn.addEventListener('click', () => hideModal(anniversaryModal.modal));
+
+    // 回忆录功能
+    settingsModal.reportFunction.addEventListener('click', () => {
+        hideModal(settingsModal.modal);
+        generateReport();
+        showModal(reportModal.modal);
+    });
+
+    reportModal.closeBtn.addEventListener('click', () => hideModal(reportModal.modal));
+
+    function generateReport() {
+        if (messages.length === 0) {
+            reportModal.content.innerHTML = '<div class="empty-state"><p>还没有产生足够的回忆哦</p></div>';
+            return;
+        }
+
+        const totalMessages = messages.length;
+        const myMessages = messages.filter(m => m.sender === 'user');
+        const partnerMessages = messages.filter(m => m.sender === 'partner');
+        const firstMsg = messages[0];
+        const firstDate = new Date(firstMsg.timestamp);
+        
+        let latestHour = -1;
+        let lateNightCount = 0;
+        messages.forEach(m => {
+            const h = new Date(m.timestamp).getHours();
+            if (h >= 0 && h < 5) lateNightCount++;
+            if (h > latestHour && h < 5) latestHour = h; // 简单的深夜判定
+        });
+
+        const words = {};
+        partnerMessages.forEach(m => {
+            if (m.text && m.type !== 'system') {
+
+                if (m.text.length < 10) {
+                    words[m.text] = (words[m.text] || 0) + 1;
+                }
+            }
+        });
+        const sortedWords = Object.entries(words).sort((a,b) => b[1] - a[1]).slice(0, 5);
+
+        let longestMsg = { text: "", len: 0 };
+        messages.forEach(m => {
+            if (m.text && m.text.length > longestMsg.len) {
+                longestMsg = { text: m.text, len: m.text.length, sender: m.sender };
+            }
+        });
+
+        let html = '';
+        const animDelay = (idx) => `style="animation-delay: ${idx * 0.1}s"`;
+
+        html += `
+        <div class="report-card" ${animDelay(1)}>
+            <h3><i class="fas fa-seedling"></i> 故事的开始</h3>
+            <div class="sub-text">我们在 ${firstDate.getFullYear()}年${firstDate.getMonth()+1}月${firstDate.getDate()}日 写下了第一句话：</div>
+            <div class="highlight-text" style="font-size: 16px; font-style: italic;">"${firstMsg.text.substring(0, 50)}${firstMsg.text.length>50?'...':''}"</div>
+        </div>`;
+
+
+        html += `
+        <div class="report-card" ${animDelay(2)}>
+            <h3><i class="fas fa-comments"></i> 累积的思念</h3>
+            <div class="sub-text">我们一共交换了</div>
+            <div class="highlight-text">${totalMessages} <span style="font-size:14px">条消息</span></div>
+            <div class="sub-text">你说: ${myMessages.length} | Ta说: ${partnerMessages.length}</div>
+        </div>`;
+
+        if (lateNightCount > 0) {
+            html += `
+            <div class="report-card" ${animDelay(3)}>
+                <h3><i class="fas fa-moon"></i> 熬夜冠军</h3>
+                <div class="sub-text">有 ${lateNightCount} 条消息是在凌晨 0-5点 发送的。</div>
+                <div class="highlight-text">哪怕夜深了，也舍不得结束对话。</div>
+            </div>`;
+        }
+
+        if (sortedWords.length > 0) {
+            html += `
+            <div class="report-card" ${animDelay(4)}>
+                <h3><i class="fas fa-quote-left"></i> Ta 的口头禅</h3>
+                <div style="margin-top: 10px;">
+                    ${sortedWords.map(w => `<span class="report-tag">${w[0]} (${w[1]})</span>`).join('')}
+                </div>
+            </div>`;
+        }
+
+
+        if (longestMsg.len > 0) {
+            html += `
+            <div class="report-card" ${animDelay(5)}>
+                <h3><i class="fas fa-feather-alt"></i> 最长情的告白</h3>
+                <div class="sub-text">${longestMsg.sender === 'user' ? '你' : 'Ta'} 发送了最长的一段话 (${longestMsg.len}字)：</div>
+                <div style="margin-top:5px; font-size: 13px; opacity: 0.8; max-height: 60px; overflow: hidden; text-overflow: ellipsis;">${longestMsg.text}</div>
+            </div>`;
+        }
+       
+        html += `
+        <div class="report-card" ${animDelay(6)} style="text-align:center; border: 1px solid var(--accent-color);">
+            <div class="highlight-text" style="font-size: 18px;">未完待续...</div>
+            <div class="sub-text">每一个字符都是爱的证据</div>
+        </div>`;
+
+        reportModal.content.innerHTML = html;
+    }
+settingsModal.clearChat.addEventListener('click', () => { if(confirm("确定要清空当前会话的所有聊天记录吗？此操作不可恢复。")) { messages = []; throttledSaveData(); renderMessages(); hideModal(settingsModal.modal); showNotification('聊天记录已清空', 'success'); } });
+            settingsModal.clearStorage.addEventListener('click', clearAllAppData);
+            settingsModal.themeColorBtns.forEach(btn => btn.addEventListener('click', () => { settings.colorTheme = btn.dataset.theme; throttledSaveData(); updateUI(); showNotification(`主题颜色已切换`, 'success'); }));
+            settingsModal.setBackground.addEventListener('click', () => backgroundInput.click());
+            settingsModal.removeBackground.addEventListener('click', () => { if (safeGetItem(getStorageKey('chatBackground'))) removeBackground(); else showNotification('当前没有设置背景图片', 'info'); });
+            settingsModal.fontSizeSlider.addEventListener('input', (e) => { settings.fontSize = parseInt(e.target.value); document.documentElement.style.setProperty('--font-size', `${settings.fontSize}px`); DOMElements.settingsModal.fontSizeValue.textContent = `${settings.fontSize}px`; });
+            settingsModal.fontSizeSlider.addEventListener('change', throttledSaveData);
+            
+            backgroundInput.addEventListener('change', (e) => { 
+                const file = e.target.files[0]; if (!file) return; 
+                if (file.size > MAX_IMAGE_SIZE) { showNotification('背景图片不能超过5MB', 'error'); return; } 
+                const reader = new FileReader(); 
+                reader.onload = (event) => { 
+                    try { safeSetItem(getStorageKey('chatBackground'), event.target.result); applyBackground(event.target.result); showNotification('背景图片已设置', 'success'); } 
+                    catch (error) { showNotification('图片太大无法保存，请选择小于5MB的图片。', 'error', 4000); removeBackground(); } 
+                }; 
+                reader.readAsDataURL(file); hideModal(settingsModal.modal); 
+            });
+            
+            document.getElementById('export-chat').addEventListener('click', exportChatHistory);
+            document.getElementById('import-chat').addEventListener('click', () => importInput.click());
+            importInput.addEventListener('change', (e) => { if (e.target.files[0]) { importChatHistory(e.target.files[0]); e.target.value = ''; } });
+            
+            
+
+            sessionModal.managerBtn.addEventListener('click', () => { renderSessionList(); showModal(sessionModal.modal); });
+            sessionModal.createBtn.addEventListener('click', () => { createNewSession(true); });
+            sessionModal.list.addEventListener('click', (e) => {
+                const item = e.target.closest('.session-item');
+                if (!item) return;
+                const sessionId = item.dataset.id;
+                
+                if (e.target.closest('.rename')) {
+                    const session = sessionList.find(s => s.id === sessionId);
+                    const newName = prompt('输入新的会话名称:', session.name);
+                    if (newName && newName.trim()) {
+                        session.name = newName.trim();
+                        safeSetItem(`${APP_PREFIX}sessionList`, JSON.stringify(sessionList));
+                        renderSessionList();
+                        showNotification('会话已重命名', 'success');
+                    }
+                } else if (e.target.closest('.delete')) {
+                    if (sessionList.length <= 1) { showNotification('无法删除最后一个会话', 'warning'); return; }
+                    if (confirm('确定要删除此会话及其所有聊天记录吗？此操作不可恢复。')) {
+                        sessionList = sessionList.filter(s => s.id !== sessionId);
+                        safeSetItem(`${APP_PREFIX}sessionList`, JSON.stringify(sessionList));
+                        Object.keys(localStorage).forEach(key => { if (key.startsWith(`${APP_PREFIX}${sessionId}_`)) safeRemoveItem(key); });
+                        if(sessionId === SESSION_ID) {
+                            const newCurrentId = sessionList[0].id;
+                            safeSetItem(`${APP_PREFIX}lastSessionId`, newCurrentId);
+                            window.location.hash = newCurrentId;
+                            window.location.reload();
+                        } else {
+                            renderSessionList();
+                        }
+                        showNotification('会话已删除', 'success');
+                    }
+                } else { // Switch session
+                    if(sessionId !== SESSION_ID) {
+                        window.location.hash = sessionId;
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        document.addEventListener('DOMContentLoaded', () => {
+    initializeSession();
+    loadData();
+    initializeRandomUI();
+    setupEventListeners();
+    setInterval(checkStatusChange, 60000);
+    
+    setTimeout(() => { 
+        DOMElements.welcomeAnimation.style.display = 'none'; 
+    }, 3000);
+
+    // Disclaimer Modal Logic
+    const disclaimerModal = document.getElementById('disclaimer-modal');
+    const acceptDisclaimerBtn = document.getElementById('accept-disclaimer');
+    const disclaimerShown = safeGetItem(APP_PREFIX + 'disclaimerShown');
+
+    if (!disclaimerShown) {
+        showModal(disclaimerModal);
+    }
+
+    acceptDisclaimerBtn.addEventListener('click', () => {
+        hideModal(disclaimerModal);
+        safeSetItem(APP_PREFIX + 'disclaimerShown', 'true');
+    });
+});
+    </script>
+</body>
+</html>
