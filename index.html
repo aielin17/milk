@@ -2243,11 +2243,11 @@
 
 
         .favorite-meta-btn {
-            font-size: 13px;
+            font-size: 10px;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            padding: 5px;
+            padding: 3px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -2257,13 +2257,12 @@
         }
         .favorite-meta-btn:hover {
             opacity: 1;
-            transform: scale(1.2);
+            transform: scale(1.1);
             background-color: rgba(var(--accent-color-rgb), 0.1);
         }
         .favorite-meta-btn.favorited {
             color: #ffc107;
             opacity: 1;
-            animation: favoritePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 @keyframes favoritePop {
             0% {
@@ -3067,16 +3066,150 @@
             pointer-events: none;
         }
 
-        #anniversary-display {
-            text-align: center;
-            padding: 25px 0;
-            background-color: var(--primary-bg);
-            border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            animation: fadeIn 0.5s ease;
-        }
+#anniversary-display {
+    text-align: center;
+    padding: 30px 0 10px;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    margin-bottom: 10px;
+    animation: fadeIn 0.8s ease;
+}
+
+#anniversary-days {
+    font-size: 56px;
+    font-weight: 300; 
+    color: var(--text-primary);
+    font-family: 'Georgia', serif; 
+    line-height: 1;
+    margin: 10px 0;
+    text-shadow: none;
+    animation: none;
+}
+
+
+#anniversary-list {
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+.anniversary-card {
+    background: var(--secondary-bg); 
+    border-radius: 16px;
+    padding: 20px;
+    color: var(--text-primary); 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+    border: 1px solid var(--border-color);
+    min-height: auto;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+
+.anniversary-card.type-future { background: var(--secondary-bg); border-left: 4px solid #764ba2; }
+.anniversary-card.type-past { background: var(--secondary-bg); border-left: 4px solid #ff9a9e; }
+.anniversary-card::after { display: none; } 
+
+.anniversary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+.ann-info { gap: 4px; }
+.ann-name { font-size: 15px; font-weight: 500; color: var(--text-primary); text-shadow: none;}
+.ann-date { font-size: 12px; opacity: 0.5; color: var(--text-secondary); }
+
+.ann-tag {
+    background: rgba(var(--accent-color-rgb), 0.1);
+    color: var(--accent-color);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.ann-days { text-align: right; }
+.ann-number { 
+    font-size: 24px; 
+    font-weight: 600; 
+    color: var(--accent-color);
+    font-family: var(--font-family);
+}
+.ann-label { color: var(--text-secondary); opacity: 0.5; }
+
+.ann-delete-btn {
+    background: var(--primary-bg);
+    color: var(--text-secondary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.ann-delete-btn:hover {
+    background: #ff4757;
+    color: white;
+}
+
+#ann-form-wrapper {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 1px dashed transparent;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: var(--primary-bg);
+    border-radius: 12px;
+    margin: 0 5px;
+}
+
+
+#ann-form-wrapper.active {
+    max-height: 400px; 
+    opacity: 1;
+    margin-top: 20px;
+    padding: 20px;
+    border-top-color: var(--border-color);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+}
+
+
+.ann-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 0 5px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.ann-toggle-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ann-toggle-btn:hover .ann-toggle-icon {
+    background-color: var(--accent-color);
+    color: var(--message-sent-text);
+    transform: scale(1.1) rotate(90deg);
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.ann-toggle-btn.active .ann-toggle-icon {
+    transform: rotate(45deg);
+    background-color: var(--message-received-bg);
+    color: var(--text-secondary);
+}
 
 @media (max-width: 768px) {
             .header-inner {
@@ -3756,78 +3889,233 @@
 
 
         .playlist-popup {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 320px;
-            background: rgba(var(--secondary-bg-rgb), 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 10px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            opacity: 0;
-            transform: translateY(-10px) scale(0.95);
-            pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 980;
-            max-height: 0;
-            overflow: hidden;
-        }
-        .playlist-popup.active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .playlist-item {
-            padding: 8px 12px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            transition: var(--transition);
-            border-bottom: 1px solid transparent;
-        }
-        .playlist-item:hover {
-            background: var(--primary-bg);
-            color: var(--text-primary);
-        }
-        .playlist-item.playing {
-            color: var(--accent-color);
-            font-weight: 600;
-            background: rgba(var(--accent-color-rgb), 0.1);
-        }
-        html[data-theme="dark"] .playlist-item.playing {
-            color: var(--accent-color-dark);
-        }
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 320px;
+    background: rgba(var(--secondary-bg-rgb), 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 980;
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    max-height: 60vh;
+    overflow: hidden;
+    padding: 0;
+}
 
-        .playlist-add-btn {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px dashed var(--border-color);
-            background: rgba(var(--primary-bg-rgb), 0.5);
-            color: var(--text-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 13px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-        .playlist-add-btn:hover {
-            background: var(--message-received-bg);
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
+.playlist-popup.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.playlist-header {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(var(--secondary-bg-rgb), 0.98);
+    z-index: 5;
+}
+
+.pl-header-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-family);
+    letter-spacing: 1px;
+}
+
+.pl-header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.pl-icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.pl-icon-btn:hover, .pl-icon-btn.active {
+    background-color: var(--primary-bg);
+    color: var(--accent-color);
+}
+
+.playlist-search-wrapper {
+    flex-shrink: 0;
+    padding: 0 15px;
+    background: rgba(var(--secondary-bg-rgb), 0.95);
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+    height: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.playlist-search-wrapper.active {
+    height: 50px;
+    opacity: 1;
+    padding: 8px 15px;
+}
+
+.playlist-search-input {
+    width: 100%;
+    background-color: var(--primary-bg);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 6px 10px 6px 30px;
+    font-size: 12px;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.3s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23999'%3E%3Cpath d='M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 12px;
+    background-position: 10px center;
+}
+
+.playlist-search-input:focus {
+    background-color: var(--secondary-bg);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.1);
+}
+
+.playlist-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.playlist-content::-webkit-scrollbar {
+    display: none;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    gap: 10px;
+}
+
+.playlist-item:hover {
+    background-color: var(--primary-bg);
+}
+
+.playlist-item.playing {
+    background-color: rgba(var(--accent-color-rgb), 0.08);
+}
+
+.song-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.song-title-row {
+    font-size: 13px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.song-title-row .highlight {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.playlist-item.playing .song-title-row {
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.song-sub-row {
+    font-size: 11px;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.action-icon-btn.delete {
+    font-size: 16px;
+    color: var(--text-secondary);
+    opacity: 0;
+    transition: all 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.playlist-item:hover .action-icon-btn.delete {
+    opacity: 0.6;
+}
+
+.action-icon-btn.delete:hover {
+    opacity: 1 !important;
+    color: #ff4757;
+    transform: scale(1.1);
+}
+
+.custom-tag {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    opacity: 0.6;
+    box-shadow: 0 0 0 1px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.empty-search-result {
+    text-align: center;
+    padding: 30px 10px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    opacity: 0.8;
+}
 
         .pagination {
             display: none !important;
@@ -3979,23 +4267,28 @@
 
         .bg-gallery {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 10px 5px;
-            max-height: 300px;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); 
+            gap: 15px;
+            padding: 15px 5px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
         .bg-item {
             position: relative;
             width: 100%;
-            padding-bottom: 100%;
-
+            aspect-ratio: 9 / 18; 
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
-            border: 2px solid var(--border-color);
-            transition: all 0.2s ease;
+            border: 3px solid transparent; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+        }
+
+        .bg-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
 
         .bg-item img, .bg-item div.bg-color-block {
@@ -4005,18 +4298,13 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .bg-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.5s ease;
         }
 
         .bg-item.active {
             border-color: var(--accent-color);
             box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.3);
         }
-
 
         .bg-item.active::after {
             content: '\f00c';
@@ -4026,34 +4314,60 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: var(--accent-color);
+            border-radius: 50%;
             color: #fff;
-            font-size: 18px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             z-index: 2;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        @keyframes popIn {
+            from { transform: translate(-50%, -50%) scale(0); }
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
 
         .bg-add-btn {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             background-color: var(--message-received-bg);
             color: var(--text-secondary);
-            font-size: 24px;
+            border: 2px dashed var(--border-color);
+            gap: 8px;
         }
+        
+        .bg-add-btn i {
+            font-size: 24px;
+            opacity: 0.7;
+        }
+        
+        .bg-add-btn span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
         .bg-add-btn:hover {
             background-color: var(--border-color);
             color: var(--accent-color);
+            border-color: var(--accent-color);
         }
-
 
         .bg-delete-btn {
             position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 20px;
-            height: 20px;
-            background: rgba(0,0,0,0.5);
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(2px);
             color: #fff;
             border-radius: 50%;
             display: flex;
@@ -4061,20 +4375,158 @@
             justify-content: center;
             font-size: 10px;
             opacity: 0;
-            transition: opacity 0.2s;
+            transform: scale(0.8);
+            transition: all 0.2s;
             z-index: 5;
         }
         .bg-item:hover .bg-delete-btn {
             opacity: 1;
+            transform: scale(1);
         }
         .bg-delete-btn:hover {
             background: #ff4757;
+            transform: scale(1.1);
         }
+.tour-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    display: none; 
+}
+.tour-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
 
-        
+.tour-highlight-box {
+    position: absolute;
+    border-radius: 8px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.5);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 10001;
+}
+
+.tour-popover {
+    position: absolute;
+    background-color: var(--secondary-bg);
+    border-radius: 12px;
+    padding: 16px 20px;
+    width: 300px;
+    max-width: 90vw;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 10002;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-color);
+}
+.tour-popover.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.tour-popover-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+.tour-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+html[data-theme="dark"] .tour-title {
+    color: var(--accent-color-dark);
+}
+.tour-step-counter {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background-color: var(--primary-bg);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+.tour-popover-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+.tour-popover-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tour-navigation {
+    display: flex;
+    gap: 8px;
+}
+.tour-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-family: var(--font-family);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.tour-btn:hover {
+    transform: translateY(-1px);
+}
+.tour-btn:active {
+    transform: scale(0.95) !important;
+}
+.tour-btn-skip {
+    background-color: transparent;
+    color: var(--text-secondary);
+}
+.tour-btn-skip:hover {
+    background-color: var(--message-received-bg);
+}
+.tour-btn-primary {
+    background-color: var(--accent-color);
+    color: var(--message-sent-text);
+}
+html[data-theme="dark"] .tour-btn-primary {
+    background-color: var(--accent-color-dark);
+}
+.tour-btn-primary:hover {
+    filter: brightness(1.1);
+}
+
     </style>
 </head>
 <body>
+<div id="tour-overlay" class="tour-overlay">
+    <div id="tour-highlight-box" class="tour-highlight-box"></div>
+    <div id="tour-popover" class="tour-popover">
+        <div class="tour-popover-header">
+            <span id="tour-title" class="tour-title"></span>
+            <span id="tour-step-counter" class="tour-step-counter"></span>
+        </div>
+        <div id="tour-content" class="tour-popover-content"></div>
+        <div class="tour-popover-footer">
+            <button id="tour-skip-btn" class="tour-btn tour-btn-skip">跳过</button>
+            <div class="tour-navigation">
+                <button id="tour-prev-btn" class="tour-btn"><i class="fas fa-arrow-left"></i> 上一步</button>
+                <button id="tour-next-btn" class="tour-btn tour-btn-primary">下一步 <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="welcome-animation" id="welcome-animation">
         <div class="stars-container" id="stars-container"></div>
@@ -4438,6 +4890,10 @@
                     <i class="fas fa-info-circle"></i>关于与声明
                 </div>
                 <div class="settings-item-list">
+
+<div class="settings-item" id="replay-tutorial-btn">
+    <i class="fas fa-question-circle"></i><span>重放新手引导</span>
+</div>
                     <div class="settings-item" id="open-credits-btn">
                         <i class="fas fa-scroll"></i><span>声明与致谢</span>
                     </div>
@@ -4616,52 +5072,62 @@
         </div>
     </div>
 
-    <div class="modal" id="anniversary-modal">
-        <div class="modal-content">
-            <div class="modal-title">
-                <i class="fas fa-calendar-alt"></i><span>纪念日管理</span>
-            </div>
+<div class="modal" id="anniversary-modal">
+    <div class="modal-content" style="max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-title">
+            <i class="fas fa-calendar-alt"></i><span>时光纪念</span>
+        </div>
 
-            <div id="anniversary-display" style="text-align: center; padding: 20px 0; display: none;">
-                <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">
-                    我们已经相识
+        <div style="overflow-y: auto; flex: 1; padding-bottom: 20px; padding-right: 5px;" class="hide-scrollbar">
+            
+            <div id="anniversary-display" style="display: none;">
+                <div style="font-size: 13px; color: var(--text-secondary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">
+                    Our Journey
                 </div>
-                <div id="anniversary-days" style="font-size: 48px; font-weight: bold; color: var(--accent-color); font-family: 'Georgia', serif;">
-                    0
+                <div id="anniversary-days">0</div>
+                <div style="font-size: 14px; color: var(--text-secondary); opacity: 0.8; font-weight: 500;">
+                    DAYS TOGETHER
                 </div>
-                <div style="font-size: 14px; color: var(--text-secondary);">
-                    天
-                </div>
-                <div id="anniversary-date-show" style="margin-top: 10px; font-size: 12px; opacity: 0.7;"></div>
+                <div id="anniversary-date-show" style="margin-top: 15px; font-size: 12px; opacity: 0.5; font-family: monospace;"></div>
             </div>
 
             <div class="anniversary-list" id="anniversary-list"></div>
 
-            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-                <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">
-                    添加新纪念日
+            <div class="ann-toggle-btn" id="ann-toggle-btn" title="添加新纪念日">
+                <div class="ann-toggle-icon">
+                    <i class="fas fa-plus"></i>
                 </div>
+            </div>
 
+            <div id="ann-form-wrapper">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 15px; color: var(--accent-color); text-align: center;">
+                    记录新瞬间
+                </div>
 
                 <div class="anniversary-type-selector">
                     <button class="anniversary-type-btn active" data-type="anniversary">纪念日</button>
                     <button class="anniversary-type-btn" data-type="countdown">倒数日</button>
                 </div>
 
-                <input type="text" class="modal-input" id="anniversary-name-input" placeholder="纪念日名称">
+                <input type="text" class="modal-input" id="anniversary-name-input" placeholder="给这一天起个名字...">
                 <input type="date" class="modal-input" id="anniversary-date-input">
-                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">
-                    <span id="anniversary-type-hint">纪念日：从过去某天到今天的天数</span>
+                
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 10px; text-align: center; opacity: 0.7;">
+                    <span id="anniversary-type-hint">记录从过去某天开始的天数</span>
+                </div>
+                
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button class="modal-btn modal-btn-primary" id="add-anniversary" style="flex: 1;">确认添加</button>
+                    <button class="modal-btn modal-btn-primary" id="save-anniversary" style="flex: 1; background-color: var(--secondary-bg); color: var(--text-primary); border: 1px solid var(--border-color);">设为起始日</button>
                 </div>
             </div>
+        </div>
 
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" id="close-anniversary">关闭</button>
-                <button class="modal-btn modal-btn-primary" id="save-anniversary">保存日期</button>
-                <button class="modal-btn modal-btn-primary" id="add-anniversary">添加纪念日</button>
-            </div>
+        <div class="modal-buttons" style="border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 0; flex-shrink: 0;">
+            <button class="modal-btn modal-btn-secondary" id="close-anniversary" style="width: 100%;">关闭</button>
         </div>
     </div>
+</div>
 
 
     <div class="anniversary-animation" id="anniversary-animation">
@@ -6225,58 +6691,55 @@
 
             list.innerHTML = '';
 
-
+            
             const addBtn = document.createElement('div');
             addBtn.className = 'bg-item bg-add-btn';
-            addBtn.innerHTML = '<i class="fas fa-plus"></i>';
+            
+            addBtn.innerHTML = '<i class="fas fa-plus"></i><span>上传背景</span>';
             addBtn.onclick = () => document.getElementById('bg-gallery-input').click();
             list.appendChild(addBtn);
 
-
             const currentBg = safeGetItem(getStorageKey('chatBackground'));
-
 
             savedBackgrounds.forEach((bg, index) => {
                 const item = document.createElement('div');
                 let isActive = false;
 
-
                 if (currentBg && currentBg === bg.value) isActive = true;
 
                 item.className = `bg-item ${isActive ? 'active': ''}`;
 
-
+                
                 if (bg.type === 'image') {
-                    item.innerHTML = `<img src="${bg.value}" loading="lazy">`;
+                    item.innerHTML = `<img src="${bg.value}" loading="lazy" alt="bg">`;
                 } else {
                     item.innerHTML = `<div class="bg-color-block" style="background: ${bg.value}"></div>`;
                 }
 
-
+                
                 item.onclick = (e) => {
-
+                    
                     if (e.target.closest('.bg-delete-btn')) return;
 
                     applyBackground(bg.value);
                     safeSetItem(getStorageKey('chatBackground'), bg.value);
-                    renderBackgroundGallery();
+                    renderBackgroundGallery(); 
                     showNotification('背景已切换', 'success');
                 };
-
 
                 if (bg.id.startsWith('user-')) {
                     const delBtn = document.createElement('div');
                     delBtn.className = 'bg-delete-btn';
-                    delBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                    delBtn.title = "删除此背景";
                     delBtn.onclick = (e) => {
                         e.stopPropagation();
                         if (confirm('确定删除这张背景图吗？')) {
                             savedBackgrounds.splice(index, 1);
                             saveBackgroundGallery();
 
-
                             if (isActive) {
-                                removeBackground();
+                                removeBackground(); 
                                 renderBackgroundGallery();
                             } else {
                                 renderBackgroundGallery();
@@ -6324,7 +6787,6 @@
         };
 
         const loadData = () => {
-            // 1. 加载基础设置
             settings = getDefaultSettings();
             const savedSettings = safeGetItem(getStorageKey('chatSettings'));
             if (savedSettings) try {
@@ -6333,7 +6795,6 @@
                 console.error("解析设置失败:", e);
             }
 
-            // 2. 加载消息记录
             const savedMessages = safeGetItem(getStorageKey('chatMessages'));
             if (savedMessages) try {
                 messages = JSON.parse(savedMessages).map(m => ({
@@ -6343,18 +6804,16 @@
                 console.error("解析消息失败:", e); messages = [];
             }
 
-            // 3. 加载背景图库
             const savedBgGallery = safeGetItem(getStorageKey('backgroundGallery'));
             if (savedBgGallery) {
                 try { savedBackgrounds = JSON.parse(savedBgGallery); } catch (e) { savedBackgrounds = []; }
             } else {
                 savedBackgrounds = [
-                    { id: 'preset-1', type: 'color', value: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' },
-                    { id: 'preset-2', type: 'color', value: 'linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)' }
-                ];
+                    { id: 'preset-1', type: 'color', value: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }
+]
+                    
             }
 
-            // 4. 加载自定义回复
             const savedCustomReplies = safeGetItem(getStorageKey('customReplies'));
             if (savedCustomReplies) try {
                 customReplies = JSON.parse(savedCustomReplies);
@@ -6362,7 +6821,6 @@
                 console.error("解析自定义回复失败:", e);
             }
 
-            // 5. 加载禁用的预设回复
             const savedDisabledDefaults = safeGetItem(getStorageKey('disabledDefaultReplies'));
             if (savedDisabledDefaults) try {
                 disabledDefaultReplies = JSON.parse(savedDisabledDefaults);
@@ -6370,7 +6828,6 @@
                 disabledDefaultReplies = [];
             }
 
-            // 6. 加载纪念日
             const savedAnniversaries = safeGetItem(getStorageKey('anniversaries'));
             if (savedAnniversaries) try {
                 anniversaries = JSON.parse(savedAnniversaries);
@@ -6378,17 +6835,14 @@
                 console.error("解析纪念日失败:", e);
             }
 
-            // 7. 加载头像
             updateAvatar(DOMElements.partner.avatar, safeGetItem(getStorageKey('partnerAvatar')));
             updateAvatar(DOMElements.me.avatar, safeGetItem(getStorageKey('myAvatar')));
 
-            // 8. 加载当前背景
             const currentBg = safeGetItem(getStorageKey('chatBackground'));
             if (currentBg) applyBackground(currentBg);
             
             displayedMessageCount = HISTORY_BATCH_SIZE;
 
-            // 9. 刷新界面
             updateUI();
         };
 
@@ -7522,63 +7976,80 @@
 
 
         function renderAnniversaries() {
-            const list = DOMElements.anniversaryModal.list;
-            if (anniversaries.length === 0) {
-                list.innerHTML = '<div class="no-favorites"><i class="fas fa-heart"></i><p>还没有纪念日</p></div>';
-                return;
-            }
+    const list = DOMElements.anniversaryModal.list;
+    if (anniversaries.length === 0) {
+        list.innerHTML = '<div class="no-favorites" style="padding:20px 0;"><i class="fas fa-heart" style="font-size:24px;margin-bottom:10px;"></i><p>还没有记录纪念日</p></div>';
+        return;
+    }
 
-            list.innerHTML = anniversaries.map(anniversary => {
-                const startDate = new Date(anniversary.date);
-                const now = new Date();
-                let diffDays;
-                let displayText;
-
-                if (anniversary.type === 'countdown') {
-
-                    diffDays = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
-                    displayText = `距离 ${anniversary.name} 还有 ${diffDays} 天`;
-                } else {
-
-                    diffDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-                    displayText = `${anniversary.name} 已经 ${diffDays} 天`;
-                }
-
-                return `
-            <div class="anniversary-item" data-id="${anniversary.id}">
-            <div class="anniversary-name">${anniversary.name}</div>
-            <div class="anniversary-date">${startDate.toLocaleDateString()}</div>
-            <div class="anniversary-days">${displayText}</div>
-            </div>
-            `;
-            }).join('');
+    list.innerHTML = anniversaries.map(anniversary => {
+        const startDate = new Date(anniversary.date);
+        const now = new Date();
+        let diffDays;
+        
+        if (anniversary.type === 'countdown') {
+            diffDays = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) diffDays = 0; 
+        } else {
+            diffDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
         }
+
+        const typeClass = anniversary.type === 'countdown' ? 'type-future' : 'type-past';
+        const tagText = anniversary.type === 'countdown' ? '倒数' : '纪念';
+
+        return `
+        <div class="anniversary-card ${typeClass}" data-id="${anniversary.id}">
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <div class="ann-info">
+                    <div class="ann-name">
+                        ${anniversary.name} 
+                        <span class="ann-tag">${tagText}</span>
+                    </div>
+                    <div class="ann-date">${startDate.toLocaleDateString()}</div>
+                </div>
+                <div class="ann-days">
+                    <span class="ann-number">${diffDays}</span>
+                    <span class="ann-label">Days</span>
+                </div>
+            </div>
+            <div class="ann-delete-btn" style="position:absolute; top:-8px; right:-8px; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; transition:opacity 0.2s;" 
+                 onclick="deleteAnniversary(${anniversary.id}, event)">
+                <i class="fas fa-times" style="font-size:12px;"></i>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
 
         function addAnniversary() {
-            const name = DOMElements.anniversaryModal.nameInput.value.trim();
-            const date = DOMElements.anniversaryModal.dateInput.value;
+    const name = DOMElements.anniversaryModal.nameInput.value.trim();
+    const date = DOMElements.anniversaryModal.dateInput.value;
 
-            if (!name || !date) {
-                showNotification('请填写纪念日名称和日期', 'error');
-                return;
-            }
+    if (!name || !date) {
+        showNotification('请填写名称和日期', 'error');
+        return;
+    }
 
-            const newAnniversary = {
-                id: Date.now(),
-                name: name,
-                date: date,
-                type: currentAnniversaryType
-            };
+    const newAnniversary = {
+        id: Date.now(),
+        name: name,
+        date: date,
+        type: currentAnniversaryType
+    };
 
-            anniversaries.push(newAnniversary);
-            throttledSaveData();
-            renderAnniversaries();
+    anniversaries.push(newAnniversary);
+    throttledSaveData();
+    renderAnniversaries();
+    DOMElements.anniversaryModal.nameInput.value = '';
+    DOMElements.anniversaryModal.dateInput.value = '';
 
-            DOMElements.anniversaryModal.nameInput.value = '';
-            DOMElements.anniversaryModal.dateInput.value = '';
+    const annFormWrapper = document.getElementById('ann-form-wrapper');
+    const annToggleBtn = document.getElementById('ann-toggle-btn');
+    if (annFormWrapper) annFormWrapper.classList.remove('active');
+    if (annToggleBtn) annToggleBtn.classList.remove('active');
 
-            showNotification('纪念日已添加', 'success');
-        }
+    showNotification('纪念日已添加', 'success');
+}
 
         function showAnniversaryAnimation(anniversary) {
             const startDate = new Date(anniversary.date);
@@ -7625,6 +8096,7 @@
             initHeaderAndSettingsListeners();
             initDataManagementListeners();
             initNewFeatureListeners();
+setupTutorialListeners(); 
         }
 
         function initCoreListeners() {
@@ -8533,7 +9005,26 @@ DOMElements.appearanceModal.closeBtn.addEventListener('click', () => {
                 hideModal(DOMElements.advancedModal.modal);
             });
         }
+    const annToggleBtn = document.getElementById('ann-toggle-btn');
+    const annFormWrapper = document.getElementById('ann-form-wrapper');
 
+    if (annToggleBtn && annFormWrapper) {
+        annToggleBtn.addEventListener('click', () => {
+            const isActive = annFormWrapper.classList.contains('active');
+            
+            if (isActive) {
+                annFormWrapper.classList.remove('active');
+                annToggleBtn.classList.remove('active');
+            } else {
+                annFormWrapper.classList.add('active');
+                annToggleBtn.classList.add('active');
+                
+                setTimeout(() => {
+                    annFormWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 300);
+            }
+        });
+    }
 
         function getBubbleStyleName(style) {
             const names = {
@@ -8649,8 +9140,7 @@ DOMElements.appearanceModal.closeBtn.addEventListener('click', () => {
         });
 
         const initMusicPlayer = () => {
-
-            let defaultSongs = [{
+    const latestSystemSongs = [{
                 title: "虚拟", sub: "你是我朝夕相伴触手可及的虚拟", url: "https://files.catbox.moe/6s65mp.mp3"
             },
                 {
@@ -8756,363 +9246,480 @@ DOMElements.appearanceModal.closeBtn.addEventListener('click', () => {
             { title: "绝对占有 相对自由", sub: "赞美你包容你都是我的使命", url: "https://files.catbox.moe/zi4gxo.mp3" },
             { title: "千万次想象", sub: "我千万次想象 千万次模仿 思念的形状", url: "https://files.catbox.moe/4jtex8.mp3" },
             { title: "辞家千里", sub: "穿过无人问津去见山海万顷", url: "https://files.catbox.moe/2quy44.mp3" },
-            { title: "Ryukyuvania", sub: "----", url: "https://files.catbox.moe/utmbqp.mp3" },
+            { title: "Ryukyuvania", sub: "----", url: "https://files.catbox.moe/utmbqp.mp3" }
+    ];
 
-            ];
+    const uploadCoverBtn = document.getElementById('upload-cover-btn');
+    const coverInput = document.getElementById('cover-input');
+    const vinylRecord = document.getElementById('vinyl-record-visual');
 
+    const applyPlayerCover = (base64Data) => {
+        if (base64Data) {
+            vinylRecord.style.backgroundImage = `url(${base64Data})`;
+            vinylRecord.classList.add('has-cover');
+            vinylRecord.style.borderWidth = '1px';
+        } else {
+            vinylRecord.style.backgroundImage = '';
+            vinylRecord.classList.remove('has-cover');
+            vinylRecord.style.borderWidth = '2px';
+        }
+    };
 
+    const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
+    if (savedCover) applyPlayerCover(savedCover);
 
-            const uploadCoverBtn = document.getElementById('upload-cover-btn');
-            const coverInput = document.getElementById('cover-input');
-            const vinylRecord = document.getElementById('vinyl-record-visual');
-
-
-            const applyPlayerCover = (base64Data) => {
-                if (base64Data) {
-
-                    vinylRecord.style.backgroundImage = `url(${base64Data})`;
-                    vinylRecord.classList.add('has-cover');
-
-                    vinylRecord.style.borderWidth = '1px';
-                } else {
-
-                    vinylRecord.style.backgroundImage = '';
-                    vinylRecord.classList.remove('has-cover');
-
-                    vinylRecord.style.borderWidth = '2px';
-                }
-            };
-
-
-            const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
-            if (savedCover) {
-                applyPlayerCover(savedCover);
+    uploadCoverBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (vinylRecord.classList.contains('has-cover')) {
+            if (confirm('想要重置回默认的【主题色黑胶】样式吗？\n\n• 点击【确定】恢复默认\n• 点击【取消】选择新图片')) {
+                safeRemoveItem(APP_PREFIX + 'playerCover');
+                applyPlayerCover(null);
+                showNotification('已恢复默认黑胶样式', 'success');
+                return;
             }
+        }
+        coverInput.click();
+    });
 
-
-            uploadCoverBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (vinylRecord.classList.contains('has-cover')) {
-                    if (confirm('想要重置回默认的【主题色黑胶】样式吗？\n\n• 点击【确定】恢复默认\n• 点击【取消】选择新图片')) {
-                        safeRemoveItem(APP_PREFIX + 'playerCover');
-                        applyPlayerCover(null);
-                        showNotification('已恢复默认黑胶样式', 'success');
-                        return;
-                    }
-                }
-
-                coverInput.click();
-            });
-
-
-            coverInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-
-                if (file.size > 2 * 1024 * 1024) {
-                    showNotification('图片太大了，请上传 2MB 以内的图片', 'error');
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const base64Data = event.target.result;
-                    try {
-
-                        safeSetItem(APP_PREFIX + 'playerCover', base64Data);
-
-                        applyPlayerCover(base64Data);
-                        showNotification('专辑封面设置成功！', 'success');
-                    } catch (err) {
-                        console.error(err);
-                        showNotification('图片存储失败（可能超出了浏览器限制）', 'error');
-                    }
-                };
-                reader.readAsDataURL(file);
-                e.target.value = '';
-            });
-
-
-            const savedSongs = safeGetItem(APP_PREFIX + 'customSongs');
-            let songs = savedSongs ? JSON.parse(savedSongs): defaultSongs;
-
-            const player = document.getElementById('player');
-            const miniView = document.getElementById('mini-view');
-            const playlist = document.getElementById('playlist');
-            const audio = document.getElementById('audio');
-            const playBtn = document.getElementById('play-btn');
-            const progressArea = document.getElementById('progress-area');
-
-
-            const addSongModal = document.getElementById('add-song-modal');
-            const newSongTitle = document.getElementById('new-song-title');
-            const newSongSub = document.getElementById('new-song-sub');
-            const newSongUrl = document.getElementById('new-song-url');
-            const confirmAddSongBtn = document.getElementById('confirm-add-song');
-            const cancelAddSongBtn = document.getElementById('cancel-add-song');
-
-            let currentIndex = 0;
-            let isPlaying = false;
-            let isRandom = false;
-
-
-            function loadSong(index) {
-
-                if (index >= songs.length) index = 0;
-                if (index < 0) index = songs.length - 1;
-
-                const song = songs[index];
-                document.getElementById('music-title').innerText = song.title;
-                document.getElementById('music-subtitle').innerText = song.sub;
-                audio.src = song.url;
-                updatePlaylistHighlight();
+    coverInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            showNotification('图片太大了，请上传 2MB 以内的图片', 'error');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64Data = event.target.result;
+            try {
+                safeSetItem(APP_PREFIX + 'playerCover', base64Data);
+                applyPlayerCover(base64Data);
+                showNotification('专辑封面设置成功！', 'success');
+            } catch (err) {
+                console.error(err);
+                showNotification('图片存储失败（可能超出了浏览器限制）', 'error');
             }
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+    });
 
+    const savedSongsStr = safeGetItem(APP_PREFIX + 'customSongs');
+    let songs = [];
 
-            function togglePlay() {
-                if (isPlaying) {
-                    audio.pause();
-                    isPlaying = false;
-                    document.getElementById('icon-play').style.display = 'block';
-                    document.getElementById('icon-pause').style.display = 'none';
-                    player.classList.remove('playing');
-                } else {
-                    audio.play().catch(e => showNotification('播放失败，链接可能无效', 'error'));
+    if (savedSongsStr) {
+        songs = JSON.parse(savedSongsStr);
+    } else {
+        songs = [...latestSystemSongs];
+    }
+
+    const player = document.getElementById('player');
+    const miniView = document.getElementById('mini-view');
+    const playlist = document.getElementById('playlist');
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('play-btn');
+    const progressArea = document.getElementById('progress-area');
+
+    const addSongModal = document.getElementById('add-song-modal');
+    const newSongTitle = document.getElementById('new-song-title');
+    const newSongSub = document.getElementById('new-song-sub');
+    const newSongUrl = document.getElementById('new-song-url');
+    const confirmAddSongBtn = document.getElementById('confirm-add-song');
+    const cancelAddSongBtn = document.getElementById('cancel-add-song');
+    const modalTitleElem = addSongModal.querySelector('.modal-title span');
+
+    let currentIndex = 0;
+    let isPlaying = false;
+    let isRandom = false;
+    let editModeIndex = -1;
+    let searchTerm = '';
+    let isSearchVisible = false;
+
+    function loadSong(index) {
+        if (songs.length === 0) return;
+        if (index >= songs.length) index = 0;
+        if (index < 0) index = songs.length - 1;
+
+        const song = songs[index];
+        document.getElementById('music-title').innerText = song.title;
+        document.getElementById('music-subtitle').innerText = song.sub;
+        
+        if (song.url) audio.src = song.url;
+        updatePlaylistHighlight();
+    }
+
+    function togglePlay() {
+        if (songs.length === 0) {
+            showNotification('播放列表为空', 'warning');
+            return;
+        }
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+            document.getElementById('icon-play').style.display = 'block';
+            document.getElementById('icon-pause').style.display = 'none';
+            player.classList.remove('playing');
+        } else {
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
                     isPlaying = true;
                     document.getElementById('icon-play').style.display = 'none';
                     document.getElementById('icon-pause').style.display = 'block';
                     player.classList.add('playing');
-                }
-            }
-
-
-            function nextSong() {
-                if (isRandom) currentIndex = Math.floor(Math.random() * songs.length);
-                else currentIndex = (currentIndex + 1) % songs.length;
-                loadSong(currentIndex);
-                if (isPlaying) audio.play();
-            }
-            function prevSong() {
-                currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-                loadSong(currentIndex);
-                if (isPlaying) audio.play();
-            }
-
-
-            function renderPlaylist() {
-                playlist.innerHTML = '';
-                songs.forEach((song, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'playlist-item';
-
-                    const deleteBtn = `<span class="delete-song" style="float:right; opacity:0.5; font-size:16px;" title="删除">&times;</span>`;
-
-                    div.innerHTML = `<span>${song.title} <small style="opacity:0.7; font-size:10px;">- ${song.sub}</small></span>${deleteBtn}`;
-
-
-                    div.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        currentIndex = index;
-                        loadSong(currentIndex);
-                        if (!isPlaying) togglePlay();
-                        else audio.play();
-                    });
-
-
-                    const delSpan = div.querySelector('.delete-song');
-                    delSpan.addEventListener('click',
-                        (e) => {
-                            e.stopPropagation();
-                            if (confirm('确定移除这首歌吗？')) {
-                                songs.splice(index, 1);
-                                if (songs.length === 0) songs = [...defaultSongs];
-                                safeSetItem(APP_PREFIX + 'customSongs', JSON.stringify(songs));
-                                renderPlaylist();
-                                if (index === currentIndex) {
-                                    currentIndex = 0;
-                                    loadSong(0);
-                                    if (isPlaying) audio.pause();
-                                    togglePlay();
-                                }
-                            }
-                        });
-
-                    playlist.appendChild(div);
-                });
-
-                const addBtn = document.createElement('div');
-                addBtn.className = 'playlist-add-btn';
-                addBtn.innerHTML = '<i class="fas fa-plus"></i> 添加歌曲';
-                addBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showModal(addSongModal);
-                    newSongTitle.focus();
-                });
-                playlist.appendChild(addBtn);
-
-                updatePlaylistHighlight();
-            }
-
-            function updatePlaylistHighlight() {
-                const items = playlist.querySelectorAll('.playlist-item');
-                items.forEach((item,
-                    index) => {
-                    if (index === currentIndex) item.classList.add('playing');
-                    else item.classList.remove('playing');
+                }).catch(error => {
+                    console.error(error);
+                    showNotification('播放失败，链接可能失效', 'error');
                 });
             }
+        }
+    }
 
+    function nextSong() {
+        if (songs.length === 0) return;
+        if (isRandom) currentIndex = Math.floor(Math.random() * songs.length);
+        else currentIndex = (currentIndex + 1) % songs.length;
+        loadSong(currentIndex);
+        if (isPlaying) audio.play();
+    }
 
-            confirmAddSongBtn.addEventListener('click', () => {
-                const title = newSongTitle.value.trim();
-                const sub = newSongSub.value.trim();
-                const url = newSongUrl.value.trim();
+    function prevSong() {
+        if (songs.length === 0) return;
+        currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+        loadSong(currentIndex);
+        if (isPlaying) audio.play();
+    }
 
-                if (!title || !url) {
-                    showNotification('歌名和链接不能为空', 'error');
-                    return;
-                }
+    function savePlaylist() {
+        safeSetItem(APP_PREFIX + 'customSongs', JSON.stringify(songs));
+        renderPlaylist();
+    }
 
-                const newSong = {
-                    title,
-                    sub: sub || '未知艺术家',
-                    url
-                };
-                songs.push(newSong);
-
-
-                safeSetItem(APP_PREFIX + 'customSongs', JSON.stringify(songs));
-
-                renderPlaylist();
-                showNotification('歌曲已添加', 'success');
-
-                newSongTitle.value = '';
-                newSongSub.value = '';
-                newSongUrl.value = '';
-                hideModal(addSongModal);
-            });
-
-            cancelAddSongBtn.addEventListener('click', () => {
-                hideModal(addSongModal);
-            });
-
-            function setupDrag() {
-                let isDragging = false, startX, startY, initialLeft, initialTop, hasMoved = false;
-                const dragStart = (e) => {
-                    if (e.target.closest('.btn') || e.target.closest('.progress-wrapper') || e.target.closest('.playlist-popup')) return;
-                    const event = e.type === 'touchstart' ? e.touches[0]: e;
-                    isDragging = true; hasMoved = false;
-                    startX = event.clientX; startY = event.clientY;
-                    const rect = player.getBoundingClientRect();
-                    initialLeft = rect.left; initialTop = rect.top;
-                    player.style.transition = 'none';
-                    playlist.style.transition = 'none';
-                };
-                const dragMove = (e) => {
-                    if (!isDragging) return;
-                    if (e.cancelable) {
-                        e.preventDefault();
-                    }
-                    const event = e.type === 'touchmove' ? e.touches[0]: e;
-                    const dx = event.clientX - startX;
-                    const dy = event.clientY - startY;
-                    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-                        hasMoved = true;
-                    }
-
-                    let newLeft = initialLeft + dx;
-                    let newTop = initialTop + dy;
-                    const maxLeft = window.innerWidth - player.offsetWidth;
-                    const maxTop = window.innerHeight - player.offsetHeight;
-                    player.style.left = Math.max(0, Math.min(newLeft, maxLeft)) + 'px';
-                    player.style.top = Math.max(0, Math.min(newTop, maxTop)) + 'px';
-                    const rect = player.getBoundingClientRect();
-                    playlist.style.left = rect.left + 'px';
-                    playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 70: 170)) + 'px';
-                };
-                const dragEnd = () => {
-                    if (!isDragging) return;
-                    isDragging = false;
-                    player.style.transition = '';
-                    playlist.style.transition = '';
-                };
-                player.addEventListener('mousedown', dragStart);
-                document.addEventListener('mousemove', dragMove);
-                document.addEventListener('mouseup', dragEnd);
-                player.addEventListener('touchstart', dragStart, {
-                    passive: false
-                });
-                document.addEventListener('touchmove', dragMove, {
-                    passive: false
-                });
-                document.addEventListener('touchend', dragEnd);
-
-                miniView.addEventListener('click', () => {
-                    if (!hasMoved && player.classList.contains('collapsed')) {
-                        player.classList.remove('collapsed');
-                        setTimeout(() => {
-                            const rect = player.getBoundingClientRect();
-                            playlist.style.top = (rect.top + 170) + 'px';
-                        }, 300);
-                    }
-                });
-            }
-            playBtn.addEventListener('click', togglePlay);
-            document.getElementById('next-btn').addEventListener('click', nextSong);
-            document.getElementById('prev-btn').addEventListener('click', prevSong);
-            document.getElementById('minimize-btn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                player.classList.add('collapsed');
-                playlist.classList.remove('active');
-            });
-
-            progressArea.addEventListener('click', (e) => {
-                const width = progressArea.clientWidth;
-                const clickX = e.offsetX;
-                const duration = audio.duration;
-                audio.currentTime = (clickX / width) * duration;
-            });
-
-            audio.addEventListener('timeupdate', (e) => {
-                const {
-                    duration,
-                    currentTime
-                } = e.target;
-                if (duration) document.getElementById('progress-bar').style.width = `${(currentTime / duration) * 100}%`;
-            });
-            audio.addEventListener('ended', nextSong);
-
-            document.getElementById('mode-btn').addEventListener('click', () => {
-                isRandom = !isRandom;
-                document.getElementById('icon-loop').style.display = isRandom ? 'none': 'block';
-                document.getElementById('icon-shuffle').style.display = isRandom ? 'block': 'none';
-                showNotification(isRandom ? '随机播放': '顺序播放', 'info', 1000);
-            });
-
-            const listBtn = document.getElementById('list-btn');
-            listBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const rect = player.getBoundingClientRect();
-                playlist.style.left = rect.left + 'px';
-                playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 70: 170)) + 'px';
-                playlist.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!playlist.contains(e.target) && !listBtn.contains(e.target) && !player.contains(e.target) && !e.target.closest('#add-song-modal')) {
-                    playlist.classList.remove('active');
-                }
-            });
-
+    function syncSystemSongs() {
+        if (confirm('更新歌单将会：\n1. 将系统预设歌曲重置为最新版本\n2. 保留您手动添加/修改的自定义歌曲\n\n确定要更新吗？')) {
+            const userCustomSongs = songs.filter(s => s.isCustom === true);
+            songs = [...latestSystemSongs, ...userCustomSongs];
+            savePlaylist();
+            currentIndex = 0;
             loadSong(0);
-            renderPlaylist();
-            setupDrag();
-
-            if (settings.musicPlayerEnabled) {
-                player.classList.add('visible');
+            if (isPlaying) {
+                audio.pause();
+                togglePlay();
             }
+            showNotification('歌单已更新到最新版本', 'success');
+        }
+    }
+
+    function openEditModal(index) {
+        const song = songs[index];
+        if (!song) return;
+        editModeIndex = index;
+        newSongTitle.value = song.title;
+        newSongSub.value = song.sub;
+        newSongUrl.value = song.url;
+        modalTitleElem.innerText = "编辑歌曲信息";
+        confirmAddSongBtn.innerText = "保存修改";
+        showModal(addSongModal);
+    }
+
+    function openAddModal() {
+        editModeIndex = -1;
+        newSongTitle.value = '';
+        newSongSub.value = '';
+        newSongUrl.value = '';
+        modalTitleElem.innerText = "添加自定义歌曲";
+        confirmAddSongBtn.innerText = "添加播放";
+        showModal(addSongModal);
+    }
+
+    function renderPlaylist() {
+        playlist.innerHTML = '';
+
+        const header = document.createElement('div');
+        header.className = 'playlist-header';
+        header.innerHTML = `
+            <div class="pl-header-title">˙°ʚᕱ⑅ᕱɞ°˙</div>
+            <div class="pl-header-actions">
+                <button class="pl-icon-btn ${isSearchVisible ? 'active' : ''}" id="pl-search-toggle" title="搜索"><i class="fas fa-search"></i></button>
+                <button class="pl-icon-btn" id="pl-sync-btn" title="更新预设歌单"><i class="fas fa-sync-alt"></i></button>
+                <button class="pl-icon-btn" id="pl-add-btn" title="添加歌曲"><i class="fas fa-plus"></i></button>
+            </div>
+        `;
+        playlist.appendChild(header);
+
+        const searchWrapper = document.createElement('div');
+        searchWrapper.className = `playlist-search-wrapper ${isSearchVisible ? 'active' : ''}`;
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'playlist-search-input';
+        searchInput.placeholder = '';
+        searchInput.value = searchTerm;
+        
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderListContent(contentDiv);
+        });
+        
+        searchWrapper.appendChild(searchInput);
+        playlist.appendChild(searchWrapper);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'playlist-content';
+        playlist.appendChild(contentDiv);
+
+        renderListContent(contentDiv);
+
+        header.querySelector('#pl-add-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openAddModal();
+            newSongTitle.focus();
+        });
+        
+        header.querySelector('#pl-sync-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            syncSystemSongs();
+        });
+
+        header.querySelector('#pl-search-toggle').addEventListener('click', (e) => {
+            e.stopPropagation();
+            isSearchVisible = !isSearchVisible;
+            searchWrapper.classList.toggle('active', isSearchVisible);
+            e.currentTarget.classList.toggle('active', isSearchVisible);
+            if (isSearchVisible) {
+                setTimeout(() => searchInput.focus(), 100);
+            }
+        });
+    }
+
+    function renderListContent(container) {
+        container.innerHTML = '';
+        
+        const filteredSongs = songs.map((s, i) => ({...s, originalIndex: i}))
+                                   .filter(s => s.title.toLowerCase().includes(searchTerm) || 
+                                                s.sub.toLowerCase().includes(searchTerm));
+
+        if (filteredSongs.length === 0) {
+            container.innerHTML = `<div class="empty-search-result">未找到 "${searchTerm}" 相关歌曲</div>`;
+            return;
+        }
+
+        filteredSongs.forEach((song) => {
+            const realIndex = song.originalIndex;
+
+            const div = document.createElement('div');
+            div.className = 'playlist-item';
+            if (realIndex === currentIndex) div.classList.add('playing');
+
+            const highlightText = (text, term) => {
+                if (!term) return text;
+                const regex = new RegExp(`(${term})`, 'gi');
+                return text.replace(regex, '<span class="highlight">$1</span>');
+            };
+
+            const displayTitle = highlightText(song.title, searchTerm);
+            const displaySub = highlightText(song.sub, searchTerm);
+
+            div.innerHTML = `
+                <div class="song-info">
+                    <div class="song-title-row">${displayTitle}</div>
+                    <div class="song-sub-row">${displaySub}</div>
+                </div>
+                <div class="item-actions">
+                    ${song.isCustom ? '<span class="custom-tag" title="自定义歌曲"></span>' : ''}
+                    <span class="action-icon-btn delete" title="移除">&times;</span>
+                </div>
+            `;
+
+            if (song.isCustom) {
+                div.querySelector('.custom-tag').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEditModal(realIndex);
+                });
+            }
+
+            div.querySelector('.delete').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (confirm(`确定移除《${song.title}》吗？`)) {
+                    songs.splice(realIndex, 1);
+                    savePlaylist();
+                    
+                    if (realIndex === currentIndex) {
+                        if (songs.length > 0) {
+                            currentIndex = realIndex % songs.length;
+                            loadSong(currentIndex);
+                            if (isPlaying) audio.play();
+                        } else {
+                            audio.pause();
+                            isPlaying = false;
+                            loadSong(0);
+                        }
+                    } else if (realIndex < currentIndex) {
+                        currentIndex--;
+                    }
+                }
+            });
+
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = realIndex;
+                loadSong(currentIndex);
+                if (!isPlaying) togglePlay();
+                else audio.play();
+            });
+
+            container.appendChild(div);
+        });
+    }
+
+    function updatePlaylistHighlight() {
+        const contentDiv = playlist.querySelector('.playlist-content');
+        if (contentDiv) renderListContent(contentDiv);
+    }
+
+    confirmAddSongBtn.addEventListener('click', () => {
+        const title = newSongTitle.value.trim();
+        const sub = newSongSub.value.trim();
+        const url = newSongUrl.value.trim();
+
+        if (!title || !url) {
+            showNotification('歌名和链接不能为空', 'error');
+            return;
+        }
+
+        const songData = {
+            title,
+            sub: sub || '未知艺术家',
+            url,
+            isCustom: true
         };
+
+        if (editModeIndex >= 0) {
+            songs[editModeIndex] = songData;
+            showNotification('歌曲信息已修改', 'success');
+        } else {
+            songs.unshift(songData);
+            showNotification('歌曲已添加', 'success');
+            if (songs.length === 1) loadSong(0);
+        }
+
+        searchTerm = '';
+        savePlaylist();
+        newSongTitle.value = '';
+        newSongSub.value = '';
+        newSongUrl.value = '';
+        hideModal(addSongModal);
+    });
+
+    cancelAddSongBtn.addEventListener('click', () => {
+        hideModal(addSongModal);
+    });
+
+    function setupDrag() {
+        let isDragging = false, startX, startY, initialLeft, initialTop, hasMoved = false;
+        const dragStart = (e) => {
+            if (e.target.closest('.btn') || e.target.closest('.progress-wrapper') || e.target.closest('.playlist-popup')) return;
+            const event = e.type === 'touchstart' ? e.touches[0] : e;
+            isDragging = true; hasMoved = false;
+            startX = event.clientX; startY = event.clientY;
+            const rect = player.getBoundingClientRect();
+            initialLeft = rect.left; initialTop = rect.top;
+            player.style.transition = 'none';
+            playlist.style.transition = 'none';
+        };
+        const dragMove = (e) => {
+            if (!isDragging) return;
+            if (e.cancelable) e.preventDefault();
+            const event = e.type === 'touchmove' ? e.touches[0] : e;
+            const dx = event.clientX - startX;
+            const dy = event.clientY - startY;
+            if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasMoved = true;
+
+            let newLeft = initialLeft + dx;
+            let newTop = initialTop + dy;
+            const maxLeft = window.innerWidth - player.offsetWidth;
+            const maxTop = window.innerHeight - player.offsetHeight;
+            player.style.left = Math.max(0, Math.min(newLeft, maxLeft)) + 'px';
+            player.style.top = Math.max(0, Math.min(newTop, maxTop)) + 'px';
+            const rect = player.getBoundingClientRect();
+            playlist.style.left = rect.left + 'px';
+            playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 70 : 170)) + 'px';
+        };
+        const dragEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            player.style.transition = '';
+            playlist.style.transition = '';
+        };
+        player.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', dragMove);
+        document.addEventListener('mouseup', dragEnd);
+        player.addEventListener('touchstart', dragStart, { passive: false });
+        document.addEventListener('touchmove', dragMove, { passive: false });
+        document.addEventListener('touchend', dragEnd);
+
+        miniView.addEventListener('click', () => {
+            if (!hasMoved && player.classList.contains('collapsed')) {
+                player.classList.remove('collapsed');
+                setTimeout(() => {
+                    const rect = player.getBoundingClientRect();
+                    playlist.style.top = (rect.top + 170) + 'px';
+                }, 300);
+            }
+        });
+    }
+
+    playBtn.addEventListener('click', togglePlay);
+    document.getElementById('next-btn').addEventListener('click', nextSong);
+    document.getElementById('prev-btn').addEventListener('click', prevSong);
+    document.getElementById('minimize-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        player.classList.add('collapsed');
+        playlist.classList.remove('active');
+    });
+
+    progressArea.addEventListener('click', (e) => {
+        const width = progressArea.clientWidth;
+        const clickX = e.offsetX;
+        const duration = audio.duration;
+        if (duration) audio.currentTime = (clickX / width) * duration;
+    });
+
+    audio.addEventListener('timeupdate', (e) => {
+        const { duration, currentTime } = e.target;
+        if (duration) document.getElementById('progress-bar').style.width = `${(currentTime / duration) * 100}%`;
+    });
+    audio.addEventListener('ended', nextSong);
+
+    document.getElementById('mode-btn').addEventListener('click', () => {
+        isRandom = !isRandom;
+        document.getElementById('icon-loop').style.display = isRandom ? 'none' : 'block';
+        document.getElementById('icon-shuffle').style.display = isRandom ? 'block' : 'none';
+        showNotification(isRandom ? '随机播放' : '顺序播放', 'info', 1000);
+    });
+
+    const listBtn = document.getElementById('list-btn');
+    listBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rect = player.getBoundingClientRect();
+        playlist.style.left = rect.left + 'px';
+        playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 70 : 170)) + 'px';
+        playlist.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!playlist.contains(e.target) && !listBtn.contains(e.target) && !player.contains(e.target) && !e.target.closest('#add-song-modal')) {
+            playlist.classList.remove('active');
+        }
+    });
+
+    loadSong(0);
+    renderPlaylist();
+    setupDrag();
+
+    if (settings.musicPlayerEnabled) {
+        player.classList.add('visible');
+    }
+};
 
         const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -9505,30 +10112,309 @@ DOMElements.appearanceModal.closeBtn.addEventListener('click', () => {
 
                 const disclaimerModal = document.getElementById('disclaimer-modal');
                 const acceptDisclaimerBtn = document.getElementById('accept-disclaimer');
-                if (disclaimerModal && !safeGetItem(APP_PREFIX + 'disclaimerShown')) {
+                if (disclaimerModal && !safeGetItem(APP_PREFIX + 'tour_seen')) {
                     showModal(disclaimerModal);
                 }
                 if (acceptDisclaimerBtn) {
-                    acceptDisclaimerBtn.addEventListener('click', () => {
-                        hideModal(disclaimerModal);
-                        safeSetItem(APP_PREFIX + 'disclaimerShown', 'true');
-                    });
-                }
+        acceptDisclaimerBtn.addEventListener('click', () => {
+            hideModal(disclaimerModal);
+            startTour(); 
+        });
+    }
             } catch (err) {
                 console.error("初始化发生错误:", err);
 
                 if (typeof removeBackground === 'function') removeBackground();
             }
-
-
-            setTimeout(() => {
-                const anim = document.getElementById('welcome-animation');
-                if (anim && anim.style.display !== 'none') {
-                    console.warn("触发强制解锁，移除开场动画");
-                    anim.style.display = 'none';
-                }
-            }, 5000);
         });
+
+const tourOverlay = document.getElementById('tour-overlay');
+const tourPopover = document.getElementById('tour-popover');
+const tourHighlightBox = document.getElementById('tour-highlight-box');
+const tourTitle = document.getElementById('tour-title');
+const tourContent = document.getElementById('tour-content');
+const tourStepCounter = document.getElementById('tour-step-counter');
+const tourNextBtn = document.getElementById('tour-next-btn');
+const tourPrevBtn = document.getElementById('tour-prev-btn');
+const tourSkipBtn = document.getElementById('tour-skip-btn');
+
+let currentTourStep = 0;
+let isTourActive = false;
+
+const tourSteps = [
+    {
+        title: "欢迎使用「传讯」",
+        content: "这是一个新手引导教程，带你快速了解功能，请最好看一下哦🥺",
+        position: 'center'
+    },
+    {
+        element: '#my-name',
+        title: "这是“你”",
+        content: "上方是你的昵称，点击它可以进行修改",
+        position: 'top'
+    },
+    {
+        element: '#my-avatar',
+        title: "你的头像",
+        content: "点击这里可以上传/更改你的头像。",
+        position: 'top'
+    },
+    {
+        element: '#my-status-container',
+        title: "你的状态",
+        content: "你的状态，点击可以进行编辑，一般而言梦角是能够看见的",
+        position: 'top'
+    },
+    {
+        element: '#partner-name',
+        title: "这是“梦角”",
+        content: "这里是梦角的昵称，同样可以点击修改。",
+        position: 'top'
+    },
+    {
+        element: '#message-input',
+        title: "消息输入框",
+        content: "在这里输入你想说的话，按回车键或纸飞机发送。",
+        position: 'top'
+    },
+    {
+        element: '#send-btn',
+        title: "发送按钮",
+        content: "点击纸飞机，就能将你的心意传达给梦角。",
+        position: 'top'
+    },
+    {
+        element: '#attachment-btn',
+        title: "发送图片",
+        content: "点击这里，可以发送图片！",
+        position: 'top'
+    },
+    {
+        element: '#poke-btn',
+        title: "“拍一拍”功能",
+        content: "“拍一拍”功能，可以发送自定义的互动消息",
+        position: 'top'
+    },
+    {
+        element: '#continue-btn',
+        title: "继续说",
+        content: "如果想让梦角继续说话或者不知道说什么了，点击这里，对方会自动回复",
+        position: 'top'
+    },
+    {
+        element: '#batch-btn',
+        title: "批量发送模式",
+        content: "开启批量模式，可以编辑多条消息后一并发送。",
+        position: 'top'
+    },
+    {
+        element: '#settings-btn',
+        title: "全局设置",
+        content: "所有设置都在这里，我们点开看看吧！",
+        position: 'bottom',
+        onBefore: () => {
+            if (isTourActive) document.querySelectorAll('.modal').forEach(m => hideModal(m));
+        }
+    },
+    {
+        element: '#settings-modal .modal-content',
+        title: "设置中心",
+        content: "这里有四个主要模块：外观、聊天、高级功能和数据管理。",
+        position: 'bottom',
+        onBefore: () => {
+            if (isTourActive) showModal(DOMElements.settingsModal.modal);
+        }
+    },
+    {
+        element: '#appearance-settings',
+        title: "外观设置",
+        content: "自定义主题颜色、字体大小、聊天气泡和背景图。",
+        position: 'bottom'
+    },
+    {
+        element: '#chat-settings',
+        title: "聊天设置",
+        content: "没啥用其实，一些功能的开关，比如消息音效、已读回执等。",
+        position: 'bottom'
+    },
+    {
+        element: '#advanced-settings',
+        title: "高级功能",
+        content: "请一定要点击看看！可以增加自定义回复！！还有音乐播放器、每日运势等。",
+        position: 'bottom'
+    },
+    {
+        element: '#data-settings',
+        title: "数据管理",
+        content: "在这里可以导入/导出聊天记录，或者清空数据。我们重新开始教程的按钮也在这里哦！",
+        position: 'top'
+    },
+    {
+        element: '#theme-toggle',
+        title: "切换主题",
+        content: "这是个快捷按钮，可以快速在白天和黑夜模式之间切换。",
+        position: 'bottom',
+        onBefore: () => {
+             if (isTourActive) hideModal(DOMElements.settingsModal.modal);
+        }
+    },
+    {
+        element: '#favorites-btn',
+        title: "收藏夹",
+        content: "所有收藏的消息都会在这里展示。",
+        position: 'bottom'
+    },
+    {
+        element: '#session-manager-btn',
+        title: "会话管理",
+        content: "你可以创建多个独立的聊天会话，互不干扰。在这里可以进行切换、重命名或删除。",
+        position: 'bottom'
+    },
+    {
+        title: "消息操作",
+        content: "当你点击一条消息，会出现几个按钮，比如收藏、回复和添加注释。",
+        position: 'center'
+    },
+    {
+        title: "教程结束",
+        content: "你已经掌握了所有基本功能！请开始传讯吧！希望你能在这里收获到爱与幸福🥺",
+        position: 'center'
+    }
+];
+
+function startTour() {
+    isTourActive = true;
+    tourOverlay.style.display = 'block';
+    setTimeout(() => tourOverlay.classList.add('active'), 10);
+    currentTourStep = 0;
+    showTourStep(currentTourStep);
+}
+
+function endTour() {
+    isTourActive = false;
+    tourOverlay.classList.remove('active');
+    tourPopover.classList.remove('visible');
+    setTimeout(() => {
+        tourOverlay.style.display = 'none';
+        tourHighlightBox.style.width = '0px';
+        tourHighlightBox.style.height = '0px';
+        tourHighlightBox.style.opacity = '0';
+    }, 300);
+    safeSetItem(APP_PREFIX + 'tour_seen', 'true');
+    document.querySelectorAll('.modal').forEach(m => hideModal(m));
+}
+
+function showTourStep(index) {
+    if (index < 0 || index >= tourSteps.length) {
+        endTour();
+        return;
+    }
+    const step = tourSteps[index];
+    if (step.onBefore) {
+        step.onBefore();
+    }
+    setTimeout(() => {
+        tourTitle.textContent = step.title;
+        tourContent.innerHTML = step.content;
+        tourStepCounter.textContent = `${index + 1} / ${tourSteps.length}`;
+        tourPopover.classList.remove('visible');
+        tourPrevBtn.style.visibility = (index === 0) ? 'hidden' : 'visible';
+        if (index === tourSteps.length - 1) {
+            tourNextBtn.innerHTML = '完成 <i class="fas fa-check"></i>';
+        } else {
+            tourNextBtn.innerHTML = '下一步 <i class="fas fa-arrow-right"></i>';
+        }
+        const targetElement = step.element ? document.querySelector(step.element) : null;
+        if (targetElement) {
+            const rect = targetElement.getBoundingClientRect();
+            tourHighlightBox.style.width = `${rect.width + 10}px`;
+            tourHighlightBox.style.height = `${rect.height + 10}px`;
+            tourHighlightBox.style.top = `${rect.top - 5}px`;
+            tourHighlightBox.style.left = `${rect.left - 5}px`;
+            tourHighlightBox.style.opacity = '1';
+            positionPopover(rect, step.position);
+        } else {
+            tourHighlightBox.style.opacity = '0';
+            tourHighlightBox.style.width = '0px';
+            tourHighlightBox.style.height = '0px';
+            tourPopover.style.top = '50%';
+            tourPopover.style.left = '50%';
+            tourPopover.style.transform = 'translate(-50%, -50%)';
+        }
+        setTimeout(() => tourPopover.classList.add('visible'), 50);
+    }, (step.onBefore ? 400 : 0));
+}
+
+function positionPopover(rect, position) {
+    const popoverRect = tourPopover.getBoundingClientRect();
+    const spacing = 15;
+    let top, left;
+    switch (position) {
+        case 'top':
+            top = rect.top - popoverRect.height - spacing;
+            left = rect.left + (rect.width / 2) - (popoverRect.width / 2);
+            break;
+        case 'bottom':
+            top = rect.bottom + spacing;
+            left = rect.left + (rect.width / 2) - (popoverRect.width / 2);
+            break;
+        case 'left':
+            top = rect.top + (rect.height / 2) - (popoverRect.height / 2);
+            left = rect.left - popoverRect.width - spacing;
+            break;
+        case 'right':
+            top = rect.top + (rect.height / 2) - (popoverRect.height / 2);
+            left = rect.right + spacing;
+            break;
+        default:
+            top = '50%';
+            left = '50%';
+            tourPopover.style.transform = 'translate(-50%, -50%)';
+            tourPopover.style.top = top;
+            tourPopover.style.left = left;
+            return;
+    }
+    if (top < 10) top = 10;
+    if (left < 10) left = 10;
+    if (left + popoverRect.width > window.innerWidth - 10) {
+        left = window.innerWidth - popoverRect.width - 10;
+    }
+    if (top + popoverRect.height > window.innerHeight - 10) {
+        top = window.innerHeight - popoverRect.height - 10;
+    }
+    tourPopover.style.top = `${top}px`;
+    tourPopover.style.left = `${left}px`;
+    tourPopover.style.transform = 'none';
+}
+
+function nextTourStep() {
+    currentTourStep++;
+    showTourStep(currentTourStep);
+}
+
+function prevTourStep() {
+    currentTourStep--;
+    showTourStep(currentTourStep);
+}
+
+// 定义一个新的函数来统一管理教程相关的事件监听
+function setupTutorialListeners() {
+    tourNextBtn.addEventListener('click', nextTourStep);
+    tourPrevBtn.addEventListener('click', prevTourStep);
+    tourSkipBtn.addEventListener('click', endTour);
+
+    const replayBtn = document.getElementById('replay-tutorial-btn');
+    if(replayBtn) {
+        replayBtn.addEventListener('click', () => {
+            hideModal(DOMElements.dataModal.modal);
+            setTimeout(() => {
+                if (confirm('确定要重新开始新手引导教程吗？')) {
+                    startTour();
+                }
+            }, 300);
+        });
+    }
+}
     </script>
 </body>
 </html>
