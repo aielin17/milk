@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="light" data-color-theme="gold">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+   <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
 
     <title>传讯</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4505,6 +4504,90 @@ html[data-theme="dark"] .tour-btn-primary {
 }
 .tour-btn-primary:hover {
     filter: brightness(1.1);
+}
+/* 自定义回复模态框的底部按钮固定样式 */
+#custom-replies-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    max-height: 90vh;
+}
+
+#custom-replies-modal .modal-title {
+    flex-shrink: 0;
+    padding: 20px 24px 10px;
+}
+
+#custom-replies-modal .reply-tabs {
+    flex-shrink: 0;
+    padding: 0 24px 15px;
+}
+
+#custom-replies-modal .reply-toolbar {
+    flex-shrink: 0;
+    padding: 15px 24px;
+}
+
+#custom-replies-modal .custom-replies-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 24px 20px;
+    min-height: 0;
+    margin-bottom: 80px; 
+}
+
+#custom-replies-modal .modal-buttons {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--secondary-bg);
+    padding: 20px 24px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 0;
+    z-index: 10;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.02);
+    flex-shrink: 0;
+}
+
+/* 确保系统预设标签页也能正确显示 */
+#custom-replies-modal .modal-buttons .modal-btn-secondary {
+    margin-left: auto;
+}
+/* 确保列表有底部间距 */
+.reply-list-with-buttons {
+    margin-bottom: 0px !important;
+}
+
+/* 响应式调整 */
+@media (max-height: 700px) {
+    #custom-replies-modal .modal-content {
+        height: 85vh;
+        max-height: 85vh;
+    }
+    
+    #custom-replies-modal .custom-replies-list {
+        margin-bottom: 70px;
+    }
+    
+    .reply-list-with-buttons {
+        margin-bottom: 70px !important;
+    }
+}
+
+@media (max-height: 600px) {
+    #custom-replies-modal .modal-content {
+        height: 80vh;
+        max-height: 80vh;
+    }
+    
+    #custom-replies-modal .custom-replies-list {
+        margin-bottom: 60px;
+    }
+    
+    .reply-list-with-buttons {
+        margin-bottom: 60px !important;
+    }
 }
 
     </style>
@@ -9747,7 +9830,7 @@ DOMElements.appearanceModal.closeBtn.addEventListener('click', () => {
             const list = document.getElementById('custom-replies-list');
             const searchInput = document.getElementById('reply-search-input');
             const addButton = document.getElementById('add-custom-reply');
-
+list.classList.add('reply-list-with-buttons');
 
             const filterText = searchInput ? searchInput.value.toLowerCase().trim(): '';
 
