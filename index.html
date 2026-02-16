@@ -5795,13 +5795,12 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     justify-content: space-between;
 }
 
-/* 表情/拍一拍 弹窗容器 */
 .sticker-picker-popover {
     position: absolute;
-    bottom: 60px; /* 输入框上方 */
-    right: 50px; /* 稍微靠右，对齐按钮 */
+    bottom: 60px; 
+    right: 50px; 
     width: 320px;
-    height: 350px; /*稍微高一点 */
+    height: 350px; 
     background-color: var(--secondary-bg);
     border: 1px solid var(--border-color);
     border-radius: 16px;
@@ -5817,7 +5816,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     display: flex;
 }
 
-/* 顶部 Tab 栏 */
 .combo-tabs-header {
     display: flex;
     background-color: var(--primary-bg);
@@ -5850,7 +5848,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     box-shadow: 0 2px 8px rgba(var(--accent-color-rgb), 0.3);
 }
 
-/* 内容区域 */
 .combo-content-area {
     flex: 1;
     overflow-y: auto;
@@ -5858,10 +5855,9 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     background-color: var(--secondary-bg);
 }
 
-/* 表情库网格 */
 .sticker-grid-view {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 一行4个 */
+    grid-template-columns: repeat(4, 1fr); 
     gap: 10px;
 }
 
@@ -5889,7 +5885,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     object-fit: cover;
 }
 
-/* 拍一拍列表 */
 .poke-list-view {
     display: flex;
     flex-direction: column;
@@ -5913,7 +5908,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     transform: translateX(3px);
 }
 
-/* 自定义拍一拍按钮 */
 .custom-poke-btn {
     width: 100%;
     padding: 12px;
@@ -5935,7 +5929,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     filter: brightness(1.1);
 }
 
-/* 空状态提示 */
 .empty-sticker-tip {
     text-align: center;
     padding: 40px 20px;
@@ -7889,7 +7882,6 @@ async function initializeSession() {
     }
 
     await localforage.setItem(`${APP_PREFIX}lastSessionId`, SESSION_ID);
-    // history.replaceState(null, null, `#${SESSION_ID}`); // 已注释:在 Artifacts 环境中不支持
 }
 
 
@@ -8225,7 +8217,6 @@ const loadData = async () => {
         
         displayedMessageCount = HISTORY_BATCH_SIZE;
         
-        // 延迟执行 UI 更新，确保 DOM 已就绪
         setTimeout(() => {
             applyAllAvatarFrames();
             manageAutoSendTimer(); 
@@ -8235,7 +8226,6 @@ const loadData = async () => {
 
     } catch (e) {
         console.error("LoadData 内部致命错误:", e);
-        // 恢复默认设置以确保程序能跑
         settings = getDefaultSettings();
         messages = [];
         updateUI();
@@ -10076,7 +10066,6 @@ function initMoodListeners() {
         closeMoodBtn.addEventListener('click', () => hideModal(modal));
     }
     
-    // 修复：使用安全检查，因为close-mood-selector可能不存在
     const closeMoodSelectorBtn = document.getElementById('close-mood-selector');
     if (closeMoodSelectorBtn) {
         closeMoodSelectorBtn.addEventListener('click', () => {
@@ -10085,7 +10074,6 @@ function initMoodListeners() {
         });
     }
     
-    // 备用方案：使用 cancel-mood-edit 按钮
     const cancelMoodBtn = document.getElementById('cancel-mood-edit');
     if (cancelMoodBtn) {
         cancelMoodBtn.addEventListener('click', () => {
@@ -10183,18 +10171,29 @@ function handleSendEnvelope() {
     document.getElementById('envelope-input').value = '';
     showNotification(`信件已寄出，预计 ${Math.floor(randomHours)} 小时后收到回信`, 'success');
 }
-        function setupEventListeners() {
-    initCoreListeners();
-    initModalListeners();
-    initChatActionListeners();
-    initHeaderAndSettingsListeners();
-    initDataManagementListeners();
-    initNewFeatureListeners();
-    setupTutorialListeners();
-    initMoodListeners();
-initDecisionModule();
-    initComboMenu(); 
-    initUserStickerPicker(); 
+
+function setupEventListeners() {
+    console.log("正在初始化事件监听..."); 
+    
+    try {
+        initCoreListeners();
+        initModalListeners();
+        initChatActionListeners();
+        initHeaderAndSettingsListeners();
+        initDataManagementListeners();
+        initNewFeatureListeners();
+        setupTutorialListeners();
+        initMoodListeners();
+        initDecisionModule(); 
+        initAnniversaryModule(); 
+        initThemeEditor(); 
+        
+        initComboMenu(); 
+        initUserStickerPicker();
+        
+    } catch (e) {
+        console.error("事件绑定过程中发生错误:", e);
+    }
 }
 let wheelOptions = ["是", "否", "再想一想", "听你的"];
 let currentWheelRotation = 0;
@@ -10203,7 +10202,6 @@ let wheelResultText = "";
 function initDecisionModule() {
     const entryBtn = document.getElementById('decision-function'); 
     if(entryBtn) {
-        // 移除旧监听器（如果存在）
         const newBtn = entryBtn.cloneNode(true);
         entryBtn.parentNode.replaceChild(newBtn, entryBtn);
         
@@ -10320,21 +10318,37 @@ function renderWheelOptions() {
     });
 }
 
+
 function drawWheel() {
     const canvas = document.getElementById('wheel-canvas');
     if(!canvas) return;
+    
     const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
+    
+    const dpr = window.devicePixelRatio || 1;
+    
+    const rect = canvas.getBoundingClientRect();
+    const width = 300; 
+    const height = 300;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    
+    ctx.scale(dpr, dpr);
+    
     const centerX = width / 2;
     const centerY = height / 2;
-    const radius = width / 2;
+    const radius = width / 2 - 5; 
     const len = wheelOptions.length;
     const arc = (2 * Math.PI) / len;
     
     ctx.clearRect(0, 0, width, height);
     
     const colors = ['#FFD93D', '#FF6B6B', '#6BCB77', '#4D96FF', '#E0C3FC', '#FF9A8B'];
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.translate(-centerX, -centerY);
 
     for (let i = 0; i < len; i++) {
         const angle = i * arc;
@@ -10344,48 +10358,58 @@ function drawWheel() {
         ctx.arc(centerX, centerY, radius, angle, angle + arc);
         ctx.lineTo(centerX, centerY);
         ctx.fill();
+        ctx.stroke(); 
         
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(angle + arc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#fff";
-        ctx.font = "bold 14px Arial";
-        ctx.fillText(wheelOptions[i], radius - 20, 5);
+        ctx.font = "bold 16px Arial"; 
+        ctx.shadowColor = "rgba(0,0,0,0.2)";
+        ctx.shadowBlur = 2;
+        ctx.fillText(wheelOptions[i], radius - 20, 6);
         ctx.restore();
     }
+    ctx.restore();
 }
+
 
 function spinWheel() {
     const spinBtn = document.getElementById('spin-wheel-btn');
     const resultDisplay = document.getElementById('wheel-result');
     const sendBtn = document.getElementById('send-wheel-result');
     
+    if (wheelOptions.length < 2) {
+        showNotification("请至少添加两个选项", "warning");
+        return;
+    }
+
     spinBtn.disabled = true;
     sendBtn.style.display = 'none';
     resultDisplay.classList.remove('show');
+    resultDisplay.textContent = "";
 
-    const extraSpins = 5 * 360;
+    const extraSpins = 5 * 360; 
     const randomDegree = Math.floor(Math.random() * 360);
     const totalRotation = currentWheelRotation + extraSpins + randomDegree;
     
     const canvas = document.getElementById('wheel-canvas');
+    canvas.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
     canvas.style.transform = `rotate(-${totalRotation}deg)`; 
+    
     currentWheelRotation = totalRotation; 
 
     setTimeout(() => {
         const actualRotation = totalRotation % 360;
-
+        
+        const degreeUnderPointer = (270 + actualRotation) % 360;
+        
         const len = wheelOptions.length;
         const arc = 360 / len;
-        const index = Math.floor(((actualRotation + 90) % 360) / arc); 
-
-        const degreeUnderPointer = (270 + actualRotation) % 360;
-        const resultIndex = Math.floor(degreeUnderPointer / arc);
-
-        wheelResultText = wheelOptions[(len - 1) - ((resultIndex + (len -1)) % len)]; 
-        const passedCount = Math.floor(((totalRotation + 90) % 360) / arc);
-        const finalIndex = (len - passedCount) % len;
+        const index = Math.floor(degreeUnderPointer / arc);
+        
+        const finalIndex = index % len;
 
         wheelResultText = wheelOptions[finalIndex];
 
@@ -10395,19 +10419,16 @@ function spinWheel() {
         sendBtn.style.display = 'inline-block';
         playSound('favorite'); 
         
-    }, 4000);
-}
-function initComboMenu() {
+    }, 4000); 
+}function initComboMenu() {
     const comboBtn = document.getElementById('combo-btn');
     const picker = document.getElementById('user-sticker-picker');
     const contentArea = document.getElementById('combo-content-area');
     
     if (!comboBtn || !picker) return;
     
-    // 防止重复绑定
     if (comboBtn.dataset.initialized) return;
     
-    // 按钮点击事件
     comboBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isActive = picker.classList.contains('active');
@@ -10415,7 +10436,6 @@ function initComboMenu() {
         if (isActive) {
             picker.classList.remove('active');
         } else {
-            // 默认打开表情库 Tab
             switchTab('sticker');
             picker.classList.add('active');
         }
@@ -10423,14 +10443,12 @@ function initComboMenu() {
     
     comboBtn.dataset.initialized = 'true';
 
-    // 点击外部关闭弹窗
     document.addEventListener('click', (e) => {
         if (!picker.contains(e.target) && !comboBtn.contains(e.target)) {
             picker.classList.remove('active');
         }
     });
 
-    // Tab 切换逻辑
     const tabs = picker.querySelectorAll('.combo-tab-btn');
     tabs.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -10441,12 +10459,10 @@ function initComboMenu() {
     });
 
     function switchTab(tabId) {
-        // 更新 Tab 样式
         tabs.forEach(b => b.classList.remove('active'));
         const activeBtn = Array.from(tabs).find(b => b.dataset.tab === tabId);
         if (activeBtn) activeBtn.classList.add('active');
 
-        // 渲染内容
         if (tabId === 'sticker') {
             renderStickerLibrary();
         } else {
@@ -10454,7 +10470,6 @@ function initComboMenu() {
         }
     }
 
-    // 渲染表情库（直接读取 stickerLibrary）
     function renderStickerLibrary() {
         contentArea.innerHTML = '';
         
@@ -10477,23 +10492,20 @@ function initComboMenu() {
             item.className = 'sticker-grid-item';
             item.innerHTML = `<img src="${src}" loading="lazy">`;
             
-            // 点击发送图片
             item.onclick = (e) => {
                 e.stopPropagation();
-                // 模拟发送图片消息
                 addMessage({
                     id: Date.now(),
                     sender: 'user',
                     text: '',
                     timestamp: new Date(),
-                    image: src, // 直接使用 Base64
+                    image: src, 
                     status: 'sent',
                     type: 'normal'
                 });
                 playSound('send');
                 picker.classList.remove('active');
                 
-                // 触发对方回复
                 const delayRange = settings.replyDelayMax - settings.replyDelayMin;
                 const randomDelay = settings.replyDelayMin + Math.random() * delayRange;
                 setTimeout(simulateReply, randomDelay);
@@ -10504,26 +10516,22 @@ function initComboMenu() {
         contentArea.appendChild(grid);
     }
 
-    // 渲染自定义拍一拍（用户视角）
     function renderUserPokeMenu() {
         contentArea.innerHTML = '';
 
         const wrapper = document.createElement('div');
         wrapper.className = 'poke-list-view';
 
-        // 1. 自定义按钮（核心需求）
         const customBtn = document.createElement('button');
         customBtn.className = 'custom-poke-btn';
         customBtn.innerHTML = '<i class="fas fa-pen"></i> 自定义动作';
         customBtn.onclick = (e) => {
             e.stopPropagation();
             picker.classList.remove('active');
-            // 打开原有的拍一拍 Modal
             showModal(DOMElements.pokeModal.modal, DOMElements.pokeModal.input);
         };
         wrapper.appendChild(customBtn);
 
-        // 2. 常用预设（为了方便）- 这些是用户发出的动作
         const userPresets = [
             "拍了拍对方的头",
             "戳了戳对方的脸颊",
@@ -10546,16 +10554,14 @@ function initComboMenu() {
             item.innerText = text;
             item.onclick = (e) => {
                 e.stopPropagation();
-                // 直接发送系统消息
                 addMessage({
                     id: Date.now(),
                     text: `✦ ${settings.myName} ${text} ✦`, 
                     timestamp: new Date(),
-                    type: 'system' // 关键：系统消息类型
+                    type: 'system' 
                 });
                 picker.classList.remove('active');
                 
-                // 触发对方回复
                 setTimeout(simulateReply, 1500);
             };
             wrapper.appendChild(item);
@@ -10568,7 +10574,6 @@ function renderComboMenu() {
     const content = document.getElementById('user-sticker-content');
     content.innerHTML = '';
     
-    // 添加顶部切换按钮
     const tabBar = document.createElement('div');
     tabBar.style.cssText = 'display:flex; gap:8px; padding:8px; border-bottom:1px solid var(--border-color);';
     tabBar.innerHTML = `
@@ -10587,10 +10592,8 @@ function renderComboMenu() {
     content.appendChild(tabBar);
     content.appendChild(contentArea);
     
-    // 默认显示表情
     showEmojiTab();
     
-    // 绑定切换事件
     tabBar.querySelectorAll('.combo-tab').forEach(btn => {
         btn.addEventListener('click', () => {
             tabBar.querySelectorAll('.combo-tab').forEach(b => {
@@ -10618,7 +10621,6 @@ function showEmojiTab() {
     area.style.gridTemplateColumns = 'repeat(5, 1fr)';
     area.style.gap = '8px';
     
-    // Emoji表情
     CONSTANTS.REPLY_EMOJIS.forEach(emoji => {
         const item = document.createElement('div');
         item.className = 'picker-item';
@@ -10632,7 +10634,6 @@ function showEmojiTab() {
         area.appendChild(item);
     });
 
-    // 表情图片
     stickerLibrary.forEach(src => {
         const item = document.createElement('div');
         item.className = 'picker-item';
@@ -11069,7 +11070,6 @@ function initUserStickerPicker() {
 
             DOMElements.continueBtn.addEventListener('click', simulateReply);
             DOMElements.batchBtn.addEventListener('click', toggleBatchMode);
-            // DOMElements.pokeBtn.addEventListener('click', () => showModal(DOMElements.pokeModal.modal, DOMElements.pokeModal.input)); // 已注释:按钮不存在
         }
 
 function initChatActionListeners() {
@@ -13187,40 +13187,63 @@ const updatePreview = () => {
             '--message-received-text': '接收气泡文字',
         };
 
-        function initThemeEditor() {
-            const editorModal = document.getElementById('theme-editor-modal');
-            document.getElementById('open-theme-editor').addEventListener('click', () => {
-                hideModal(document.getElementById('appearance-modal'));
-                populateThemeEditor();
-                populateThemeSelector();
-                showModal(editorModal);
-            });
-            document.getElementById('close-theme-editor').addEventListener('click', () => {
-                hideModal(editorModal);
-                updateUI();
-            });
-            document.getElementById('save-theme-preset-btn').addEventListener('click', saveCurrentThemeAsPreset);
-            document.getElementById('delete-theme-preset-btn').addEventListener('click', deleteCurrentPreset);
-            
-document.getElementById('theme-preset-selector').addEventListener('change', (e) => {
-    const selectedValue = e.target.value;
-    
-    if (selectedValue === "current-editing") {
-        return; 
-    }
-    
-    if (selectedValue.startsWith('custom-')) {
-        const theme = customThemes.find(t => t.id === selectedValue);
-        if (theme) {
-            settings.colorTheme = theme.id;
-            applyTheme(theme.colors);
-            populateThemeEditor(theme.colors);
-            throttledSaveData();
-        }
-    }
-});
-        }
 
+function initThemeEditor() {
+    const openEditorBtn = document.getElementById('open-theme-editor');
+    
+    if (openEditorBtn) {
+        const newBtn = openEditorBtn.cloneNode(true);
+        openEditorBtn.parentNode.replaceChild(newBtn, openEditorBtn);
+
+        newBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log("自定义主题编辑器按钮被点击！");
+            
+            const appearanceModal = document.getElementById('appearance-modal');
+            const editorModal = document.getElementById('theme-editor-modal');
+
+            if (appearanceModal) hideModal(appearanceModal);
+            
+            populateThemeEditor();
+            populateThemeSelector();
+            
+            if (editorModal) showModal(editorModal);
+        });
+    }
+
+    const closeBtn = document.getElementById('close-theme-editor');
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            hideModal(document.getElementById('theme-editor-modal'));
+            updateUI();
+        };
+    }
+    
+    const saveBtn = document.getElementById('save-theme-preset-btn');
+    if(saveBtn) saveBtn.onclick = saveCurrentThemeAsPreset;
+    
+    const delBtn = document.getElementById('delete-theme-preset-btn');
+    if(delBtn) delBtn.onclick = deleteCurrentPreset;
+
+    const selector = document.getElementById('theme-preset-selector');
+    if(selector) {
+        selector.onchange = (e) => {
+            const selectedValue = e.target.value;
+            if (selectedValue === "current-editing") return;
+            
+            if (selectedValue.startsWith('custom-')) {
+                const theme = customThemes.find(t => t.id === selectedValue);
+                if (theme) {
+                    settings.colorTheme = theme.id;
+                    applyTheme(theme.colors);
+                    populateThemeEditor(theme.colors);
+                    throttledSaveData();
+                }
+            }
+        };
+    }
+}
         function populateThemeEditor(currentColors = null) {
             const grid = document.getElementById('theme-editor-grid');
             grid.innerHTML = '';
@@ -13326,84 +13349,95 @@ function populateThemeSelector() {
         }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const loaderBar = document.getElementById('loader-tech-bar');
+    const welcomeSubtitle = document.querySelector('.welcome-subtitle-scramble');
+    const welcomeScreen = document.getElementById('welcome-animation');
+    const disclaimerModal = document.getElementById('disclaimer-modal');
+    const acceptDisclaimerBtn = document.getElementById('accept-disclaimer');
+
+    // ==================== 工具函数 ====================
+    const updateLoader = (text, width) => {
+        if (welcomeSubtitle) welcomeSubtitle.textContent = text;
+        if (loaderBar) loaderBar.style.width = width;
+    };
+
     const hideWelcomeScreen = () => {
-        const anim = document.getElementById('welcome-animation');
-        if (anim) {
-            anim.classList.add('hidden');
-            setTimeout(() => {
-                anim.style.display = 'none';
-            }, 800);
+        if (!welcomeScreen) return;
+        welcomeScreen.classList.add('hidden');
+        setTimeout(() => {
+            welcomeScreen.style.display = 'none';
+        }, 800);
+    };
+
+    const safeAwait = async (promise, fallback = null) => {
+        try {
+            return await promise;
+        } catch (error) {
+            console.error('操作失败:', error);
+            return fallback;
         }
     };
 
-    // 1. 先绑定事件，确保按钮可点击，防止卡死
+    // ==================== 主要加载流程 ====================
     try {
-        setupEventListeners(); 
-        initThemeEditor();
-        // 绑定心晴手账和纪念日模块
-        initAnniversaryModule(); 
-        initMoodListeners();
-        initDecisionModule();
-        initComboMenu(); 
-    } catch (e) {
-        console.error("事件绑定部分出错:", e);
-    }
+        // 第一阶段：事件绑定（不依赖数据）
+        safeAwait(Promise.all([
+            setupEventListeners?.(),
+            initThemeEditor?.(),
+            initAnniversaryModule?.(),
+            initMoodListeners?.(),
+            initDecisionModule?.(),
+            initComboMenu?.()
+        ]));
 
-    try {
+        // 第二阶段：数据初始化
         if (typeof localforage === 'undefined') {
-            console.error('LocalForage 未加载，尝试使用 localStorage 后备或报错');
-            // 这里可以添加降级处理，但暂时抛出错误
+            console.warn('LocalForage 未加载，将使用 localStorage 降级方案');
         }
 
-        // 2. 初始化会话
-        await initializeSession();
+        updateLoader('正在建立安全连接...', '10%');
+        await safeAwait(initializeSession());
 
-        // 3. 加载数据 (加了单独的 try-catch，防止数据损坏卡死全流程)
-        try {
-            await loadData();
-        } catch (dataErr) {
-            console.error("读取存档失败，已自动重置为默认设置:", dataErr);
-            // 如果读取失败，确保 settings 有默认值，防止后续报错
-            settings = getDefaultSettings(); 
-            // 可以在这里加一个静默的 toast 提示，不要弹窗干扰
-        }
+        updateLoader('正在读取记忆存档...', '40%');
+        await safeAwait(loadData());
+
+        updateLoader('正在渲染我们的世界...', '70%');
         
-        // 4. 初始化 UI 和 播放器
-        initializeRandomUI();
-        initMusicPlayer();
-        
+        // 并行加载非关键模块
+        await Promise.allSettled([
+            safeAwait(initializeRandomUI?.()),
+            safeAwait(initMusicPlayer?.())
+        ]);
+
+        // 定期检查（放在最后，不阻塞）
         setInterval(checkStatusChange, 60000);
 
-        const disclaimerModal = document.getElementById('disclaimer-modal');
-        const tourSeen = await localforage.getItem(APP_PREFIX + 'tour_seen');
-        const acceptDisclaimerBtn = document.getElementById('accept-disclaimer');
-        
-        if (disclaimerModal && !tourSeen) {
-            showModal(disclaimerModal);
-        }
-        if (acceptDisclaimerBtn) {
-            acceptDisclaimerBtn.addEventListener('click', () => {
-                hideModal(disclaimerModal);
-                startTour(); 
-            });
+        // 新手引导和免责声明
+        if (disclaimerModal) {
+            const tourSeen = await safeAwait(localforage?.getItem(APP_PREFIX + 'tour_seen'), false);
+            
+            if (!tourSeen) {
+                showModal(disclaimerModal);
+                
+                if (acceptDisclaimerBtn) {
+                    acceptDisclaimerBtn.addEventListener('click', () => {
+                        hideModal(disclaimerModal);
+                        startTour?.();
+                    }, { once: true }); // 确保只执行一次
+                }
+            }
         }
 
-        // !! 新增/移动到这里的代码 !!
-        // 等待一小会儿，让最后的UI渲染完成，然后隐藏加载动画
-        setTimeout(hideWelcomeScreen, 3000); 
+        updateLoader('连接成功，欢迎回来。', '100%');
+        setTimeout(hideWelcomeScreen, 3500); 
 
     } catch (err) {
-        console.error("严重初始化错误:", err);
-        document.querySelector('.welcome-subtitle-scramble').textContent = "加载遇到问题，已强制进入...";
-        // 如果出错，也隐藏加载动画，防止卡死
-        setTimeout(hideWelcomeScreen, 500); 
-        
-    } finally {
-        // 这里的代码被移走了
+        console.error('严重初始化错误:', err);
+        updateLoader('加载遇到问题，已强制进入...', '100%');
+        setTimeout(hideWelcomeScreen, 3500);
     }
 });
-
-            const stickerInput = document.getElementById('sticker-file-input');
+const stickerInput = document.getElementById('sticker-file-input');
             if (stickerInput) {
                 stickerInput.addEventListener('change', (e) => {
                     const file = e.target.files[0];
@@ -13814,77 +13848,62 @@ function renderAnniversariesList() {
     });
 }
 
+
 function initAnniversaryModule() {
     const entryBtn = document.getElementById('anniversary-function');
-    const modal = document.getElementById('anniversary-modal');
     
     if (entryBtn) {
-        // 防止重复绑定
-        if (entryBtn.dataset.initialized) return;
+        const newBtn = entryBtn.cloneNode(true);
+        entryBtn.parentNode.replaceChild(newBtn, entryBtn);
         
-        entryBtn.addEventListener('click', () => {
+        newBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             console.log('重要日按钮被点击');
-            hideModal(document.getElementById('advanced-modal'));
+            
+            const advancedModal = document.getElementById('advanced-modal');
+            const annModal = document.getElementById('anniversary-modal');
+            
+            if (advancedModal) hideModal(advancedModal);
             renderAnniversariesList();
-            showModal(modal);
+            if (annModal) showModal(annModal);
         });
-        entryBtn.dataset.initialized = 'true';
-    } else {
-        console.warn('未找到anniversary-function按钮');
     }
 
     const closeBtn = document.getElementById('close-anniversary-modal');
-    if (closeBtn && !closeBtn.dataset.initialized) {
-        closeBtn.addEventListener('click', () => hideModal(modal));
-        closeBtn.dataset.initialized = 'true';
+    if (closeBtn) {
+        const newClose = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newClose, closeBtn);
+        newClose.addEventListener('click', () => hideModal(document.getElementById('anniversary-modal')));
     }
 
     const openAddBtn = document.getElementById('open-ann-add-btn');
     const editorSlide = document.getElementById('ann-editor-slide');
-    if (openAddBtn && !openAddBtn.dataset.initialized) {
-        openAddBtn.addEventListener('click', () => {
+    if (openAddBtn) {
+        openAddBtn.onclick = () => {
             document.getElementById('ann-input-name').value = '';
             document.getElementById('ann-input-date').value = '';
             window.selectAnnType('anniversary');
-            editorSlide.classList.add('active');
-        });
-        openAddBtn.dataset.initialized = 'true';
+            if (editorSlide) editorSlide.classList.add('active');
+        };
     }
 
     const closeEditorBtn = document.getElementById('close-ann-editor');
-    if (closeEditorBtn && !closeEditorBtn.dataset.initialized) {
-        closeEditorBtn.addEventListener('click', () => {
-            editorSlide.classList.remove('active');
-        });
-        closeEditorBtn.dataset.initialized = 'true';
+    if (closeEditorBtn) {
+        closeEditorBtn.onclick = () => {
+            if (editorSlide) editorSlide.classList.remove('active');
+        };
     }
 
     const saveBtn = document.getElementById('save-ann-btn');
-    if (saveBtn && !saveBtn.dataset.initialized) {
-        saveBtn.addEventListener('click', () => {
-            const name = document.getElementById('ann-input-name').value.trim();
-            const date = document.getElementById('ann-input-date').value;
-
-            if (!name || !date) {
-                showNotification('请填写完整的名称和日期', 'warning');
-                return;
-            }
-
-            const newAnn = {
-                id: Date.now(),
-                name: name,
-                date: date,
-                type: currentAnniversaryType
-            };
-
-            anniversaries.push(newAnn);
-            throttledSaveData(); 
-            renderAnniversariesList();
-            
-            editorSlide.classList.remove('active');
-            showNotification('纪念日添加成功', 'success');
+    if (saveBtn) {
+        const newSave = saveBtn.cloneNode(true);
+        saveBtn.parentNode.replaceChild(newSave, saveBtn);
+        
+        newSave.addEventListener('click', () => {
+            addAnniversary(); 
+            if (editorSlide) editorSlide.classList.remove('active');
         });
-        saveBtn.dataset.initialized = 'true';
     }
 }
 function prevTourStep() {
