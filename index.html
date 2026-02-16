@@ -13388,18 +13388,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        // !! 新增/移动到这里的代码 !!
+        // 等待一小会儿，让最后的UI渲染完成，然后隐藏加载动画
+        setTimeout(hideWelcomeScreen, 3000); 
+
     } catch (err) {
         console.error("严重初始化错误:", err);
         document.querySelector('.welcome-subtitle-scramble').textContent = "加载遇到问题，已强制进入...";
-        
-        // 移除导致一直弹窗的 removeBackground() 调用
-        // if (typeof removeBackground === 'function') removeBackground(); 
+        // 如果出错，也隐藏加载动画，防止卡死
+        setTimeout(hideWelcomeScreen, 500); 
         
     } finally {
-        // 5. 无论成功失败，必须关闭开场动画
-        setTimeout(hideWelcomeScreen, 1500);
+        // 这里的代码被移走了
     }
 });
+
             const stickerInput = document.getElementById('sticker-file-input');
             if (stickerInput) {
                 stickerInput.addEventListener('change', (e) => {
