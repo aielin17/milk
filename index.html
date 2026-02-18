@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="light" data-color-theme="black-white">
 <head>
    <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -173,7 +173,6 @@
             color: var(--text-primary);
             transition: background-color 0.5s ease, color 0.5s ease;
             height: 100vh;
-            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -181,7 +180,6 @@
             font-family: var(--font-family);
             font-weight: 400;
             position: relative;
-
             font-size: var(--font-size);
             opacity: 0;
             animation: delayedShow 0.8s ease 0.2s forwards;
@@ -217,6 +215,8 @@
             z-index: 10;
             flex-shrink: 0;
             position: relative;
+            display: flex;
+            flex-direction: column;
             transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
         }
 
@@ -232,35 +232,43 @@
             transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
         }
         body.immersive-mode .chat-container {
-            padding-top: 12px;
+            padding-top: calc(12px + env(safe-area-inset-top, 0px));
         }
         #immersive-exit-btn {
             display: none;
             position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            /* 移至右下角，避开安全区 */
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
+            right: 20px;
+            left: auto;
+            top: auto;
+            transform: none;
             z-index: 9999;
             background: rgba(var(--accent-color-rgb), 0.18);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(var(--accent-color-rgb), 0.3);
-            border-top: none;
-            border-radius: 0 0 18px 18px;
-            padding: 3px 18px 7px;
-            font-size: 11px;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            font-size: 16px;
             color: var(--accent-color);
             cursor: pointer;
-            letter-spacing: 1px;
+            letter-spacing: 0;
             transition: all 0.22s ease;
             font-family: var(--font-family);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         }
         #immersive-exit-btn:hover {
             background: rgba(var(--accent-color-rgb), 0.32);
-            padding-bottom: 10px;
+            transform: scale(1.1);
         }
         body.immersive-mode #immersive-exit-btn {
-            display: block;
+            display: flex;
         }
 
         .header-inner {
@@ -269,13 +277,13 @@
             align-items: center;
             max-width: 650px;
             margin: 0 auto;
-            padding: 15px 5px;
+            padding: 6px 5px 6px;
             width: 100%;
         }
 
         .avatar {
-            width: 60px;
-            height: 60px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
             cursor: pointer;
@@ -289,14 +297,17 @@
             order: 2;
         }
       .header-motto {
-position: absolute;
-top: 6px;
-left: 50%;
-transform: translateX(-50%);
-z-index: 20;
-padding: 5px 24px;
-max-width: 80%;
-width: auto;
+position: relative;
+top: auto;
+left: auto;
+transform: none;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+padding: 4px 24px 6px;
+margin: 0 auto;
+max-width: 100%;
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
@@ -312,9 +323,6 @@ border: none;
 border-radius: 0;
 box-shadow: none;
 transition: all 0.6s cubic-bezier(0.25, 0.1, 0.15, 1);
-display: flex;
-align-items: center;
-justify-content: center;
 gap: 14px;
 opacity: 0.8;
 mix-blend-mode: normal;
@@ -324,6 +332,7 @@ text-rendering: optimizeLegibility;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 animation: mottoFadeIn 1.2s ease 0.6s both;
+z-index: 1;
 }
 @keyframes mottoFadeIn {
     from { opacity: 0; letter-spacing: 6px; }
@@ -344,7 +353,7 @@ transition: all 0.6s cubic-bezier(0.25, 0.1, 0.15, 1);
 letter-spacing: 4.5px;
 opacity: 1;
 cursor: default;
-transform: translateX(-50%) scale(1.01);
+transform: scale(1.01);
 }
 
 .header-motto:hover::before,
@@ -372,11 +381,9 @@ text-shadow: 0 0 32px rgba(var(--accent-color-rgb), 0.5);
 
 @media (max-width: 480px) {
 .header-motto {
-top: 4px;
-padding: 4px 14px;
+padding: 2px 14px 4px;
 font-size: 10.5px;
 letter-spacing: 2.5px;
-max-width: 68%;
 gap: 10px;
 }
 .header-motto::before,
@@ -390,7 +397,8 @@ gap: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            gap: 4px;
             min-width: 60px;
         }
 
@@ -409,17 +417,18 @@ gap: 10px;
         }
         .username {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             transition: var(--transition);
             order: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 80px;
+            max-width: 72px;
             visibility: visible !important;
             opacity: 1 !important;
             color: var(--text-primary);
+            text-align: center;
         }
         .username:hover {
             color: var(--accent-color);
@@ -473,6 +482,8 @@ gap: 10px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            /* 为固定定位的输入框留空间，包含安全区高度 */
+            padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
         }
         .chat-container {
             flex: 1;
@@ -663,7 +674,26 @@ gap: 10px;
             flex-shrink: 0;
             background-color: var(--input-area-bg);
             transition: background-color 0.5s ease;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            /* 底部安全区：让内容在Home Bar上方 */
             padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+        }
+
+        /* 全屏/沉浸模式下确保输入区域始终可见 */
+        body.immersive-mode .input-area-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        body.immersive-mode .main-chat-area {
+            padding-bottom: 80px;
         }
         .input-area {
             display: flex;
@@ -6219,9 +6249,10 @@ html[data-theme="dark"] .tour-btn-primary {
 }
 .avatar-container {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     order: 2;
+    flex-shrink: 0;
 }
 
 /* Avatar shape presets */
@@ -6382,8 +6413,8 @@ position: absolute;
 
 @media (max-width: 768px) {
     .avatar-container {
-        width: 48px;
-        height: 48px;
+        width: 46px;
+        height: 46px;
     }
 }
 @media (max-width: 480px) {
@@ -7996,8 +8027,8 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div id="loader-status-text" style="font-size:10px;opacity:0.5;letter-spacing:1px;color:var(--welcome-text-sub);margin-top:4px;font-family:monospace;"></div>
         </div>
     </div>
-    <button id="immersive-exit-btn" onclick="toggleImmersiveMode(false)">
-<i class="fas fa-compress-alt"></i>
+    <button id="immersive-exit-btn" onclick="toggleImmersiveMode(false)" title="退出沉浸模式">
+<i class="fas fa-expand"></i>
 </button>
     <div class="header">
         <div class="header-motto"></div>
@@ -11012,7 +11043,13 @@ function manageAutoSendTimer() {
             DOMElements.themeToggle.innerHTML = settings.isDarkMode ? '<i class="fas fa-sun"></i>': '<i class="fas fa-moon"></i>';
             DOMElements.partner.name.textContent = settings.partnerName;
             DOMElements.me.name.textContent = settings.myName;
-            DOMElements.partner.status.textContent = settings.partnerStatus;
+            // 随机显示对方状态（若状态池有内容）
+            var displayStatus = settings.partnerStatus;
+            if (customStatuses && customStatuses.length > 0 && (displayStatus === '在线' || !displayStatus)) {
+                displayStatus = customStatuses[Math.floor(Math.random() * customStatuses.length)];
+                settings.partnerStatus = displayStatus;
+            }
+            DOMElements.partner.status.textContent = displayStatus;
             DOMElements.me.statusText.textContent = settings.myStatus;
             // Update all dynamic name references
             if (typeof window.updateDynamicNames === 'function') window.updateDynamicNames();
@@ -18359,10 +18396,10 @@ var statusPool = [
     var todayKey = String(now.getFullYear()) + String(month) + String(day);
     var seed = 0;
     for (var si = 0; si < todayKey.length; si++) seed += todayKey.charCodeAt(si) * (si + 1);
-    var defaultWeather = weathers[seed % weathers.length];
+    var defaultWeather = weathers[Math.floor(Math.random() * weathers.length)];
     var customWeatherKey = 'customWeather_' + now.getFullYear() + '_' + month + '_' + day;
     var weather = localStorage.getItem(customWeatherKey) || defaultWeather;
-    var status = statusPool[(seed * 7) % statusPool.length];
+    var status = statusPool[Math.floor(Math.random() * statusPool.length)];
 
     return { timeLabel: timeLabel, timeEmoji: timeEmoji, festival: festival, weather: weather, status: status };
 }
@@ -18453,9 +18490,8 @@ function _buildDailyGreeting() {
         // Status pool random selection
         var statusPoolData = [];
         try { statusPoolData = JSON.parse(localStorage.getItem('dg_status_pool') || '[]'); } catch(e2) {}
-        var todaySeed = now.getDate() * 1000 + now.getMonth() * 31 + now.getFullYear();
         if (statusPoolData.length > 0) {
-            var poolItem = statusPoolData[todaySeed % statusPoolData.length];
+            var poolItem = statusPoolData[Math.floor(Math.random() * statusPoolData.length)];
             if (poolItem) {
                 setEl('dg-festival', poolItem.label || festLabel);
                 setEl('dg-status', poolItem.status || status);
@@ -19046,12 +19082,60 @@ window.switchStatsTab = function(tab) {
 };
 
 var groupChatSettings = (function() {
-    try { return JSON.parse(localStorage.getItem('groupChatSettings') || 'null') || { enabled: false, showAvatar: true, showName: true, members: [] }; } catch(e) { return { enabled: false, showAvatar: true, showName: true, members: [] }; }
+    try {
+        var saved = JSON.parse(localStorage.getItem('groupChatSettings') || 'null');
+        if (!saved) return { enabled: false, showAvatar: true, showName: true, members: [] };
+        // 确保 members 存在
+        if (!saved.members) saved.members = [];
+        return saved;
+    } catch(e) { return { enabled: false, showAvatar: true, showName: true, members: [] }; }
+})();
+// 异步加载成员头像（从 localforage）
+(function loadGroupAvatars() {
+    if (!window.localforage) return;
+    var members = groupChatSettings.members || [];
+    if (members.length === 0) return;
+    var promises = members.map(function(m, i) {
+        var ref = m.avatarRef || ('gca_' + i);
+        return localforage.getItem(ref).then(function(avatar) {
+            m.avatar = avatar || null;
+        }).catch(function() { m.avatar = null; });
+    });
+    Promise.all(promises).then(function() {
+        // 头像加载完成后刷新成员列表显示
+        if (typeof renderGroupMembersList === 'function') renderGroupMembersList();
+    });
 })();
 var _groupMemberAvatarDataUrl = null;
 
 function saveGroupChatSettings() {
-    localStorage.setItem('groupChatSettings', JSON.stringify(groupChatSettings));
+    // 分离头像数据，避免 localStorage 超限（大图base64会导致存储失败）
+    var toSave = {
+        enabled: groupChatSettings.enabled,
+        showAvatar: groupChatSettings.showAvatar,
+        showName: groupChatSettings.showName,
+        members: (groupChatSettings.members || []).map(function(m, i) {
+            return { name: m.name, avatarRef: 'gca_' + i };
+        })
+    };
+    try {
+        localStorage.setItem('groupChatSettings', JSON.stringify(toSave));
+    } catch(e) {
+        console.warn('groupChatSettings localStorage保存失败:', e);
+    }
+    // 用 localforage 存储每个成员的头像
+    if (window.localforage) {
+        (groupChatSettings.members || []).forEach(function(m, i) {
+            localforage.setItem('gca_' + i, m.avatar || null).catch(function(e) {
+                console.warn('头像存储失败 index=' + i, e);
+            });
+        });
+        // 清理多余的头像
+        var count = (groupChatSettings.members || []).length;
+        for (var ci = count; ci < count + 10; ci++) {
+            localforage.removeItem('gca_' + ci).catch(function(){});
+        }
+    }
 }
 
 function renderGroupMembersList() {
@@ -19390,6 +19474,16 @@ window.startEditDgWeather = function(el) {
         if (e.key === 'Escape') { el.style.display = ''; input.remove(); }
     });
 };
+
+// 聚焦时滚动到底
+    document.addEventListener('focusin', function(e) {
+        if (e.target && (e.target.classList.contains('message-input') || e.target.tagName === 'TEXTAREA')) {
+            setTimeout(function() {
+                var chat = document.querySelector('.chat-container');
+                if (chat) chat.scrollTop = chat.scrollHeight;
+            }, 100);
+        }
+    });
 
 window.addEventListener('load', function() {
     setTimeout(function() {
