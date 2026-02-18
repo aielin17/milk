@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="light" data-color-theme="black-white">
 <head>
    <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -125,7 +125,7 @@
         }
 
         html[data-theme="dark"][data-color-theme="black-white"] .message-sent {
-            color: #121212 !important;
+            color: #1a1a1a !important;
         }
 
         html[data-theme="dark"][data-color-theme="gold"] .message-sent,
@@ -137,7 +137,7 @@
         html[data-theme="dark"][data-color-theme="sunset"] .message-sent,
         html[data-theme="dark"][data-color-theme="forest"] .message-sent,
         html[data-theme="dark"][data-color-theme="ocean"] .message-sent {
-            color: #121212;
+            color: #ffffff !important;
         }
 
         .message.rounded {
@@ -173,6 +173,7 @@
             color: var(--text-primary);
             transition: background-color 0.5s ease, color 0.5s ease;
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -219,6 +220,49 @@
             transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
         }
 
+        /* ── Immersive Mode ── */
+        body.immersive-mode .header {
+            transform: translateY(-110%);
+            opacity: 0;
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
+        }
+        body.immersive-mode .chat-container {
+            padding-top: 12px;
+        }
+        #immersive-exit-btn {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            background: rgba(var(--accent-color-rgb), 0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.3);
+            border-top: none;
+            border-radius: 0 0 18px 18px;
+            padding: 3px 18px 7px;
+            font-size: 11px;
+            color: var(--accent-color);
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.22s ease;
+            font-family: var(--font-family);
+        }
+        #immersive-exit-btn:hover {
+            background: rgba(var(--accent-color-rgb), 0.32);
+            padding-bottom: 10px;
+        }
+        body.immersive-mode #immersive-exit-btn {
+            display: block;
+        }
+
         .header-inner {
             display: flex;
             justify-content: space-between;
@@ -250,16 +294,16 @@ top: 6px;
 left: 50%;
 transform: translateX(-50%);
 z-index: 20;
-padding: 6px 28px;
+padding: 5px 24px;
 max-width: 80%;
 width: auto;
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
-font-size: 13px;
+font-size: 12px;
 font-family: 'Inter', 'Noto Serif SC', 'Cormorant Garamond', serif, -apple-system, BlinkMacSystemFont, sans-serif;
 font-weight: 350;
-letter-spacing: 2.5px;
+letter-spacing: 3px;
 font-style: normal;
 text-transform: uppercase;
 color: var(--accent-color);
@@ -267,108 +311,78 @@ background: transparent;
 border: none;
 border-radius: 0;
 box-shadow: none;
-transition: all 0.5s cubic-bezier(0.25, 0.1, 0.15, 1);
+transition: all 0.6s cubic-bezier(0.25, 0.1, 0.15, 1);
 display: flex;
 align-items: center;
 justify-content: center;
-gap: 16px;
-opacity: 0.85;
+gap: 14px;
+opacity: 0.8;
 mix-blend-mode: normal;
 backdrop-filter: none;
 -webkit-backdrop-filter: none;
-animation: none;
 text-rendering: optimizeLegibility;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
+animation: mottoFadeIn 1.2s ease 0.6s both;
+}
+@keyframes mottoFadeIn {
+    from { opacity: 0; letter-spacing: 6px; }
+    to { opacity: 0.8; letter-spacing: 3px; }
 }
 
 .header-motto::before,
 .header-motto::after {
 content: "";
-width: 32px;
-height: 1.5px;
+width: 28px;
+height: 1px;
 background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-opacity: 0.35;
-transition: all 0.5s cubic-bezier(0.25, 0.1, 0.15, 1);
-transform-origin: center;
-}
-
-.header-motto::before {
-margin-right: 10px;
-}
-
-.header-motto::after {
-margin-left: 10px;
+opacity: 0.4;
+transition: all 0.6s cubic-bezier(0.25, 0.1, 0.15, 1);
 }
 
 .header-motto:hover {
-letter-spacing: 4px;
+letter-spacing: 4.5px;
 opacity: 1;
 cursor: default;
-transform: translateX(-50%) scale(1.02);
+transform: translateX(-50%) scale(1.01);
 }
 
 .header-motto:hover::before,
 .header-motto:hover::after {
-width: 52px;
-opacity: 0.8;
-background: linear-gradient(90deg, transparent, var(--accent-color), var(--accent-color), transparent);
+width: 48px;
+opacity: 0.75;
 }
 
 html[data-theme="dark"] .header-motto {
 color: var(--accent-color);
-opacity: 0.9;
-text-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.3);
+opacity: 0.88;
+text-shadow: 0 0 18px rgba(var(--accent-color-rgb), 0.25);
 font-weight: 300;
-backdrop-filter: blur(2px);
--webkit-backdrop-filter: blur(2px);
 }
 
 html[data-theme="dark"] .header-motto::before,
 html[data-theme="dark"] .header-motto::after {
 background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-opacity: 0.3;
-box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.2);
+opacity: 0.28;
 }
 
 html[data-theme="dark"] .header-motto:hover {
-text-shadow: 0 0 35px rgba(var(--accent-color-rgb), 0.6);
-backdrop-filter: blur(4px);
--webkit-backdrop-filter: blur(4px);
-}
-
-html[data-theme="dark"] .header-motto:hover::before,
-html[data-theme="dark"] .header-motto:hover::after {
-opacity: 0.7;
-background: linear-gradient(90deg, transparent, var(--accent-color), var(--accent-color), transparent);
-box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.4);
+text-shadow: 0 0 32px rgba(var(--accent-color-rgb), 0.5);
 }
 
 @media (max-width: 480px) {
 .header-motto {
 top: 4px;
-padding: 4px 18px;
-font-size: 11px;
-letter-spacing: 2px;
-max-width: 70%;
+padding: 4px 14px;
+font-size: 10.5px;
+letter-spacing: 2.5px;
+max-width: 68%;
 gap: 10px;
 }
 .header-motto::before,
 .header-motto::after {
-    width: 18px;
-    height: 1px;
+    width: 16px;
 }
-
-.header-motto:hover::before,
-.header-motto:hover::after {
-    width: 30px;
-}
-
-html[data-theme="dark"] .header-motto {
-    backdrop-filter: blur(1px);
-    -webkit-backdrop-filter: blur(1px);
-}
-
 }
         
 
@@ -649,6 +663,7 @@ html[data-theme="dark"] .header-motto {
             flex-shrink: 0;
             background-color: var(--input-area-bg);
             transition: background-color 0.5s ease;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         .input-area {
             display: flex;
@@ -869,13 +884,102 @@ html[data-theme="dark"] .header-motto {
 
         .system-message {
             align-self: center;
-            background-color: var(--message-received-bg);
+            background: transparent;
             color: var(--text-secondary);
             font-size: 12px;
-            padding: 5px 12px;
-            border-radius: 15px;
-            margin: 10px 0;
+            padding: 5px 20px;
+            border-radius: 0;
+            margin: 12px auto;
             box-shadow: none;
+            border: none;
+            letter-spacing: 1.5px;
+            max-width: 80%;
+            text-align: center;
+            animation: systemMsgPop 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+            opacity: 0;
+            transform: scale(0.88) translateY(6px);
+            position: relative;
+        }
+        .system-message::before,
+        .system-message::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 24px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(var(--accent-color-rgb),0.35));
+        }
+        .system-message::before { right: 100%; transform: translateX(8px); }
+        .system-message::after { left: 100%; transform: translateX(-8px) scaleX(-1); }
+        @keyframes systemMsgPop {
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* ─── Pill toggle row ─── */
+        .setting-pill-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+            user-select: none;
+        }
+        .setting-pill-row:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 2px 10px rgba(var(--accent-color-rgb),0.12);
+        }
+        .setting-pill-row:active { transform: scale(0.98); }
+        .setting-pill-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(var(--accent-color-rgb), 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            font-size: 13px;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .setting-pill-row.active .setting-pill-icon {
+            background: rgba(var(--accent-color-rgb), 0.2);
+        }
+        .setting-pill-label {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .setting-pill-switch {
+            width: 42px;
+            height: 23px;
+            border-radius: 23px;
+            background: var(--border-color);
+            position: relative;
+            flex-shrink: 0;
+            transition: background 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+        .setting-pill-row.active .setting-pill-switch {
+            background: var(--accent-color);
+        }
+        .setting-pill-knob {
+            position: absolute;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: #fff;
+            top: 3px;
+            left: 3px;
+            transition: left 0.25s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .setting-pill-row.active .setting-pill-knob {
+            left: 22px;
         }
 
         body.with-background .header,
@@ -1052,69 +1156,328 @@ html[data-theme="dark"] .header-motto {
 
         #daily-greeting-modal {
             position: fixed; inset: 0; z-index: 9998;
-            background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+            background: rgba(0,0,0,0.65); backdrop-filter: blur(12px);
             display: flex; align-items: center; justify-content: center;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.35s ease;
         }
         #daily-greeting-modal.hidden { display: none; }
         .daily-greeting-card {
             background: var(--secondary-bg);
             border-radius: 24px;
-            padding: 28px 24px 20px;
-            max-width: 340px; width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-width: 350px; width: 92%;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.32), 0 0 0 1px rgba(var(--accent-color-rgb),0.18), inset 0 1px 0 rgba(255,255,255,0.08);
             position: relative;
             animation: slideUpBounce 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            overflow: hidden;
         }
         @keyframes slideUpBounce {
             from { opacity:0; transform: translateY(30px) scale(0.92); }
             to { opacity:1; transform: translateY(0) scale(1); }
         }
-        .daily-greeting-emoji {
-            font-size: 52px; text-align: center; display: block;
-            margin-bottom: 6px; animation: floatEmoji 2.5s ease-in-out infinite;
+        .dg-header-band {
+            background: linear-gradient(135deg, var(--accent-color) 0%, rgba(var(--accent-color-rgb),0.75) 100%);
+            padding: 22px 22px 20px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px 24px 0 0;
+        }
+        .dg-header-band::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.04) 10px, rgba(255,255,255,0.04) 20px);
+        }
+        .dg-header-band::after {
+            content: '公告';
+            position: absolute; top: 10px; right: 14px;
+            font-size: 9px; letter-spacing: 2.5px; opacity: 0.45;
+            color: #fff; font-weight: 700; text-transform: uppercase;
+        }
+        .dg-header-band-shimmer {
+            position: absolute; inset: 0;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
+            animation: shimmerSlide 3s ease-in-out infinite;
+        }
+        @keyframes shimmerSlide {
+            0% { transform: translateX(-100%); }
+            60%,100% { transform: translateX(200%); }
+        }
+        .dg-header-top {
+            display: flex; align-items: center; gap: 14px;
+            position: relative; z-index: 2;
+        }
+        .dg-emoji-circle {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: rgba(255,255,255,0.22);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; flex-shrink: 0;
+            border: 2px solid rgba(255,255,255,0.38);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.25);
+            animation: floatEmoji 2.8s ease-in-out infinite;
         }
         @keyframes floatEmoji {
-            0%,100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+            0%,100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(3deg); }
         }
-        .daily-greeting-festival {
-            text-align: center; font-size: 11px; letter-spacing: 3px;
-            color: var(--accent-color); text-transform: uppercase;
-            margin-bottom: 4px; opacity: 0.8;
+        .dg-header-text { flex: 1; }
+        .dg-festival-label {
+            font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+            color: rgba(255,255,255,0.72); margin-bottom: 4px;
         }
-        .daily-greeting-title {
-            text-align: center; font-size: 20px; font-weight: 700;
-            color: var(--text-primary); margin-bottom: 16px;
+        .dg-main-title {
+            font-size: 22px; font-weight: 700; color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            letter-spacing: 0.5px;
         }
-        .daily-greeting-divider {
-            height: 1px; background: var(--border-color); margin: 10px 0 14px;
+        .dg-date-stamp {
+            position: relative; z-index: 2;
+            margin-top: 12px; font-size: 11px;
+            color: rgba(255,255,255,0.6); letter-spacing: 1px;
+            display: flex; align-items: center; gap: 6px;
         }
-        .daily-greeting-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 10px; border-radius: 10px;
-            background: var(--primary-bg); margin-bottom: 8px;
+        .dg-date-stamp::before {
+            content: '';
+            flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35));
+            max-width: 30px;
         }
-        .daily-greeting-row-icon {
-            font-size: 18px; width: 28px; text-align: center;
-            flex-shrink: 0;
+        .dg-date-stamp::after {
+            content: '';
+            flex: 1; height: 1px;
+            background: linear-gradient(270deg, transparent, rgba(255,255,255,0.35));
+            max-width: 30px;
         }
-        .daily-greeting-row-info { flex: 1; }
-        .daily-greeting-row-label { font-size: 11px; color: var(--text-secondary); }
-        .daily-greeting-row-val { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-        .daily-greeting-note {
-            font-size: 12px; color: var(--text-secondary); line-height: 1.6;
-            padding: 10px; background: var(--primary-bg); border-radius: 10px;
-            margin: 10px 0; border-left: 3px solid var(--accent-color);
+        .dg-body { padding: 18px 20px 20px; }
+        .dg-section-label {
+            font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+            color: var(--accent-color); font-weight: 700;
+            margin-bottom: 9px; opacity: 0.85;
+            display: flex; align-items: center; gap: 6px;
         }
+        .dg-section-label::after {
+            content: ''; flex: 1; height: 1px;
+            background: linear-gradient(90deg, rgba(var(--accent-color-rgb),0.3), transparent);
+        }
+        .dg-info-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 9px; margin-bottom: 13px;
+        }
+        .dg-info-cell {
+            background: linear-gradient(135deg, var(--primary-bg), rgba(var(--accent-color-rgb),0.04));
+            border-radius: 14px; padding: 12px 14px;
+            border: 1px solid rgba(var(--accent-color-rgb),0.12);
+            transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s ease;
+        }
+        .dg-info-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(var(--accent-color-rgb), 0.12);
+        }
+        .dg-info-cell-icon { font-size: 0; margin-bottom: 0; height: 28px; display: flex; align-items: center; }
+        .dg-info-cell-icon svg { display: block; }
+        .dg-info-cell-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 3px; margin-top: 5px; letter-spacing: 0.3px; }
+        .dg-info-cell-val { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+        .dg-mood-panel {
+            background: linear-gradient(135deg, var(--primary-bg), rgba(var(--accent-color-rgb),0.04));
+            border-radius: 14px; padding: 13px 16px;
+            border: 1px solid rgba(var(--accent-color-rgb),0.12);
+            margin-bottom: 13px;
+            display: flex; align-items: center; gap: 12px;
+            transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s ease;
+        }
+        .dg-mood-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(var(--accent-color-rgb), 0.1);
+        }
+        .dg-mood-icon-big { font-size: 32px; }
+        .dg-mood-info { flex: 1; }
+        .dg-mood-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+        .dg-mood-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; line-height: 1.45; }
+        /* ── Daily note / 每日寄语 ─ beautifully styled ── */
+        .dg-note-box {
+            font-size: 13px; color: var(--text-secondary); line-height: 1.75;
+            padding: 14px 16px; border-radius: 14px;
+            margin-bottom: 15px;
+            position: relative; overflow: hidden;
+            background: linear-gradient(135deg, rgba(var(--accent-color-rgb),0.08), rgba(var(--accent-color-rgb),0.03));
+            border: 1px solid rgba(var(--accent-color-rgb),0.15);
+        }
+        .dg-note-box::before {
+            content: '\275D';
+            position: absolute; top: 6px; left: 10px;
+            font-size: 28px; color: var(--accent-color); opacity: 0.18;
+            font-family: Georgia, serif; line-height: 1;
+        }
+        .dg-note-box::after {
+            content: '\275E';
+            position: absolute; bottom: 2px; right: 10px;
+            font-size: 28px; color: var(--accent-color); opacity: 0.18;
+            font-family: Georgia, serif; line-height: 1;
+        }
+        .dg-note-inner {
+            position: relative; z-index: 1;
+            text-align: center; letter-spacing: 0.3px;
+        }
+        .dg-note-weather-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(var(--accent-color-rgb),0.12);
+            border-radius: 20px; padding: 3px 10px;
+            font-size: 11px; color: var(--accent-color);
+            font-weight: 600; margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        .dg-footer { display: flex; gap: 8px; }
         .daily-greeting-close-btn {
-            width: 100%; margin-top: 14px; padding: 12px;
-            background: var(--accent-color); color: white;
-            border: none; border-radius: 12px; font-size: 14px;
+            flex: 2; padding: 12px;
+            background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color-rgb),0.82));
+            color: white; border: none; border-radius: 14px; font-size: 13px;
             font-weight: 600; font-family: var(--font-family);
-            cursor: pointer; transition: opacity 0.2s;
+            cursor: pointer; transition: all 0.25s ease;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 12px rgba(var(--accent-color-rgb),0.28);
         }
-        .daily-greeting-close-btn:hover { opacity: 0.85; }
+        .daily-greeting-close-btn:hover {
+            opacity: 0.9; transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(var(--accent-color-rgb),0.35);
+        }
+        .daily-greeting-close-btn:active { transform: translateY(0); }
+        /* Legacy selectors kept for JS compatibility */
+        /* ─── Daily Greeting Enhanced CSS ─── */
+        .dg-header-band-bg {
+            position: absolute; inset: 0;
+            background-size: cover; background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+        .dg-header-band-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, var(--accent-color) 0%, rgba(var(--accent-color-rgb),0.75) 100%);
+            z-index: 1;
+            transition: opacity 0.3s;
+        }
+        .dg-header-band-bg.has-img + .dg-header-band-overlay {
+            opacity: 0.55;
+        }
+        .daily-greeting-emoji { display: none; }
+        .daily-greeting-festival { display: none; }
+        .daily-greeting-title { display: none; }
+        .daily-greeting-divider { display: none; }
+        .daily-greeting-row { display: none; }
+        .daily-greeting-note { display: none; }
+
+        /* ─── Global Visual Enhancements ─── */
+        /* Smoother button interactions */
+        .action-btn, .input-btn, .modal-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .action-btn:active, .input-btn:active {
+            transform: scale(0.92) !important;
+        }
+        /* Ripple-like active feedback for most interactive elements */
+        .modal-btn:active { transform: scale(0.96) !important; }
+        .poke-quick-item:active { transform: scale(0.97) !important; }
+        .settings-item:active { transform: scale(0.98) !important; }
+        .sidebar-btn:active { transform: scale(0.95) !important; }
+
+        /* Better message bubbles */
+        .message {
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        .message:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+        }
+        /* Refined modal */
+        .modal-content {
+            animation: modalSlideUp 0.32s cubic-bezier(0.34, 1.3, 0.64, 1) !important;
+        }
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        /* Card hover lifts */
+        .ann-item-card, .env-letter-item, .dg-info-cell, .dg-mood-panel {
+            transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s ease !important;
+        }
+        .dg-info-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(var(--accent-color-rgb), 0.1) !important;
+        }
+        /* Calendar day hover */
+        .calendar-day:not(.empty) {
+            transition: all 0.2s cubic-bezier(0.4,0,0.2,1) !important;
+        }
+        .calendar-day:not(.empty):hover {
+            transform: scale(1.06) !important;
+            z-index: 2;
+        }
+        /* Mood selector card */
+        .mood-selector-card {
+            border-radius: 22px !important;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.22) !important;
+        }
+        /* Input focus glow */
+        .message-input:focus {
+            box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.12) !important;
+        }
+        /* Settings pill hover */
+        .setting-pill-row {
+            border-radius: 14px !important;
+        }
+        /* Notification toast */
+        .notification-toast {
+            border-radius: 14px !important;
+            backdrop-filter: blur(12px) !important;
+        }
+
+        /* ─── Important Days Layout Tweaks ─── */
+        .ann-item-card {
+            padding: 12px 14px 12px 16px !important;
+        }
+        .ann-item-name {
+            font-size: 14px !important;
+            letter-spacing: 0.2px;
+        }
+        .ann-item-days {
+            font-size: 28px !important;
+        }
+
+        /* ─── Stats UI Enhancements ─── */
+        .stats-card {
+            border-radius: 18px !important;
+            border: none !important;
+            background: linear-gradient(135deg, var(--secondary-bg), rgba(var(--accent-color-rgb),0.03)) !important;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04) !important;
+            padding: 18px !important;
+        }
+        .overview-item {
+            border-radius: 14px !important;
+            background: var(--primary-bg) !important;
+            border: 1px solid rgba(var(--accent-color-rgb),0.1) !important;
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+        .overview-item:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 14px rgba(var(--accent-color-rgb),0.1) !important;
+        }
+        .overview-value {
+            font-size: 24px !important;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-color-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stats-toggle-btn {
+            border-radius: 12px !important;
+        }
+        .rank-item {
+            border-radius: 10px !important;
+        }
+        .rank-item:hover {
+            background: rgba(var(--accent-color-rgb), 0.04) !important;
+        }
+        .stats-card-title {
+            font-size: 12px !important;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
 
         #envelope-modal .modal-content {
             padding: 0 !important;
@@ -4290,6 +4653,31 @@ html[data-theme="dark"] .ann-item-card.type-future .ann-item-days { color: #c4b5
     }
 }
 
+/* ── Tablet responsive: prevent bottom panel overflow ── */
+@media (min-width: 481px) and (max-width: 1024px) {
+    .sticker-picker-popover {
+        width: min(320px, calc(100vw - 40px));
+        height: min(350px, calc(100vh - 180px));
+        right: 0;
+        max-height: calc(100vh - 150px);
+    }
+}
+
+@media (max-width: 1024px) {
+    .sticker-picker-popover {
+        max-height: calc(100svh - 160px);
+        height: min(350px, calc(100svh - 160px));
+        /* Ensure it doesn't go off screen bottom */
+        bottom: calc(100% + 6px);
+    }
+    /* Emoji grid scrollable within constrained height */
+    .combo-content-area {
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
+    }
+}
+
 @media (max-width: 360px) {
     .username {
         display: none;
@@ -4555,13 +4943,13 @@ html[data-theme="dark"] .report-card {
             position: fixed;
             top: 100px;
             left: 20px;
-            width: 320px;
-            height: 160px;
-            background: rgba(var(--secondary-bg-rgb), 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
+            width: 300px;
+            height: 148px;
+            background: rgba(var(--secondary-bg-rgb), 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1px 0 rgba(255,255,255,0.06) inset;
             transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
             height 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
             border-radius 0.4s ease,
@@ -4569,7 +4957,7 @@ html[data-theme="dark"] .report-card {
             z-index: 990;
             overflow: hidden;
             cursor: grab;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.12);
             display: none;
             touch-action: none;
         }
@@ -4583,11 +4971,12 @@ html[data-theme="dark"] .report-card {
         }
 
         .player-container.collapsed {
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             padding: 0;
-            border-color: transparent;
+            border-color: rgba(var(--accent-color-rgb), 0.25);
+            box-shadow: 0 4px 20px rgba(var(--accent-color-rgb), 0.2), 0 1px 0 rgba(255,255,255,0.06) inset;
         }
 
         .full-view {
@@ -4630,8 +5019,8 @@ html[data-theme="dark"] .report-card {
 
 
         .vinyl-record {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background-color: #1a1a1a;
 
             border-radius: 50%;
@@ -4639,18 +5028,16 @@ html[data-theme="dark"] .report-card {
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.25);
             animation: spin 4s linear infinite;
             animation-play-state: paused;
 
-
-            border: 2px solid var(--accent-color);
-
+            border: 2.5px solid rgba(var(--accent-color-rgb), 0.5);
 
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            transition: border-color 0.5s ease;
+            transition: border-color 0.5s ease, box-shadow 0.3s ease;
         }
 
 
@@ -4692,10 +5079,10 @@ html[data-theme="dark"] .report-card {
 
 
         .vinyl-record.has-cover::after {
-            background: rgba(255,255,255,0.25);
-            backdrop-filter: blur(2px);
-            width: 8px;
-            height: 8px;
+            display: none !important;
+            width: 0;
+            height: 0;
+            opacity: 0;
         }
 
 
@@ -4737,18 +5124,20 @@ html[data-theme="dark"] .report-card {
             margin-top: 5px;
         }
         .track-name {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            letter-spacing: 0.2px;
         }
         .track-sub {
             font-size: 11px;
             color: var(--text-secondary);
-            opacity: 0.8;
+            opacity: 0.7;
+            letter-spacing: 0.3px;
         }
 
 
@@ -5753,61 +6142,80 @@ html[data-theme="dark"] .tour-btn-primary {
 }
 
 #theme-editor-modal .modal-content {
-    max-width: 560px;
+    max-width: 580px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
 }
 .theme-editor-toolbar {
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 8px;
+    margin-bottom: 12px;
     align-items: center;
+    flex-wrap: wrap;
 }
 .theme-editor-toolbar select {
     flex-grow: 1;
-    padding: 8px 12px;
-    border-radius: 8px;
+    min-width: 140px;
+    padding: 9px 12px;
+    border-radius: 10px;
     border: 1px solid var(--border-color);
     background-color: var(--primary-bg);
     color: var(--text-primary);
+    font-size: 13px;
+    cursor: pointer;
+}
+#theme-editor-grid {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 .theme-editor-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    max-height: 55vh;
-    overflow-y: auto;
-    padding: 5px;
+    gap: 8px;
+    padding: 4px 2px;
 }
 .color-picker-item {
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: var(--primary-bg);
-    padding: 8px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary-bg), rgba(var(--accent-color-rgb),0.03));
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.color-picker-item:hover {
+    border-color: rgba(var(--accent-color-rgb),0.3);
+    box-shadow: 0 2px 8px rgba(var(--accent-color-rgb),0.08);
 }
 .color-picker-item label {
-    font-size: 13px;
+    font-size: 12px;
     flex-grow: 1;
+    color: var(--text-secondary);
 }
 .color-picker-item input[type="color"] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 8px;
     overflow: hidden;
+    flex-shrink: 0;
 }
+.color-picker-item input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
 .color-picker-item input[type="color"]::-webkit-color-swatch {
-    border-radius: 50%;
-    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
 }
 .color-picker-item input[type="color"]::-moz-color-swatch {
-    border-radius: 50%;
-    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
 }
 .avatar-container {
     position: relative;
@@ -5815,6 +6223,18 @@ html[data-theme="dark"] .tour-btn-primary {
     height: 60px;
     order: 2;
 }
+
+/* Avatar shape presets */
+.avatar-shape-circle img, .avatar-shape-circle i { border-radius: 50%; overflow: hidden; }
+.avatar-shape-square img, .avatar-shape-square i { border-radius: 8px; clip-path: inset(0 round 8px); }
+.avatar-shape-pentagon img, .avatar-shape-pentagon i { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); border-radius: 0 !important; }
+.avatar-shape-heart img, .avatar-shape-heart i { clip-path: path('M 50 80 C 20 60 0 45 0 30 C 0 15 12 5 25 5 C 35 5 45 12 50 20 C 55 12 65 5 75 5 C 88 5 100 15 100 30 C 100 45 80 60 50 80 Z'); border-radius: 0 !important; }
+
+/* In-chat message avatar shapes */
+.message-avatar.shape-circle img { border-radius: 50%; }
+.message-avatar.shape-square img { border-radius: 4px; clip-path: inset(0 round 4px); }
+.message-avatar.shape-pentagon img { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); border-radius: 0; }
+.message-avatar.shape-heart img { clip-path: path('M 50 80 C 20 60 0 45 0 30 C 0 15 12 5 25 5 C 35 5 45 12 50 20 C 55 12 65 5 75 5 C 88 5 100 15 100 30 C 100 45 80 60 50 80 Z'); border-radius: 0; }
 
 .avatar {
     width: 100% !important;
@@ -6382,6 +6802,7 @@ html[data-theme="light"] #custom-bubble-css {
     cursor: pointer;
     transition: all 0.2s;
     min-height: 58px;
+    position: relative;
 }
 .mood-option-btn:hover {
     transform: translateY(-2px);
@@ -6392,6 +6813,44 @@ html[data-theme="light"] #custom-bubble-css {
 }
 .mood-kaomoji { font-size: 20px; margin-bottom: 4px; white-space: nowrap; line-height: 1; }
 .mood-label { font-size: 11px; opacity: 0.75; font-weight: 500; }
+
+/* Custom mood edit/delete actions */
+.mood-custom-actions {
+    position: absolute;
+    top: 2px; right: 2px;
+    display: none;
+    gap: 2px;
+    background: rgba(var(--secondary-bg-rgb), 0.9);
+    border-radius: 6px;
+    padding: 2px;
+}
+.mood-option-custom:hover .mood-custom-actions { display: flex; }
+.mood-custom-action-btn {
+    border: none; background: none; cursor: pointer;
+    font-size: 11px; padding: 2px 3px; border-radius: 4px;
+    line-height: 1;
+    transition: background 0.15s;
+}
+.mood-custom-action-btn:hover { background: var(--border-color); }
+
+/* Stats page weather tag */
+.stats-weather-tag {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    text-align: center;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px dashed var(--border-color);
+    transition: all 0.2s;
+    min-width: 60px;
+}
+.stats-weather-tag:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(var(--accent-color-rgb), 0.06);
+}
 
 @keyframes zoomIn {
     from { opacity: 0; transform: scale(0.8); }
@@ -6922,45 +7381,63 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 .poke-list-view {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .poke-quick-item {
-    padding: 12px;
-    background-color: var(--primary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(var(--accent-color-rgb),0.13) 0%, rgba(var(--accent-color-rgb),0.04) 50%, rgba(var(--accent-color-rgb),0.09) 100%);
+    border: none;
+    border-radius: 12px;
     cursor: pointer;
     text-align: left;
     font-size: 13px;
-    transition: all 0.2s;
+    transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
     color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 1px 5px rgba(var(--accent-color-rgb),0.1);
+}
+.poke-quick-item::before {
+    content: '✦';
+    font-size: 10px;
+    color: var(--accent-color);
+    opacity: 0.5;
+    flex-shrink: 0;
 }
 
 .poke-quick-item:hover {
-    border-color: var(--accent-color);
-    transform: translateX(3px);
+    background: linear-gradient(135deg, rgba(var(--accent-color-rgb),0.22) 0%, rgba(var(--accent-color-rgb),0.08) 50%, rgba(var(--accent-color-rgb),0.16) 100%);
+    transform: translateX(4px);
+    color: var(--text-primary);
+    box-shadow: 0 3px 10px rgba(var(--accent-color-rgb),0.18);
 }
 
 .custom-poke-btn {
     width: 100%;
-    padding: 12px;
+    padding: 11px 14px;
     margin-bottom: 10px;
-    background: linear-gradient(135deg, var(--accent-color), var(--accent-color-dark));
+    background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color-rgb),0.8));
     color: #fff;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-shadow: 0 4px 10px rgba(var(--accent-color-rgb), 0.2);
+    box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.25);
+    transition: all 0.22s ease;
+    letter-spacing: 0.3px;
 }
 
 .custom-poke-btn:hover {
-    filter: brightness(1.1);
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(var(--accent-color-rgb), 0.32);
 }
 
 .empty-sticker-tip {
@@ -7361,6 +7838,108 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 .picker-add-btn:hover { opacity: 1 !important; }
 .wheel-option-input { flex:1; border:none; background:transparent; border-bottom:1px solid var(--border-color); padding:3px 4px; font-size:14px; outline:none; font-family:var(--font-family); color:var(--text-primary); }
 
+/* ═══════ Global UI Polish & Animation Enhancements ═══════ */
+
+/* Enhanced message appear with subtle spring */
+@keyframes messageAppear {
+    0% { opacity: 0; transform: translateY(10px) scale(0.94); }
+    60% { opacity: 1; transform: translateY(-2px) scale(1.01); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Ripple effect on interactive elements */
+.modal-btn, .settings-item, .setting-pill-row, .action-btn, .input-btn {
+    position: relative;
+    overflow: hidden;
+}
+.modal-btn::after, .settings-item::after, .setting-pill-row::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(var(--accent-color-rgb),0.2) 0%, transparent 70%);
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    pointer-events: none;
+    border-radius: inherit;
+}
+.modal-btn:active::after, .settings-item:active::after, .setting-pill-row:active::after {
+    opacity: 1;
+    transform: scale(2);
+    transition: 0s;
+}
+
+/* Smoother modal slide-in */
+@keyframes modalContentSlideIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.93); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Enhanced settings-item hover */
+.settings-item {
+    transition: all 0.2s cubic-bezier(0.25,0.8,0.25,1);
+}
+.settings-item:hover {
+    transform: translateX(2px);
+}
+
+/* Smooth notification with better spring */
+@keyframes slideUpNotif {
+    from { opacity:0; transform:translateX(-50%) translateY(24px) scale(0.9); }
+    60% { transform: translateX(-50%) translateY(-4px) scale(1.02); }
+    to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+}
+
+/* Action button hover glow */
+.action-btn:hover {
+    box-shadow: 0 0 0 6px rgba(var(--accent-color-rgb), 0.1);
+}
+
+/* Send button pulse on hover */
+.send-btn:hover {
+    box-shadow: 0 4px 16px rgba(var(--accent-color-rgb), 0.45), 0 0 0 4px rgba(var(--accent-color-rgb),0.1);
+}
+
+/* Input focus glow */
+.message-input:focus {
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.12);
+}
+
+/* Calendar day click feedback */
+.calendar-day {
+    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, border-color 0.2s;
+}
+.calendar-day:active { transform: scale(0.9); }
+
+/* Mood overlay card animation */
+.mood-selector-card, .day-detail-card {
+    animation: cardSlideUp 0.38s cubic-bezier(0.34,1.4,0.64,1) forwards;
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+}
+@keyframes cardSlideUp {
+    to { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* Smooth tab switch */
+.mood-tab-btn, .combo-tab, .stats-toggle-btn, .view-switch-btn {
+    transition: all 0.22s cubic-bezier(0.25,0.8,0.25,1) !important;
+}
+
+/* Picker item hover spring */
+.picker-item:hover {
+    transform: scale(1.12) translateY(-2px) !important;
+}
+
+/* Sticker picker slide-up */
+#user-sticker-picker.active {
+    animation: pickerSlideUp 0.3s cubic-bezier(0.34,1.2,0.64,1) forwards;
+}
+@keyframes pickerSlideUp {
+    from { opacity:0; transform: translateY(16px) scale(0.97); }
+    to { opacity:1; transform: translateY(0) scale(1); }
+}
+
     </style>
 </head>
 <body>
@@ -7417,12 +7996,15 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div id="loader-status-text" style="font-size:10px;opacity:0.5;letter-spacing:1px;color:var(--welcome-text-sub);margin-top:4px;font-family:monospace;"></div>
         </div>
     </div>
+    <button id="immersive-exit-btn" onclick="toggleImmersiveMode(false)">
+<i class="fas fa-compress-alt"></i>
+</button>
     <div class="header">
         <div class="header-motto"></div>
         <div class="header-inner">
          <div class="user-info">
                 <div id="partner-name" class="username">
-                    对方
+                    梦角
                 </div>
                 <div id="partner-avatar-container" class="avatar-container">
                     <div class="avatar" id="partner-avatar">
@@ -7436,6 +8018,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="header-actions">
                 <button id="session-manager-btn" class="action-btn" title="会话管理"><i class="fas fa-comments"></i></button>
                 <button id="group-chat-btn" class="action-btn" title="群聊设置"><i class="fas fa-users"></i></button>
+                <button id="daily-greeting-btn" class="action-btn" title="今日公告" onclick="reopenDailyGreeting()"><i class="fas fa-newspaper"></i></button>
                 <button id="theme-toggle" class="action-btn" title="切换主题"><i class="fas fa-moon"></i></button>
                 <button id="settings-btn" class="action-btn" title="设置"><i class="fas fa-cog"></i></button>
             </div>
@@ -7487,7 +8070,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     <textarea class="message-input" id="message-input" placeholder="" rows="1"></textarea>
     
     <div class="input-buttons">
-        <button class="continue-btn input-btn" id="continue-btn" title="让对方继续说"><i class="fas fa-ellipsis-h"></i></button>
+    <button class="continue-btn input-btn" id="continue-btn" title="让对方继续说"><i class="fas fa-ellipsis-h"></i></button>
         <button class="batch-btn input-btn" id="batch-btn" title="批量发送模式"><i class="fas fa-layer-group"></i></button>
         <button class="send-btn input-btn" id="send-btn" title="发送消息"><i class="fas fa-paper-plane"></i></button>
         
@@ -7543,7 +8126,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="modal-title">
                 <i class="fas fa-hand-sparkles"></i><span>拍一拍</span>
             </div>
-            <input type="text" class="modal-input" id="poke-input" placeholder="例如：拍了拍“对方”的肩膀"><div class="modal-buttons">
+            <input type="text" class="modal-input" id="poke-input" placeholder="例如：拍了拍对方的肩膀"><div class="modal-buttons">
                 <button class="modal-btn modal-btn-secondary" id="cancel-poke">取消</button><button class="modal-btn modal-btn-primary" id="send-poke">发送</button>
             </div>
         </div>
@@ -7598,7 +8181,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
                 <div class="env-send-info">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    对方将在 10-24 小时内回信（8-12 句话）
+                    <span id="env-reply-time-info">对方将在 10-24 小时内回信（8-12 句话）</span>
                 </div>
                 <div style="display:flex;gap:8px;">
                     <button class="modal-btn modal-btn-secondary" id="cancel-compose" onclick="cancelEnvelopeCompose()" style="flex:1;">取消</button>
@@ -8031,7 +8614,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
             <input type="file" id="my-frame-file-input-2" class="file-input" accept="image/png, image/webp, image/gif">
 
-            <h4 style="font-size:13px;font-weight:600;margin:20px 0 8px;border-top:1px dashed var(--border-color);padding-top:14px;color:var(--text-primary);">对方的头像框</h4>
+            <h4 style="font-size:13px;font-weight:600;margin:20px 0 8px;border-top:1px dashed var(--border-color);padding-top:14px;color:var(--text-primary);">梦角的头像框</h4>
             <div class="frame-settings-container">
                 <div class="frame-preview-wrapper">
                     <div class="frame-preview" id="partner-frame-preview-2"></div>
@@ -8136,8 +8719,10 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <div class="settings-section-title">
                     <i class="fas fa-paper-plane"></i> 对方主动发消息
                 </div>
-                <div class="settings-item" id="auto-send-toggle">
-                    <i class="fas fa-toggle-off"></i><span>主动发送: 关闭</span>
+                <div class="setting-pill-row" id="auto-send-toggle">
+                    <span class="setting-pill-icon"><i class="fas fa-paper-plane"></i></span>
+                    <span class="setting-pill-label">主动发送</span>
+                    <div class="setting-pill-switch"><div class="setting-pill-knob"></div></div>
                 </div>
                 <div class="font-size-control" id="auto-send-control" style="display:none; margin-top:10px;">
                     <span class="font-size-label">间隔(分钟):</span>
@@ -8148,20 +8733,28 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 
             <div class="settings-section">
                 <div class="settings-section-title">
-                    <i class="fas fa-toggle-on"></i>功能开关
+                    <i class="fas fa-sliders-h"></i>功能开关
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                    <div class="settings-item" id="reply-toggle">
-                        <i class="fas fa-reply"></i><span>引用回复: 开启</span>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div class="setting-pill-row" id="reply-toggle">
+                        <span class="setting-pill-icon"><i class="fas fa-reply"></i></span>
+                        <span class="setting-pill-label">引用回复</span>
+                        <div class="setting-pill-switch"><div class="setting-pill-knob"></div></div>
                     </div>
-                    <div class="settings-item" id="read-receipts-toggle">
-                        <i class="fas fa-check-double"></i><span>已读回执: 开启</span>
+                    <div class="setting-pill-row" id="read-receipts-toggle">
+                        <span class="setting-pill-icon"><i class="fas fa-check-double"></i></span>
+                        <span class="setting-pill-label">已读回执</span>
+                        <div class="setting-pill-switch"><div class="setting-pill-knob"></div></div>
                     </div>
-                    <div class="settings-item" id="read-no-reply-toggle">
-                        <i class="fas fa-comment-slash"></i><span>已读不回: 关闭</span>
+                    <div class="setting-pill-row" id="read-no-reply-toggle">
+                        <span class="setting-pill-icon"><i class="fas fa-comment-slash"></i></span>
+                        <span class="setting-pill-label">已读不回</span>
+                        <div class="setting-pill-switch"><div class="setting-pill-knob"></div></div>
                     </div>
-                    <div class="settings-item" id="typing-indicator-toggle">
-                        <i class="fas fa-keyboard"></i><span>正在输入: 显示</span>
+                    <div class="setting-pill-row" id="typing-indicator-toggle">
+                        <span class="setting-pill-icon"><i class="fas fa-keyboard"></i></span>
+                        <span class="setting-pill-label">正在输入</span>
+                        <div class="setting-pill-switch"><div class="setting-pill-knob"></div></div>
                     </div>
                 </div>
             </div>
@@ -8170,8 +8763,10 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <div class="settings-section-title">
                     <i class="fas fa-volume-up"></i>消息音效
                 </div>
-                <div class="settings-item" id="sound-toggle" style="margin-bottom:10px;">
-                    <i class="fas fa-volume-up"></i><span>音效: 开启</span>
+                <div class="setting-pill-row" id="sound-toggle" style="margin-bottom:10px;">
+                    <span class="setting-pill-icon"><i class="fas fa-volume-up"></i></span>
+                    <span class="setting-pill-label">消息音效</span>
+                    <div class="setting-pill-switch"><div class="setting-pill-knob"></div></div>
                 </div>
                 <div id="sound-detail-section">
                     <div class="font-size-control" style="margin-bottom:8px;">
@@ -8208,6 +8803,17 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
 
             
+
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-expand"></i>沉浸式聊天
+                </div>
+                <div class="setting-pill-row" id="immersive-toggle" onclick="toggleImmersiveMode()">
+                    <span class="setting-pill-icon"><i class="fas fa-expand-arrows-alt"></i></span>
+                    <span class="setting-pill-label">沉浸式模式 <span style="font-size:11px;color:var(--text-secondary);font-weight:400;">（隐藏顶部栏，专注聊天）</span></span>
+                    <div class="setting-pill-switch"><div class="setting-pill-knob"></div></div>
+                </div>
+            </div>
 
             <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 4px;z-index:10;margin-top:8px;">
                 <button class="modal-btn modal-btn-secondary" id="back-chat" onclick="(function(){hideModal(document.getElementById('chat-modal'));showModal(document.getElementById('settings-modal'))})()">
@@ -8486,8 +9092,8 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <h3 id="mood-selector-date">--月--日</h3>
             
             <div id="mood-edit-target-tabs" style="display:flex; gap:6px; justify-content:center; margin:8px 0 4px;">
-                <button class="mood-tab-btn active" id="mood-tab-me" onclick="switchMoodEditTarget('me')">我的记录</button>
-                <button class="mood-tab-btn" id="mood-tab-partner" onclick="switchMoodEditTarget('partner')">对方记录</button>
+                <button class="mood-tab-btn active" id="mood-tab-me" onclick="switchMoodEditTarget('me')" data-name-me>我的记录</button>
+                <button class="mood-tab-btn" id="mood-tab-partner" onclick="switchMoodEditTarget('partner')" data-name-partner>梦角的记录</button>
             </div>
 
             <div style="display:flex; align-items:center; justify-content:space-between; margin:8px 0 4px;">
@@ -8508,16 +9114,20 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div id="mood-page-2" style="display:none;">
                 <div class="mood-input-wrapper">
                     <label style="font-size:12px; font-weight:500;" id="mood-note-label">随记:</label>
-                    <textarea id="mood-note-input" class="mood-note-input" rows="4" placeholder="记录下今天发生的小事..."></textarea>
+                    <textarea id="mood-note-input" class="mood-note-input" rows="3" placeholder="记录下今天发生的小事..."></textarea>
                 </div>
-                <div class="mood-input-wrapper" style="margin-top:10px;">
-                    <label style="font-size:12px; font-weight:500;" id="mood-weather-label">今日天气 <span style="font-size:10px;opacity:0.6;">（选填，如：晴朗 ☀️）</span></label>
-                    <input type="text" id="mood-weather-input" class="mood-note-input" maxlength="20" placeholder="今天天气怎么样？" style="padding:8px 10px;border-radius:10px;resize:none;height:auto;font-family:var(--font-family);">
+                <div style="margin-top:10px;">
+                    <label style="font-size:12px; font-weight:500; display:flex; align-items:center; gap:5px; margin-bottom:6px;" id="mood-weather-label">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+                        今日天气&nbsp;
+                    </label>
+                    <input type="text" id="mood-weather-input" maxlength="20" placeholder="例如：晴朗 / 阴天 / 小雨..." style="width:100%; padding:9px 14px; border:1px solid var(--border-color); border-radius:10px; font-size:13px; background:var(--primary-bg); color:var(--text-primary); outline:none; font-family:var(--font-family);">
                 </div>
             </div>
     
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <button class="modal-btn modal-btn-secondary" id="cancel-mood-edit" style="flex:1;">取消</button>
+                <button class="modal-btn modal-btn-secondary" id="view-mood-detail-btn" onclick="viewMoodDetailFromEditor()" style="flex:1;">查看详情</button>
                 <button class="modal-btn modal-btn-primary" id="confirm-mood-save" style="flex:1;">保存</button>
             </div>
         </div>
@@ -8547,40 +9157,43 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <span id="detail-label" style="font-weight:600;"></span>
                 </div>
                 <div class="day-detail-content" id="detail-text"></div>
-                <div id="detail-my-weather" style="font-size:12px;color:var(--text-secondary);margin-top:4px;display:none;">🌤 <span id="detail-my-weather-val"></span></div>
+                <div id="detail-my-weather" style="font-size:12px;color:var(--text-secondary);margin-top:4px;display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg><span id="detail-my-weather-val"></span></div>
             </div>
-            <div id="detail-partner-section" style="border-top:1px dashed var(--border-color); padding-top:10px; margin-top:4px;">
-                <div style="font-size:11px; opacity:0.6; margin-bottom:6px; font-weight:600;">对方的</div>
+                <div id="detail-partner-section" style="border-top:1px dashed var(--border-color); padding-top:10px; margin-top:4px;">
+                <div style="font-size:11px; opacity:0.6; margin-bottom:6px; font-weight:600;" id="detail-partner-title">梦角的</div>
                 <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
                     <span id="detail-partner-kaomoji" style="font-size:24px;"></span>
                     <span id="detail-partner-label" style="font-weight:600;"></span>
                 </div>
                 <div class="day-detail-content" id="detail-partner-text"></div>
-                <div id="detail-partner-weather" style="font-size:12px;color:var(--text-secondary);margin-top:4px;display:none;">🌤 <span id="detail-partner-weather-val"></span></div>
+                <div id="detail-partner-weather" style="font-size:12px;color:var(--text-secondary);margin-top:4px;display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:3px"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg><span id="detail-partner-weather-val"></span></div>
             </div>
-            <div id="detail-partner-no-record" style="display:none; border-top:1px dashed var(--border-color); padding-top:10px; margin-top:4px; font-size:13px; color:var(--text-secondary); font-style:italic; text-align:center;">Ta 这天还没有留下记录 🌙</div>
-            <div style="margin-top:20px; display:flex; gap:8px; justify-content:flex-end;">
+            <div id="detail-partner-no-record" style="display:none; border-top:1px dashed var(--border-color); padding-top:10px; margin-top:4px; font-size:13px; color:var(--text-secondary); font-style:italic; text-align:center;" id="detail-partner-no-record-msg">Ta 这天还没有留下记录</div>
+            <div style="margin-top:20px; display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
                 <button class="modal-btn modal-btn-secondary" onclick="closeMoodOverlay()" style="font-size:12px; padding:6px 12px;">关闭</button>
+                <button class="modal-btn modal-btn-secondary" id="delete-my-mood" onclick="deleteDailyMood(selectedDateStr,'me')" style="font-size:12px; padding:6px 12px; color:#ff6b6b; border-color:rgba(255,107,107,0.4);" data-delete-me>删除我的</button>
+                <button class="modal-btn modal-btn-secondary" id="delete-partner-mood" onclick="deleteDailyMood(selectedDateStr,'partner')" style="font-size:12px; padding:6px 12px; color:#ff6b6b; border-color:rgba(255,107,107,0.4);" data-delete-partner>删除梦角</button>
                 <button class="modal-btn modal-btn-primary" id="edit-existing-mood" style="font-size:12px; padding:6px 12px;">修改我的</button>
-                <button class="modal-btn modal-btn-primary" id="edit-partner-mood" onclick="editPartnerMoodRecord()" style="font-size:12px; padding:6px 12px; background:rgba(255,107,107,0.8);">修改对方</button>
+                <button class="modal-btn modal-btn-primary" id="edit-partner-mood" onclick="editPartnerMoodRecord()" style="font-size:12px; padding:6px 12px; background:rgba(255,107,107,0.8);" data-edit-partner>修改梦角</button>
             </div>
         </div>
     </div>
     
     <div class="modal" id="theme-editor-modal">
         <div class="modal-content">
-            <div class="modal-title"><i class="fas fa-edit"></i><span>主题编辑器</span></div>
+            <div class="modal-title"><i class="fas fa-palette"></i><span>主题编辑器</span></div>
             <div class="theme-editor-toolbar">
                 <select id="theme-preset-selector" style="flex:1;"></select>
-                <button id="overwrite-theme-preset-btn" class="modal-btn modal-btn-secondary" style="padding: 8px 12px; display:none;" title="覆盖当前方案"><i class="fas fa-check"></i></button>
-                <button id="save-theme-preset-btn" class="modal-btn modal-btn-primary" style="padding: 8px 12px;" title="另存为新方案"><i class="fas fa-save"></i></button>
-                <button id="rename-theme-preset-btn" class="modal-btn modal-btn-secondary" style="padding: 8px 12px;" title="重命名当前方案"><i class="fas fa-pen"></i></button>
-                <button id="delete-theme-preset-btn" class="modal-btn modal-btn-secondary" style="padding: 8px 12px;" title="删除当前方案"><i class="fas fa-trash"></i></button>
+                <button id="overwrite-theme-preset-btn" class="modal-btn modal-btn-secondary" style="padding: 8px 10px; display:none;" title="覆盖保存当前方案"><i class="fas fa-check"></i></button>
+                <button id="save-theme-preset-btn" class="modal-btn modal-btn-primary" style="padding: 8px 10px;" title="另存为新方案"><i class="fas fa-save"></i></button>
+                <button id="rename-theme-preset-btn" class="modal-btn modal-btn-secondary" style="padding: 8px 10px;" title="重命名当前方案"><i class="fas fa-pen"></i></button>
+                <button id="delete-theme-preset-btn" class="modal-btn modal-btn-secondary" style="padding: 8px 10px;" title="删除当前方案"><i class="fas fa-trash"></i></button>
             </div>
             <div id="theme-editor-grid" class="theme-editor-grid">
             </div>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" id="close-theme-editor">关闭</button>
+            <div class="modal-buttons" style="margin-top:12px;">
+                <button class="modal-btn modal-btn-primary" id="apply-close-theme-editor" style="flex:2;" onclick="document.getElementById('close-theme-editor').click()"><i class="fas fa-check" style="margin-right:5px;"></i>应用并关闭</button>
+                <button class="modal-btn modal-btn-secondary" id="close-theme-editor">取消</button>
             </div>
         </div>
     </div>
@@ -8595,6 +9208,10 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <button class="sidebar-btn" data-major="atmosphere">
                     <i class="fas fa-magic"></i>
                     <span>氛围感</span>
+                </button>
+                <button class="sidebar-btn" data-major="announcement" onclick="switchToAnnouncementPanel()">
+                    <i class="fas fa-newspaper"></i>
+                    <span>公告</span>
                 </button>
             </div>
     
@@ -8613,6 +9230,72 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
     
                 <div class="content-list-area" id="custom-replies-list">
+                </div>
+
+                <!-- 今日公告编辑面板 -->
+                <div id="announcement-panel" style="display:none; padding:0 16px 80px; overflow-y:auto; flex:1; min-height:0; -webkit-overflow-scrolling:touch;">
+                    <div style="display:flex;flex-direction:column;gap:12px; padding:4px 0 16px;">
+                        <div style="background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.12),rgba(var(--accent-color-rgb),0.05));border-radius:14px;padding:14px 16px;border:1px solid rgba(var(--accent-color-rgb),0.2);">
+                            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-color);font-weight:700;margin-bottom:10px;"><i class="fas fa-image" style="margin-right:6px;"></i>顶部背景图</div>
+                            <div style="display:flex;gap:8px;">
+                                <button onclick="document.getElementById('dg-header-img-input').click()" style="flex:1;padding:9px;border:1.5px dashed rgba(var(--accent-color-rgb),0.4);border-radius:10px;background:transparent;color:var(--text-secondary);cursor:pointer;font-size:12px;font-family:var(--font-family);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    上传顶部背景
+                                </button>
+                                <button onclick="clearDgHeaderBg()" style="padding:9px 14px;border:1px solid var(--border-color);border-radius:10px;background:transparent;color:var(--text-secondary);cursor:pointer;font-size:12px;font-family:var(--font-family);">清除</button>
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(var(--accent-color-rgb),0.05);border-radius:14px;padding:14px 16px;border:1px solid rgba(var(--accent-color-rgb),0.12);">
+                            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-color);font-weight:700;margin-bottom:10px;"><i class="fas fa-image" style="margin-right:6px;"></i>中部装饰图</div>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <button onclick="document.getElementById('dg-deco-img-input').click()" style="flex:1;padding:9px;border:1.5px dashed rgba(var(--accent-color-rgb),0.4);border-radius:10px;background:transparent;color:var(--text-secondary);cursor:pointer;font-size:12px;font-family:var(--font-family);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    上传装饰图
+                                </button>
+                                <button onclick="clearDgDecoImg()" style="padding:9px 14px;border:1px solid var(--border-color);border-radius:10px;background:transparent;color:var(--text-secondary);cursor:pointer;font-size:12px;font-family:var(--font-family);">清除</button>
+                            </div>
+                            <input type="file" id="dg-deco-img-input" accept="image/*" style="display:none">
+                            <div id="dg-deco-preview" style="margin-top:8px;display:none;border-radius:10px;overflow:hidden;">
+                                <img id="dg-deco-preview-img" src="" style="width:100%;max-height:100px;object-fit:cover;display:block;">
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(var(--accent-color-rgb),0.05);border-radius:14px;padding:14px 16px;border:1px solid rgba(var(--accent-color-rgb),0.12);">
+                            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-color);font-weight:700;margin-bottom:10px;"><i class="fas fa-edit" style="margin-right:6px;"></i>公告文案</div>
+                            <div style="display:flex;flex-direction:column;gap:10px;">
+                                <div>
+                                    <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:5px;">公告标题 <span style="opacity:0.6;">（每行一条，随机显示）</span></label>
+                                    <textarea id="dg-edit-title" rows="4" placeholder="每行一条，如：&#10;早上好&#10;七夕快乐&#10;思念你" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:10px;font-size:13px;background:var(--primary-bg);color:var(--text-primary);outline:none;font-family:var(--font-family);resize:none;line-height:1.6;"></textarea>
+                                </div>
+                                <div>
+                                    <label style="font-size:11px;color:var(--text-secondary);display:block;margin-bottom:5px;">每日寄语 <span style="opacity:0.6;">（每行一条，随机显示）</span></label>
+                                    <textarea id="dg-edit-note" rows="5" placeholder="每行一条，如：&#10;今天也要元气满满，我在这里陪着你 ✦&#10;想你了，你有没有在想我呢" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:10px;font-size:13px;background:var(--primary-bg);color:var(--text-primary);outline:none;font-family:var(--font-family);resize:none;line-height:1.6;"></textarea>
+                                </div>
+                                <button onclick="saveDailyGreetingCustom()" style="width:100%;padding:11px;background:var(--accent-color);color:white;border:none;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-family);">
+                                    <i class="fas fa-save" style="margin-right:6px;"></i>保存公告内容
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(var(--accent-color-rgb),0.05);border-radius:14px;padding:14px 16px;border:1px solid rgba(var(--accent-color-rgb),0.12);">
+                            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-color);font-weight:700;margin-bottom:10px;"><i class="fas fa-random" style="margin-right:6px;"></i>状态随机库</div>
+                            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5;">每次打开公告时，状态、英文标签、图标将从下方随机抽取一条。</div>
+                            <div id="ann-status-pool-list" style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;max-height:200px;overflow-y:auto;"></div>
+                            <div style="display:flex;flex-direction:column;gap:7px;">
+                                <input type="text" id="ann-status-pool-input" placeholder="状态文案，如：在想你" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:9px;font-size:13px;background:var(--primary-bg);color:var(--text-primary);outline:none;font-family:var(--font-family);">
+                                <input type="text" id="ann-status-label-input" placeholder="英文标签，如：MISSING YOU" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:9px;font-size:13px;background:var(--primary-bg);color:var(--text-primary);outline:none;font-family:var(--font-family);">
+                                <div style="display:flex;gap:7px;align-items:center;">
+                                    <div style="position:relative;flex:1;">
+                                        <input type="text" id="ann-status-icon-input" placeholder="图标 emoji 或留空" style="width:100%;padding:9px 36px 9px 12px;border:1px solid var(--border-color);border-radius:9px;font-size:13px;background:var(--primary-bg);color:var(--text-primary);outline:none;font-family:var(--font-family);box-sizing:border-box;">
+                                        <button onclick="document.getElementById('ann-icon-img-input').click()" title="上传图片图标" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:22px;height:22px;background:rgba(var(--accent-color-rgb),0.15);border:none;border-radius:6px;cursor:pointer;font-size:10px;color:var(--accent-color);display:flex;align-items:center;justify-content:center;padding:0;"><i class="fas fa-image"></i></button>
+                                        <input type="file" id="ann-icon-img-input" accept="image/*" style="display:none" onchange="handleAnnStatusIconUpload(this)">
+                                    </div>
+                                    <button onclick="addAnnStatusPoolItem()" style="padding:9px 18px;background:var(--accent-color);color:white;border:none;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;flex-shrink:0;font-family:var(--font-family);letter-spacing:0.5px;">添加</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
     
                 <div class="modal-buttons">
@@ -8728,13 +9411,13 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="ann-editor-slide" id="ann-editor-slide">
                 <div class="ann-editor-header">
                     <button class="ann-back-btn" id="close-ann-editor"><i class="fas fa-arrow-left"></i></button>
-                    <span>✨ 添加纪念日</span>
+                    <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M12 5v14M5 12h14"/></svg> 添加纪念日</span>
                 </div>
                 
                 <div class="ann-editor-content">
                     <div class="ann-form-group">
                         <label class="ann-label"><i class="fas fa-tag"></i>标题名称</label>
-                        <input type="text" class="modal-input" id="ann-input-name" placeholder="例如：恋爱纪念日、对方生日">
+                        <input type="text" class="modal-input" id="ann-input-name" placeholder="例如：恋爱纪念日、梦角生日">
                     </div>
     
                     <div class="ann-form-group">
@@ -8831,7 +9514,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-secondary" id="close-wheel">关闭</button>
-                <button class="modal-btn modal-btn-primary" id="spin-wheel-btn">✨ 开始抽签</button>
+                <button class="modal-btn modal-btn-primary" id="spin-wheel-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 12a10 10 0 0 1 18.8-3.6M22 12a10 10 0 0 1-18.8 3.6"/></svg> 开始抽签</button>
                 <button class="modal-btn modal-btn-primary" id="send-wheel-result" style="display:none;">发送结果</button>
             </div>
         </div>
@@ -9754,8 +10437,13 @@ async function applyCustomFont(url) {
         await font.load();
         document.fonts.add(font);
         
-        document.documentElement.style.setProperty('--font-family', `"${fontName}", 'Noto Serif SC', serif`);
-        document.documentElement.style.setProperty('--message-font-family', `"${fontName}", 'Noto Serif SC', serif`);
+        const fontStack = `"${fontName}", 'Noto Serif SC', serif`;
+        document.documentElement.style.setProperty('--font-family', fontStack);
+        document.documentElement.style.setProperty('--message-font-family', fontStack);
+        // Persist into settings so updateUI doesn't overwrite it
+        if (typeof settings !== 'undefined') {
+            settings.messageFontFamily = fontStack;
+        }
         
         console.log('字体加载成功');
     } catch (e) {
@@ -9783,7 +10471,7 @@ function applyCustomBubbleCss(cssCode) {
 }
         function getDefaultSettings() {
             return {
-                partnerName: "对方",
+                partnerName: "梦角",
                 myName: "我",
                 myStatus: "在线",
                 partnerStatus: "在线",
@@ -9809,6 +10497,8 @@ function applyCustomBubbleCss(cssCode) {
         customBubbleCss: "",
                 myAvatarFrame: null, 
                 partnerAvatarFrame: null,
+                myAvatarShape: 'circle',
+                partnerAvatarShape: 'circle',
 autoSendEnabled: false,
 autoSendInterval: 5,
         allowReadNoReply: false, 
@@ -9858,6 +10548,7 @@ autoSendInterval: 5,
 
                     applyBackground(bg.value);
                     safeSetItem(getStorageKey('chatBackground'), bg.value);
+                    localforage.setItem(getStorageKey('chatBackground'), bg.value);
                     renderBackgroundGallery(); 
                     showNotification('背景已切换', 'success');
                 };
@@ -10014,7 +10705,17 @@ const loadData = async () => {
             updateAvatar(DOMElements.me.avatar, myAvatarSrc);
         }
 
-        if (savedChatBg) applyBackground(savedChatBg);
+        if (savedChatBg) {
+            applyBackground(savedChatBg);
+        } else {
+            // Fallback: check localStorage for background (compatibility with safeSetItem saves)
+            const lsBg = safeGetItem(getStorageKey('chatBackground'));
+            if (lsBg) {
+                applyBackground(lsBg);
+                // Migrate to localforage
+                localforage.setItem(getStorageKey('chatBackground'), lsBg);
+            }
+        }
         
         try { await initMoodData(); } catch(e) { console.warn("心情数据加载失败", e); }
         try { await loadEnvelopeData(); } catch(e) { console.warn("信封数据加载失败", e); }
@@ -10313,6 +11014,8 @@ function manageAutoSendTimer() {
             DOMElements.me.name.textContent = settings.myName;
             DOMElements.partner.status.textContent = settings.partnerStatus;
             DOMElements.me.statusText.textContent = settings.myStatus;
+            // Update all dynamic name references
+            if (typeof window.updateDynamicNames === 'function') window.updateDynamicNames();
             document.documentElement.style.setProperty('--font-size', `${settings.fontSize}px`);
             
             const fontToUse = settings.messageFontFamily || "'Noto Serif SC', serif";
@@ -10344,6 +11047,7 @@ function manageAutoSendTimer() {
             document.documentElement.style.removeProperty('--chat-bg-image');
             document.body.classList.remove('with-background');
             localforage.removeItem(getStorageKey('chatBackground'));
+            safeRemoveItem(getStorageKey('chatBackground'));
             showNotification('背景图片已移除', 'success');
         };
 
@@ -10409,7 +11113,7 @@ function manageAutoSendTimer() {
                 const avatarDiv = document.createElement('div');
                 avatarDiv.className = 'message-avatar';
 
-                const groupMember = (typeof getGroupMemberForMessage === 'function') ? getGroupMemberForMessage(msg.id) : null;
+                const groupMember = (msg.sender !== 'user' && typeof getGroupMemberForMessage === 'function') ? getGroupMemberForMessage(msg.id) : null;
 
                 if (settings.inChatAvatarEnabled) {
                     const isSameSenderGroup = groupMember && lastSender === 'group_' + (groupMember ? groupMember.name : '');
@@ -10427,8 +11131,12 @@ function manageAutoSendTimer() {
                         const isUser = msg.sender === 'user';
                         const avatarElement = isUser ? DOMElements.me.avatar : DOMElements.partner.avatar;
                         const frameSettings = isUser ? settings.myAvatarFrame : settings.partnerAvatarFrame;
+                        const avatarShape = isUser ? (settings.myAvatarShape || 'circle') : (settings.partnerAvatarShape || 'circle');
                         avatarDiv.innerHTML = avatarElement.innerHTML;
                         applyAvatarFrame(avatarDiv, frameSettings);
+                        // Apply shape
+                        ['circle','square','pentagon','heart'].forEach(s => avatarDiv.classList.remove('shape-' + s));
+                        if (avatarShape !== 'none') avatarDiv.classList.add('shape-' + avatarShape);
                     }
                 } else {
                     avatarDiv.style.display = 'none';
@@ -10494,9 +11202,9 @@ actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i cla
                     metaHTML += `<div class="timestamp">${timeStr}</div>`;
                 }
 
-                if (msg.sender === 'user' && settings.readReceiptsEnabled) {
+                if (msg.sender === 'user' && settings.readReceiptsEnabled && showTimestamp) {
                     const statusIcon = msg.status === 'read' ? 'fa-check-double': 'fa-check';
-                    metaHTML += `<div class="read-receipt ${msg.status === 'read' ? 'read': ''}" style="${!showTimestamp ? 'margin-left:0':''}"><i class="fas ${statusIcon}"></i></div>`;
+                    metaHTML += `<div class="read-receipt ${msg.status === 'read' ? 'read': ''}"><i class="fas ${statusIcon}"></i></div>`;
                 }
 
                 if (metaHTML !== '') {
@@ -11040,6 +11748,15 @@ addMessage({
 
         function exportChatHistory() {
             try {
+                // Gather announcement/custom settings
+                let dgCustomData = null, dgStatusPool = null, customWeatherMap = {};
+                try { dgCustomData = JSON.parse(localStorage.getItem('dg_custom_data') || 'null'); } catch(e2) {}
+                try { dgStatusPool = JSON.parse(localStorage.getItem('dg_status_pool') || 'null'); } catch(e2) {}
+                // Also grab customWeather entries
+                for (var ki = 0; ki < localStorage.length; ki++) {
+                    var kk = localStorage.key(ki);
+                    if (kk && kk.startsWith('customWeather_')) customWeatherMap[kk] = localStorage.getItem(kk);
+                }
                 const dataStr = JSON.stringify({
                     version: "3.0",
                     exportDate: new Date().toISOString(),
@@ -11048,7 +11765,10 @@ addMessage({
                     customReplies,
                     anniversaries,
                     customThemes,
-                    stickerLibrary
+                    stickerLibrary,
+                    dgCustomData,
+                    dgStatusPool,
+                    customWeatherMap
                 },
                     null,
                     2);
@@ -11126,6 +11846,9 @@ addMessage({
                     if (importedData.anniversaries) anniversaries = importedData.anniversaries;
                     if(importedData.customThemes) customThemes = importedData.customThemes;
                     if(importedData.stickerLibrary) stickerLibrary = importedData.stickerLibrary;
+                    if(importedData.dgCustomData) { try { localStorage.setItem('dg_custom_data', JSON.stringify(importedData.dgCustomData)); } catch(e2) {} }
+                    if(importedData.dgStatusPool) { try { localStorage.setItem('dg_status_pool', JSON.stringify(importedData.dgStatusPool)); } catch(e2) {} }
+                    if(importedData.customWeatherMap) { try { for(var wk in importedData.customWeatherMap) localStorage.setItem(wk, importedData.customWeatherMap[wk]); } catch(e2) {} }
 
                     saveData();
                     updateUI();
@@ -11768,6 +12491,7 @@ const MOOD_OPTIONS = [
 
 let moodData = {}; 
 let currentCalendarDate = new Date();
+window.selectedDateStr = null;
 let selectedDateStr = null;
 let currentMoodPage = 1; 
 let currentMoodEditTarget = 'me'; 
@@ -11780,6 +12504,7 @@ async function initMoodData() {
     if (savedMoods) { moodData = savedMoods; }
     const savedCustomMoods = await localforage.getItem(getStorageKey('customMoodOptions'));
     if (savedCustomMoods) { customMoodOptions = savedCustomMoods; }
+    window.moodData = moodData;
     checkPartnerDailyMood();
 }
 function checkPartnerDailyMood() {
@@ -11792,6 +12517,12 @@ function checkPartnerDailyMood() {
 
     if (!moodData[dateStr].partner && moodData[dateStr].partnerChecked === undefined) {
         moodData[dateStr].partnerChecked = true;
+        // 20% chance of no mood record today
+        if (Math.random() < 0.20) {
+            // Skip recording - partner didn't record mood today
+            saveMoodData();
+            return;
+        }
         const randomMood = MOOD_OPTIONS[Math.floor(Math.random() * MOOD_OPTIONS.length)];
         moodData[dateStr].partner = randomMood.key;
         try {
@@ -11814,7 +12545,12 @@ function checkPartnerDailyMood() {
 }
 function saveMoodData() {
     localforage.setItem(getStorageKey('moodCalendar'), moodData);
-    renderMoodCalendar(); 
+    window.moodData = moodData;
+    // Only render if mood modal is visible
+    var moodModal = document.getElementById('mood-modal');
+    if (moodModal && !moodModal.classList.contains('hidden') && moodModal.style.display !== 'none') {
+        renderMoodCalendar();
+    }
 }
 function saveCustomMoodOptions() {
     localforage.setItem(getStorageKey('customMoodOptions'), customMoodOptions);
@@ -11907,8 +12643,9 @@ function renderMoodCalendar() {
         dayDiv.appendChild(dotsContainer);
 
         dayDiv.addEventListener('click', () => {
-            if (dayData && (dayData.user || dayData.partner)) {
-                showDayDetails(dateStr, dayData);
+            const dayEntry = moodData[dateStr];
+            if (dayEntry && (dayEntry.user || dayEntry.partner)) {
+                showDayDetails(dateStr, dayEntry);
             } else {
                 openMoodSelector(dateStr, 'me');
             }
@@ -11942,6 +12679,9 @@ function createMoodDot(moodObj, note, isPartner) {
 function updateDualMoodStats(stats) {
     const container = document.getElementById('mood-stats-container');
     if (!container) return;
+
+    const mName = (typeof settings !== 'undefined' && settings.myName) ? settings.myName : '我';
+    const pName = (typeof settings !== 'undefined' && settings.partnerName) ? settings.partnerName : '梦角';
 
     const myTotal = stats.me.total;
     const partnerTotal = stats.partner.total;
@@ -11992,12 +12732,10 @@ function updateDualMoodStats(stats) {
     const myBarHTML = createMoodBarHTML(stats.me.counts, myTotal);
     const partnerBarHTML = createMoodBarHTML(stats.partner.counts, partnerTotal);
 
-    var todayWeather = '';
-    try {
-        if (typeof _getDailyGreetingData === 'function') {
-            todayWeather = _getDailyGreetingData().weather || '';
-        }
-    } catch(e) {}
+    var todayStr = formatDateStr(new Date());
+    var todayEntry = moodData[todayStr] || {};
+    var myWeatherVal = todayEntry.myWeather || '';
+    var partnerWeatherVal = todayEntry.partnerWeather || '';
 
     container.innerHTML = `
         <div class="mood-circles-wrapper" style="margin-bottom:20px;">
@@ -12006,18 +12744,22 @@ function updateDualMoodStats(stats) {
                     <span class="mood-circle-text" style="color:var(--accent-color)">${myTotal}</span>
                 </div>
                 <div class="mood-circle-label">
-                    <span class="mood-marker me" style="width:8px;height:8px;"></span> 我
+                    <span class="mood-marker me" style="width:8px;height:8px;"></span> ${mName}
                 </div>
-                ${todayWeather ? `<div style="font-size:10px;color:var(--text-secondary);margin-top:2px;opacity:0.75;text-align:center;">${todayWeather}</div>` : ''}
+                <div class="stats-weather-tag" onclick="editStatsWeather(this,'me')" title="点击编辑天气">
+                    ${myWeatherVal ? `<span>${myWeatherVal}</span>` : `<span style="opacity:0.4;">+ 天气</span>`}
+                </div>
             </div>
             <div class="mood-circle-item">
                 <div class="mood-circle" style="--percent: ${partnerPercent}%; --accent-color: #ff6b6b;">
                     <span class="mood-circle-text" style="color:#ff6b6b">${partnerTotal}</span>
                 </div>
                 <div class="mood-circle-label">
-                    <span class="mood-marker partner" style="width:8px;height:8px;"></span> ${settings.partnerName}
+                    <span class="mood-marker partner" style="width:8px;height:8px;"></span> ${pName}
                 </div>
-                ${todayWeather ? `<div style="font-size:10px;color:var(--text-secondary);margin-top:2px;opacity:0.75;text-align:center;">${todayWeather}</div>` : ''}
+                <div class="stats-weather-tag" onclick="editStatsWeather(this,'partner')" title="点击编辑天气">
+                    ${partnerWeatherVal ? `<span>${partnerWeatherVal}</span>` : `<span style="opacity:0.4;">+ 天气</span>`}
+                </div>
             </div>
         </div>
 
@@ -12036,7 +12778,7 @@ function updateDualMoodStats(stats) {
 
         <div class="mood-stat-group">
             <div class="mood-stat-title">
-                <span>${settings.partnerName}的心情</span>
+                <span>${pName}的心情</span>
                 <div class="dominant-mood-tag">
                     <span style="color:${partnerDominant.color}; font-weight:bold;">${partnerDominant.kaomoji} ${partnerDominant.label}</span>
                 </div>
@@ -12048,17 +12790,62 @@ function updateDualMoodStats(stats) {
         </div>
     `;
 }
+
+window.editStatsWeather = function(el, who) {
+    if (el.querySelector('input')) return;
+    var todayStr = formatDateStr(new Date());
+    if (!moodData[todayStr]) moodData[todayStr] = {};
+    var current = who === 'me' ? (moodData[todayStr].myWeather || '') : (moodData[todayStr].partnerWeather || '');
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.value = current;
+    input.maxLength = 20;
+    input.placeholder = '今日天气…';
+    input.style.cssText = 'width:100%;padding:3px 7px;border:1px solid var(--accent-color);border-radius:8px;font-size:12px;background:var(--primary-bg);color:var(--text-primary);outline:none;text-align:center;';
+    el.innerHTML = '';
+    el.appendChild(input);
+    input.focus(); input.select();
+    function save() {
+        var val = input.value.trim();
+        if (who === 'me') moodData[todayStr].myWeather = val;
+        else moodData[todayStr].partnerWeather = val;
+        saveMoodData();
+        el.innerHTML = val ? `<span>${val}</span>` : `<span style="opacity:0.4;">+ 天气</span>`;
+    }
+    input.addEventListener('blur', save);
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); save(); }
+        if (e.key === 'Escape') { el.innerHTML = current ? `<span>${current}</span>` : `<span style="opacity:0.4;">+ 天气</span>`; }
+    });
+};
+
+window.deleteDailyMood = function(dateStr, who) {
+    if (!moodData[dateStr]) return;
+    if (who === 'me') { delete moodData[dateStr].user; delete moodData[dateStr].note; delete moodData[dateStr].myWeather; }
+    else { delete moodData[dateStr].partner; delete moodData[dateStr].partnerNote; delete moodData[dateStr].partnerWeather; }
+    if (!moodData[dateStr].user && !moodData[dateStr].partner) delete moodData[dateStr];
+    saveMoodData();
+    renderMoodCalendar();
+    showNotification('已删除心情记录', 'success');
+    closeMoodOverlay();
+};
+
 function renderMoodOptionsGrid(targetKey) {
     const allMoods = getAllMoodOptions();
     const optionsGrid = document.getElementById('mood-options-grid');
     optionsGrid.innerHTML = allMoods.map(mood => {
         const isSelected = targetKey === mood.key;
+        const isCustom = mood.key.startsWith('custom_');
         return `
-        <div class="mood-option-btn" 
+        <div class="mood-option-btn${isCustom ? ' mood-option-custom' : ''}" 
              style="${isSelected ? `background:${mood.color}; color:#fff; border-color:${mood.color}; transform:scale(1.05); box-shadow:0 4px 10px rgba(0,0,0,0.15);` : ''}"
              onclick="tempSelectMood('${mood.key}')">
             <div class="mood-kaomoji" style="${isSelected ? 'color:#fff' : `color:${mood.color}`}">${mood.kaomoji}</div>
             <div class="mood-label">${mood.label}</div>
+            ${isCustom ? `<div class="mood-custom-actions" onclick="event.stopPropagation()">
+                <button class="mood-custom-action-btn" onclick="editCustomMood('${mood.key}')" title="编辑">✏️</button>
+                <button class="mood-custom-action-btn" onclick="deleteCustomMood('${mood.key}')" title="删除">🗑</button>
+            </div>` : ''}
         </div>
     `}).join('');
 }
@@ -12107,6 +12894,7 @@ window.switchMoodEditTarget = switchMoodEditTarget;
 
 function openMoodSelector(dateStr, editTarget) {
     selectedDateStr = dateStr;
+    window.selectedDateStr = dateStr;
     currentMoodEditTarget = editTarget || 'me';
     currentMoodPage = 1;
     currentMoodSelection = null;
@@ -12141,7 +12929,11 @@ function openMoodSelector(dateStr, editTarget) {
     const weatherInput = document.getElementById('mood-weather-input');
     if (weatherInput) weatherInput.value = weatherVal;
     const weatherLabel = document.getElementById('mood-weather-label');
-    if (weatherLabel) weatherLabel.firstChild.textContent = currentMoodEditTarget === 'me' ? '我的天气 ' : 'Ta 的天气 ';
+    if (weatherLabel) {
+        var pNameW = (typeof settings !== 'undefined' && settings.partnerName) ? settings.partnerName : '梦角';
+        var mNameW = (typeof settings !== 'undefined' && settings.myName) ? settings.myName : '我';
+        if (weatherLabel.firstChild) weatherLabel.firstChild.textContent = currentMoodEditTarget === 'me' ? mNameW + '的天气\u00a0' : pNameW + '的天气\u00a0';
+    }
 
     document.getElementById('mood-page-1').style.display = 'block';
     document.getElementById('mood-page-2').style.display = 'none';
@@ -12182,11 +12974,12 @@ document.getElementById('confirm-mood-save').addEventListener('click', () => {
     
     saveMoodData();
     closeMoodOverlay();
-    showNotification('记录已保存 ✨', 'success');
+    showNotification('记录已保存 ✦', 'success');
 });
 
 function showDayDetails(dateStr, data) {
     selectedDateStr = dateStr;
+    window.selectedDateStr = dateStr;
     const overlay = document.getElementById('mood-selector-overlay');
     const editorView = document.getElementById('mood-editor-view');
     const detailView = document.getElementById('mood-detail-view');
@@ -12245,12 +13038,20 @@ function showDayDetails(dateStr, data) {
 }
 
 document.getElementById('edit-existing-mood').addEventListener('click', () => {
+    const editorView = document.getElementById('mood-editor-view');
+    const detailView = document.getElementById('mood-detail-view');
     openMoodSelector(selectedDateStr, 'me');
+    editorView.style.display = 'block';
+    detailView.style.display = 'none';
 });
 
 window.closeMoodOverlay = function() {
     document.getElementById('mood-selector-overlay').classList.remove('active');
     document.getElementById('custom-mood-dialog').style.display = 'none';
+};
+window.viewMoodDetailFromEditor = function() {
+    if (!selectedDateStr || !moodData[selectedDateStr]) return;
+    showDayDetails(selectedDateStr, moodData[selectedDateStr]);
 };
 document.getElementById('cancel-mood-edit').addEventListener('click', closeMoodOverlay);
 
@@ -12263,6 +13064,9 @@ window.openCustomMoodDialog = function() {
     colorsEl.innerHTML = CUSTOM_MOOD_COLORS.map((c,i) => 
         `<div class="custom-mood-color-dot ${i===0?'selected':''}" style="background:${c};" onclick="selectCustomColor('${c}',this)"></div>`
     ).join('');
+    // Reset save button to default add behavior
+    const saveBtn = dialog.querySelector('.modal-btn-primary');
+    saveBtn.onclick = window.saveCustomMood;
     dialog.style.display = 'block';
 };
 window.selectCustomColor = function(color, el) {
@@ -12282,7 +13086,43 @@ window.saveCustomMood = function() {
     saveCustomMoodOptions();
     closeCustomMoodDialog();
     renderMoodOptionsGrid(currentMoodSelection);
-    showNotification('自定义心情已添加 🎉', 'success');
+    showNotification('自定义心情已添加 ✦', 'success');
+};
+
+window.deleteCustomMood = function(key) {
+    customMoodOptions = customMoodOptions.filter(m => m.key !== key);
+    saveCustomMoodOptions();
+    renderMoodOptionsGrid(currentMoodSelection);
+    showNotification('已删除自定义心情', 'success');
+};
+
+window.editCustomMood = function(key) {
+    const mood = customMoodOptions.find(m => m.key === key);
+    if (!mood) return;
+    const dialog = document.getElementById('custom-mood-dialog');
+    document.getElementById('custom-mood-emoji').value = mood.kaomoji;
+    document.getElementById('custom-mood-label').value = mood.label;
+    customMoodSelectedColor = mood.color;
+    const colorsEl = document.getElementById('custom-mood-colors');
+    colorsEl.innerHTML = CUSTOM_MOOD_COLORS.map((c) => 
+        `<div class="custom-mood-color-dot ${c===mood.color?'selected':''}" style="background:${c};" onclick="selectCustomColor('${c}',this)"></div>`
+    ).join('');
+    dialog.style.display = 'block';
+    // Override save to update existing
+    dialog._editingKey = key;
+    const saveBtn = dialog.querySelector('.modal-btn-primary');
+    saveBtn.onclick = function() {
+        const emoji = document.getElementById('custom-mood-emoji').value.trim();
+        const label = document.getElementById('custom-mood-label').value.trim();
+        if (!emoji || !label) { showNotification('请填写表情和名称', 'warning'); return; }
+        const idx = customMoodOptions.findIndex(m => m.key === key);
+        if (idx !== -1) customMoodOptions[idx] = { key, kaomoji: emoji, label, color: customMoodSelectedColor };
+        saveCustomMoodOptions();
+        closeCustomMoodDialog();
+        saveBtn.onclick = null;
+        renderMoodOptionsGrid(currentMoodSelection);
+        showNotification('自定义心情已更新 ✦', 'success');
+    };
 };
 
 function initMoodListeners() {
@@ -12312,9 +13152,15 @@ function initMoodListeners() {
     const modal = document.getElementById('mood-modal');
     if (entryBtn) {
         entryBtn.addEventListener('click', () => {
-            hideModal(document.getElementById('advanced-modal'));
-            renderMoodCalendar();
-            showModal(modal);
+            if (typeof window.updateDynamicNames === 'function') window.updateDynamicNames();
+            // Hide advanced modal directly without animation to avoid timing conflict
+            var advModal = document.getElementById('advanced-modal');
+            if (advModal) advModal.style.display = 'none';
+            // Small delay to ensure no display:none conflict from prior hideModal timeout
+            setTimeout(() => {
+                renderMoodCalendar();
+                showModal(modal);
+            }, 50);
         });
     }
 
@@ -12423,7 +13269,7 @@ function showEnvelopeReplyPopup(letter) {
     popup.id = 'envelope-reply-popup';
     popup.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--secondary-bg);border:1px solid var(--border-color);border-radius:20px;padding:18px 20px;z-index:8000;max-width:320px;width:88%;box-shadow:0 8px 32px rgba(0,0,0,0.18);display:flex;flex-direction:column;gap:12px;animation:slideUpNotif 0.4s cubic-bezier(0.22,1,0.36,1);';
     popup.innerHTML = `
-        <style>@keyframes slideUpNotif{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}</style>
+        <style>@keyframes slideUpNotif{from{opacity:0;transform:translateX(-50%) translateY(24px) scale(0.9)}60%{transform:translateX(-50%) translateY(-4px) scale(1.02)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}</style>
         <div style="display:flex;align-items:center;gap:10px;">
             <span style="font-size:26px;">💌</span>
             <div>
@@ -12655,7 +13501,7 @@ window.viewEnvLetter = function(section, id) {
     document.getElementById('env-edit-input').value = letter.content;
     document.getElementById('env-view-content').style.display = 'block';
     document.getElementById('env-view-edit').style.display = 'none';
-    document.getElementById('env-view-edit-btn').style.display = section === 'outbox' ? 'inline-flex' : 'none';
+    document.getElementById('env-view-edit-btn').style.display = 'inline-flex';
     document.getElementById('env-view-save-btn').style.display = 'none';
     showModal(document.getElementById('envelope-view-modal'));
 };
@@ -13239,21 +14085,27 @@ function showPokeTab() {
         const btn = document.createElement('button');
         btn.textContent = pokeText;
         btn.style.cssText = `
-            padding: 10px;
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, var(--secondary-bg), rgba(var(--accent-color-rgb),0.04));
+            border: 1px solid rgba(var(--accent-color-rgb),0.15);
+            border-radius: 12px;
             cursor: pointer;
             text-align: left;
-            transition: all 0.2s;
+            font-size: 13px;
+            transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            width: 100%;
         `;
         btn.addEventListener('mouseover', () => {
-            btn.style.background = 'var(--accent-color)';
-            btn.style.color = '#fff';
+            btn.style.background = 'linear-gradient(135deg, rgba(var(--accent-color-rgb),0.12), rgba(var(--accent-color-rgb),0.06))';
+            btn.style.borderColor = 'var(--accent-color)';
+            btn.style.transform = 'translateX(4px)';
         });
         btn.addEventListener('mouseout', () => {
-            btn.style.background = 'var(--secondary-bg)';
-            btn.style.color = 'var(--text-primary)';
+            btn.style.background = 'linear-gradient(135deg, var(--secondary-bg), rgba(var(--accent-color-rgb),0.04))';
+            btn.style.borderColor = 'rgba(var(--accent-color-rgb),0.15)';
+            btn.style.transform = '';
         });
         btn.onclick = () => {
             addMessage({
@@ -13273,13 +14125,18 @@ function showPokeTab() {
     const customBtn = document.createElement('button');
     customBtn.innerHTML = '<i class="fas fa-edit"></i> 自定义拍一拍';
     customBtn.style.cssText = `
-        padding: 10px;
-        background: var(--accent-color);
+        padding: 11px 14px;
+        background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color-rgb),0.8));
         color: #fff;
         border: none;
-        border-radius: 8px;
+        border-radius: 12px;
         cursor: pointer;
         font-weight: 600;
+        font-size: 13px;
+        width: 100%;
+        letter-spacing: 0.3px;
+        margin-top: 4px;
+        box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.25);
     `;
     customBtn.onclick = () => {
         document.getElementById('user-sticker-picker').classList.remove('active');
@@ -13947,14 +14804,9 @@ document.getElementById('chat-settings').addEventListener('click', () => {
         '#typing-indicator-toggle': { prop: 'typingIndicatorEnabled', name: '正在输入' },
         '#read-no-reply-toggle': { prop: 'allowReadNoReply', name: '已读不回' }
     };
-    for (const [selector, { prop, name }] of Object.entries(toggleSyncMap)) {
+    for (const [selector, { prop }] of Object.entries(toggleSyncMap)) {
         const el = document.querySelector(selector);
-        if (el) {
-            const span = el.querySelector('span');
-            if (span) span.textContent = `${name}: ${settings[prop] ? '开启' : '关闭'}`;
-            const icon = el.querySelector('i');
-            if (icon) icon.className = settings[prop] ? 'fas fa-toggle-on' : 'fas fa-toggle-off';
-        }
+        if (el) el.classList.toggle('active', !!settings[prop]);
     }
     const svSlider = document.getElementById('sound-volume-slider');
     const svVal = document.getElementById('sound-volume-value');
@@ -13964,8 +14816,14 @@ document.getElementById('chat-settings').addEventListener('click', () => {
     document.querySelectorAll('.time-fmt-opt').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.fmt === (settings.timeFormat || 'HH:mm'));
     });
+    // Update auto-send pill state
+    const autoToggle = document.getElementById('auto-send-toggle');
+    if (autoToggle) autoToggle.classList.toggle('active', !!settings.autoSendEnabled);
     updateAutoSendUI();
     updateDelayUI();
+    // Sync immersive toggle
+    const immToggle = document.getElementById('immersive-toggle');
+    if (immToggle) immToggle.classList.toggle('active', document.body.classList.contains('immersive-mode'));
     
     showModal(DOMElements.chatModal.modal);
     setupAvatarFrameSettings();
@@ -14306,26 +15164,16 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                 prop, name
             }] of Object.entries(settingToggles)) {
                 const element = document.querySelector(selector);
+                if (!element) continue;
 
-                if (element) {
-                    const span = element.querySelector('span');
-                    if (span) span.textContent = `${name}: ${settings[prop] ? '开启': '关闭'}`;
-                }
+                // Set initial pill state
+                element.classList.toggle('active', !!settings[prop]);
 
                 element.addEventListener('click', () => {
                     settings[prop] = !settings[prop];
                     throttledSaveData();
                     updateUI();
-
-                    const span = element.querySelector('span');
-                    if (span) {
-                        span.textContent = `${name}: ${settings[prop] ? '开启': '关闭'}`;
-                    }
-                    const icon = element.querySelector('i');
-                    if (icon) {
-                        icon.className = settings[prop] ? 'fas fa-toggle-on' : 'fas fa-toggle-off';
-                    }
-
+                    element.classList.toggle('active', !!settings[prop]);
                     if (prop !== 'soundEnabled') renderMessages(true);
                     showNotification(`${name}已${settings[prop] ? '开启': '关闭'}`, 'success');
                 });
@@ -14393,7 +15241,10 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                 });
                 
                 showModal(DOMElements.appearanceModal.modal);
-                setTimeout(() => { updateAvatarSettingsUI && updateAvatarSettingsUI(); setupAppearancePanelFrameSettings && setupAppearancePanelFrameSettings(); }, 100);
+                setTimeout(() => { 
+                    updateAvatarSettingsUI && updateAvatarSettingsUI(); 
+                    setupAppearancePanelFrameSettings && setupAppearancePanelFrameSettings();
+                }, 100);
             });
             DOMElements.appearanceModal.closeBtn.addEventListener('click', () => {
                     hideModal(DOMElements.appearanceModal.modal);
@@ -14437,21 +15288,12 @@ document.getElementById('chat-settings').addEventListener('click', () => {
 
 const autoSendToggle = document.getElementById('auto-send-toggle');
 const autoSendControl = document.getElementById('auto-send-control');
-const autoSendToggleSpan = autoSendToggle.querySelector('span');
-const autoSendIcon = autoSendToggle.querySelector('i');
 const autoSendSlider = document.getElementById('auto-send-slider');
 const autoSendValue = document.getElementById('auto-send-value');
 
 const updateAutoSendUI = () => {
-    if (settings.autoSendEnabled) {
-        autoSendToggleSpan.textContent = "主动发送: 开启";
-        autoSendIcon.className = "fas fa-toggle-on";
-        autoSendControl.style.display = "flex";
-    } else {
-        autoSendToggleSpan.textContent = "主动发送: 关闭";
-        autoSendIcon.className = "fas fa-toggle-off";
-        autoSendControl.style.display = "none";
-    }
+    autoSendToggle.classList.toggle('active', !!settings.autoSendEnabled);
+    autoSendControl.style.display = settings.autoSendEnabled ? "flex" : "none";
     const currentVal = settings.autoSendInterval || 5;
     autoSendSlider.value = currentVal;
     autoSendValue.textContent = `${currentVal}分钟`;
@@ -15007,7 +15849,7 @@ if (savedSongsStr) {
                     player.classList.add('playing');
                 }).catch(error => {
                     console.error(error);
-                    showNotification('播放失败，链接可能失效', 'error');
+                    showNotification('播放失败，请挂vpn，具体方法自行', 'error');
                 });
             }
         }
@@ -15612,6 +16454,27 @@ function initReplyLibraryListeners() {
             btn.classList.add('active');
             
             currentMajorTab = btn.dataset.major;
+
+            // Handle announcement tab separately
+            if (currentMajorTab === 'announcement') {
+                // switchToAnnouncementPanel called via onclick already
+                return;
+            }
+
+            // Restore normal panels when switching away from announcement
+            var listArea = document.getElementById('custom-replies-list');
+            var annPanel = document.getElementById('announcement-panel');
+            var toolbar = document.getElementById('cr-toolbar');
+            var subTabs = document.getElementById('cr-sub-tabs');
+            var addBtn = document.getElementById('add-custom-reply');
+            var titleEl = document.getElementById('cr-modal-title');
+            if (listArea) listArea.style.display = '';
+            if (annPanel) annPanel.style.display = 'none';
+            if (toolbar) toolbar.style.display = '';
+            if (subTabs) subTabs.style.display = '';
+            if (addBtn) addBtn.style.display = '';
+            if (titleEl) titleEl.textContent = '内容管理';
+            
             currentSubTab = LIBRARY_CONFIG[currentMajorTab].tabs[0].id;
             
             renderReplyLibrary();
@@ -15933,6 +16796,21 @@ const updatePreview = () => {
         function applyAllAvatarFrames() {
             applyAvatarFrame(DOMElements.me.avatarContainer, settings.myAvatarFrame);
             applyAvatarFrame(DOMElements.partner.avatarContainer, settings.partnerAvatarFrame);
+            // Apply shape presets
+            applyAvatarShapeToDOM('my', settings.myAvatarShape || 'circle');
+            applyAvatarShapeToDOM('partner', settings.partnerAvatarShape || 'circle');
+        }
+
+        function applyAvatarShapeToDOM(type, shape) {
+            const SHAPES = ['circle','square','pentagon','heart'];
+            const avatarContainer = type === 'my' ? DOMElements.me.avatarContainer : DOMElements.partner.avatarContainer;
+            if (!avatarContainer) return;
+            SHAPES.forEach(s => avatarContainer.classList.remove('avatar-shape-' + s));
+            if (shape && shape !== 'none') avatarContainer.classList.add('avatar-shape-' + shape);
+            // Also update all in-chat message avatars via re-render flag
+            document.querySelectorAll('.message-avatar').forEach(el => {
+                SHAPES.forEach(s => el.classList.remove('shape-' + s));
+            });
         }
 
         function setupAppearancePanelFrameSettings() {
@@ -16186,7 +17064,7 @@ function initThemeEditor() {
                         <label style="font-size:13px;flex:1;">${cfg.label}</label>
                         <input type="range" min="${cfg.min}" max="${cfg.max}" step="${cfg.step||1}" value="${numVal||parseFloat(cfg.default)}"
                             data-variable="${variable}" data-unit="${cfg.unit}"
-                            style="flex:2;max-width:140px;">
+                            style="flex:2;max-width:140px;accent-color:var(--accent-color);">
                         <span style="width:44px;text-align:right;font-size:12px;color:var(--text-secondary);">${numVal||parseFloat(cfg.default)}${cfg.unit}</span>`;
                     const rangeInput = item.querySelector('input[type="range"]');
                     const valLabel = item.querySelector('span');
@@ -16194,12 +17072,19 @@ function initThemeEditor() {
                         const v = rangeInput.value + cfg.unit;
                         document.documentElement.style.setProperty(variable, v);
                         valLabel.textContent = rangeInput.value + cfg.unit;
+                        // Sync settings
+                        if (variable === '--radius') { settings.borderRadius = rangeInput.value; throttledSaveData && throttledSaveData(); }
+                        if (variable === '--message-line-height') { settings.messageLineHeight = parseFloat(rangeInput.value); throttledSaveData && throttledSaveData(); }
                     });
                 } else if (cfg.type === 'select') {
                     const opts = cfg.options.map(o => `<option value="${o}" ${String(numVal||cfg.default)===o?'selected':''}>${o}</option>`).join('');
-                    item.innerHTML = `<label style="font-size:13px;flex:1;">${cfg.label}</label><select data-variable="${variable}" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border-color);background:var(--secondary-bg);color:var(--text-primary);font-size:12px;">${opts}</select>`;
+                    item.innerHTML = `<label style="font-size:13px;flex:1;">${cfg.label}</label><select data-variable="${variable}" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border-color);background:var(--secondary-bg);color:var(--text-primary);font-size:13px;cursor:pointer;">${opts}</select>`;
                     item.querySelector('select').addEventListener('change', (e) => {
-                        document.documentElement.style.setProperty(variable, e.target.value);
+                        const newVal = e.target.value;
+                        document.documentElement.style.setProperty(variable, newVal);
+                        // Sync to settings if it maps to a known settings key
+                        if (variable === '--message-font-weight') { settings.messageFontWeight = newVal; throttledSaveData && throttledSaveData(); }
+                        if (variable === '--message-line-height') { settings.messageLineHeight = parseFloat(newVal); throttledSaveData && throttledSaveData(); }
                     });
                 }
                 grid.appendChild(item);
@@ -16730,14 +17615,14 @@ const tourSteps = [
     },
     {
         element: '#partner-avatar',
-        title: "💫 Ta 的头像",
-        content: "这里是<b>对方的头像</b>，同样点击可以上传更换。",
+        title: "Ta 的头像",
+        content: "这里是<b>梦角的头像</b>，同样点击可以上传更换。",
         position: 'bottom'
     },
     {
         element: '#partner-name',
-        title: "💌 Ta 的昵称",
-        content: "这是<b>对方的昵称</b>，同样点击可以修改。",
+        title: "Ta 的昵称",
+        content: "这是<b>梦角的昵称</b>，同样点击可以修改。",
         position: 'bottom'
     },
     {
@@ -16772,8 +17657,8 @@ const tourSteps = [
     },
     {
         element: '#continue-btn',
-        title: "🔄 让 Ta 继续说",
-        content: "不知道说什么了？或者想让 Ta 多说几句？<br><br>点击这个按钮，<b>对方会主动找你说话。",
+        title: "让 Ta 继续说",
+        content: "不知道说什么了？或者想让 Ta 多说几句？<br><br>点击这个按钮，<b>梦角会主动找你说话。",
         position: 'top'
     },
     {
@@ -16805,7 +17690,7 @@ const tourSteps = [
     {
         element: '#advanced-settings',
         title: "🚀 高级功能 — 必看！",
-        content: "<b>高级功能</b>是整个应用最强大的板块，里面有：<br>• <b>心晴手账</b>：记录每天的心情<br>• <b>信封投递</b>：给 Ta 写一封信<br>• <b>纪念日</b>：倒计时 / 纪念天数<br>• <b>运势占卜</b>：每日运势<br>• <b>自定义回复</b>：让 Ta 说你想听的话<br>• <b>音乐播放器</b>：背景音乐",
+        content: "<b>高级功能</b>是整个应用最强大的板块，里面有：<br>• <b>心晴手账</b>：记录每天的心情<br>• <b>信封投递</b>：给梦角写一封信<br>• <b>纪念日</b>：倒计时 / 纪念天数<br>• <b>运势占卜</b>：每日运势<br>• <b>自定义回复</b>：让梦角说你想听的话<br>• <b>音乐播放器</b>：背景音乐",
         position: 'bottom'
     },
     {
@@ -17218,7 +18103,7 @@ function initAnniversaryModule() {
                 const bgEl = document.getElementById('ann-header-card-bg');
                 if (bgEl) bgEl.style.backgroundImage = `url(${dataUrl})`;
                 await localforage.setItem(getStorageKey(`annHeaderBg_${activeAnnId}`), dataUrl);
-                showNotification('封面图已更新 🌸', 'success');
+                showNotification('封面图已更新 ', 'success');
             };
             reader.readAsDataURL(file);
             e.target.value = '';
@@ -17252,35 +18137,82 @@ function setupTutorialListeners() {
 
 <div id="daily-greeting-modal" class="hidden">
     <div class="daily-greeting-card" id="daily-greeting-card">
-        <span class="daily-greeting-emoji" id="dg-emoji">🌸</span>
-        <div class="daily-greeting-festival" id="dg-festival">GOOD MORNING</div>
-        <div class="daily-greeting-title" id="dg-title">早上好</div>
-        <div class="daily-greeting-divider"></div>
-        <div class="daily-greeting-row" id="dg-partner-mood-row">
-            <div class="daily-greeting-row-icon" id="dg-partner-mood-icon">💫</div>
-            <div class="daily-greeting-row-info">
-                <div class="daily-greeting-row-label">Ta 今日心情</div>
-                <div class="daily-greeting-row-val" id="dg-partner-mood">—</div>
+        <!-- Header band with image support -->
+        <div class="dg-header-band" id="dg-header-band">
+            <div class="dg-header-band-bg" id="dg-header-band-bg"></div>
+            <div class="dg-header-band-overlay" id="dg-header-band-overlay"></div>
+            <div class="dg-header-band-shimmer"></div>
+            <input type="file" id="dg-header-img-input" accept="image/*" style="display:none">
+            <div class="dg-header-top">
+                <div class="dg-emoji-circle" id="dg-emoji">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </div>
+                <div class="dg-header-text">
+                    <div class="dg-festival-label" id="dg-festival">GOOD MORNING</div>
+                    <div class="dg-main-title" id="dg-title">早上好</div>
+                </div>
+            </div>
+            <div class="dg-date-stamp" id="dg-date-stamp">— 今日公告已送达 —</div>
+        </div>
+        <!-- Custom banner image removed per design update - use dg-deco-img in body instead -->
+        <!-- Body -->
+        <div class="dg-body">
+            <div class="dg-section-label" id="dg-section-label-partner">梦角今日状态</div>
+            <!-- Mood panel -->
+            <div class="dg-mood-panel" id="dg-mood-panel">
+                <div class="dg-mood-icon-big" id="dg-partner-mood-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </div>
+                <div class="dg-mood-info">
+                    <div class="dg-mood-name" id="dg-partner-mood">还没有记录今日心情</div>
+                    <div class="dg-mood-sub" id="dg-partner-mood-note"></div>
+                </div>
+            </div>
+            <!-- Info grid -->
+            <div class="dg-info-grid">
+                <div class="dg-info-cell">
+                    <div class="dg-info-cell-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="1.5"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+                    </div>
+                    <div class="dg-info-cell-label" id="dg-weather-label"</>梦角的天气</div>
+                    <div class="dg-info-cell-val" id="dg-weather" onclick="startEditDgWeather(this)" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;" title="点击编辑">晴朗</div>
+                </div>
+                <div class="dg-info-cell">
+                    <div class="dg-info-cell-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <div class="dg-info-cell-label" id="dg-status-label">梦角的状态</div>
+                    <div class="dg-info-cell-val" id="dg-status">一切都好</div>
+                </div>
+            </div>
+            <!-- Custom decoration image -->
+            <div id="dg-deco-img-wrap" style="display:none; margin-bottom:12px; border-radius:12px; overflow:hidden;">
+                <img id="dg-deco-img" src="" alt="" style="width:100%; max-height:160px; object-fit:cover; display:block; border-radius:12px;">
+            </div>
+            <!-- Note -->
+            <div class="dg-note-box" id="dg-note">
+                <div class="dg-note-inner">
+                    <div class="dg-note-weather-badge" id="dg-note-weather-badge" style="display:none;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+                        <span id="dg-note-weather-text"></span>
+                    </div>
+                    <div id="dg-note-text">今天也要元气满满，我在这里陪着你 ✦</div>
+                </div>
+            </div>
+            <!-- Buttons -->
+            <div class="dg-footer">
+                <button class="daily-greeting-close-btn" onclick="closeDailyGreeting()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:6px"><polyline points="20 6 9 17 4 12"/></svg>
+                    知道了，开始今天
+                </button>
             </div>
         </div>
-        <div class="daily-greeting-row" id="dg-weather-row">
-            <div class="daily-greeting-row-icon">🌤</div>
-            <div class="daily-greeting-row-info">
-                <div class="daily-greeting-row-label">Ta 的天气</div>
-                <div class="daily-greeting-row-val" id="dg-weather" onclick="startEditDgWeather(this)" style="cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;" title="点击编辑天气">晴朗</div>
-            </div>
-        </div>
-        <div class="daily-greeting-row" id="dg-status-row">
-            <div class="daily-greeting-row-icon">📍</div>
-            <div class="daily-greeting-row-info">
-                <div class="daily-greeting-row-label">Ta 的状态</div>
-                <div class="daily-greeting-row-val" id="dg-status">一切都好</div>
-            </div>
-        </div>
-        <div class="daily-greeting-note" id="dg-note">今天也要加油哦~</div>
-        <button class="daily-greeting-close-btn" onclick="closeDailyGreeting()">知道了，开始今天</button>
+
     </div>
 </div>
+
+<!-- Daily Greeting Editor Modal (stub, editing now in custom replies > 今日公告) -->
+<div id="dg-editor-modal" style="display:none;"></div>
 
 <script>
 window._dailyGreetingReady = false;
@@ -17451,35 +18383,436 @@ function _buildDailyGreeting() {
         var todayMood = moodDataRaw[todayStr];
         var allMoods = (typeof getAllMoodOptions === 'function') ? getAllMoodOptions() : [];
 
-        var partnerMoodText = 'Ta 今天还没有记录';
-        var partnerMoodIcon = '🌙';
+        // Use dynamic partner name
+        var pName = (typeof settings !== 'undefined' && settings.partnerName) ? settings.partnerName : '梦角';
+        var mName = (typeof settings !== 'undefined' && settings.myName) ? settings.myName : '我';
+
+        var partnerMoodText = pName + ' 今天还没有记录';
+        var partnerMoodIcon = null; // will use SVG default
+        var partnerMoodNote = '';
 
         if (todayMood && todayMood.partner) {
             for (var pi = 0; pi < allMoods.length; pi++) {
                 if (allMoods[pi].key === todayMood.partner) {
-                    partnerMoodText = allMoods[pi].kaomoji + ' ' + allMoods[pi].label;
+                    partnerMoodText = allMoods[pi].kaomoji + '  ' + allMoods[pi].label;
                     partnerMoodIcon = allMoods[pi].kaomoji;
                     break;
                 }
             }
+            partnerMoodNote = todayMood.partnerNote || '';
         }
 
         var h = now.getHours();
-        var mainEmoji = festival ? festival.emoji : timeEmoji;
         var mainTitle = festival ? (festival.name + '快乐') : timeLabel;
         var festLabel = festival ? festival.label : ('GOOD ' + (h < 12 ? 'MORNING' : h < 18 ? 'AFTERNOON' : 'EVENING'));
-        var noteText = festival ? festival.note : '今天也要元气满满，我在这里陪着你 ✨';
+        var noteText = festival ? festival.note : '今天也要元气满满，我在这里陪着你 ✦';
+
+        // Load custom overrides
+        var customData = {};
+        try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(e2) {}
+        // Random selection seed based on date
+        var todaySeedForText = now.getDate() * 100 + now.getMonth() + now.getFullYear() * 3;
+        if (customData.titles && customData.titles.length > 0) {
+            mainTitle = customData.titles[todaySeedForText % customData.titles.length];
+        } else if (customData.title) {
+            mainTitle = customData.title;
+        }
+        if (customData.notes && customData.notes.length > 0) {
+            noteText = customData.notes[todaySeedForText % customData.notes.length];
+        } else if (customData.note) {
+            noteText = customData.note;
+        }
 
         function setEl(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
-        setEl('dg-emoji', mainEmoji);
+        function setElHTML(id, val) { var el = document.getElementById(id); if (el) el.innerHTML = val; }
+
+        // Update emoji circle - if mood icon is a real emoji use it, else keep SVG
+        var emojiEl = document.getElementById('dg-emoji');
+        if (emojiEl) {
+            if (festival) {
+                emojiEl.textContent = festival.emoji;
+            }
+            // else keep the SVG smile icon
+        }
+
+        // Update mood icon
+        var moodIconEl = document.getElementById('dg-partner-mood-icon');
+        if (moodIconEl) {
+            if (partnerMoodIcon) {
+                moodIconEl.textContent = partnerMoodIcon;
+                moodIconEl.style.fontSize = '32px';
+            }
+            // else keep SVG
+        }
+
         setEl('dg-festival', festLabel);
         setEl('dg-title', mainTitle);
-        setEl('dg-partner-mood-icon', partnerMoodIcon);
         setEl('dg-partner-mood', partnerMoodText);
-        setEl('dg-weather', weather);
-        setEl('dg-status', status);
-        setEl('dg-note', noteText);
+        setEl('dg-partner-mood-note', partnerMoodNote || (todayMood && todayMood.partner ? pName + ' 记录了今天的心情 ☆' : ''));
+
+        // Status pool random selection
+        var statusPoolData = [];
+        try { statusPoolData = JSON.parse(localStorage.getItem('dg_status_pool') || '[]'); } catch(e2) {}
+        var todaySeed = now.getDate() * 1000 + now.getMonth() * 31 + now.getFullYear();
+        if (statusPoolData.length > 0) {
+            var poolItem = statusPoolData[todaySeed % statusPoolData.length];
+            if (poolItem) {
+                setEl('dg-festival', poolItem.label || festLabel);
+                setEl('dg-status', poolItem.status || status);
+                var emojiEl2 = document.getElementById('dg-emoji');
+                if (emojiEl2) {
+                    if (poolItem.iconImg) {
+                        emojiEl2.textContent = '';
+                        emojiEl2.style.backgroundImage = 'url(' + poolItem.iconImg + ')';
+                        emojiEl2.style.backgroundSize = 'cover';
+                        emojiEl2.style.backgroundPosition = 'center';
+                    } else if (poolItem.icon) {
+                        emojiEl2.style.backgroundImage = '';
+                        emojiEl2.textContent = poolItem.icon;
+                    }
+                }
+            }
+        } else {
+            setEl('dg-weather', weather);
+            setEl('dg-status', status);
+        }
+        if (statusPoolData.length === 0) {
+            setEl('dg-weather', weather);
+            setEl('dg-status', status);
+        } else {
+            setEl('dg-weather', weather);
+        }
+
+        // Update note box with inner structure
+        var noteTextEl = document.getElementById('dg-note-text');
+        if (noteTextEl) noteTextEl.textContent = noteText;
+        // Weather badge hidden — weather is shown in the info grid above
+        var wBadge = document.getElementById('dg-note-weather-badge');
+        if (wBadge) wBadge.style.display = 'none';
+
+        // Update dynamic labels with names
+        setEl('dg-section-label-partner', pName + ' 今日状态');
+        setEl('dg-weather-label', pName + ' 的天气');
+        setEl('dg-status-label', pName + ' 的状态');
+
+        // Date stamp
+        var months = ['一','二','三','四','五','六','七','八','九','十','十一','十二'];
+        setEl('dg-date-stamp', now.getFullYear() + ' · ' + months[now.getMonth()] + '月' + now.getDate() + '日');
+
+        // Load custom header bg
+        var headerBg = localStorage.getItem('dg_header_bg');
+        var bgEl = document.getElementById('dg-header-band-bg');
+        if (bgEl && headerBg) {
+            bgEl.style.backgroundImage = 'url(' + headerBg + ')';
+            bgEl.classList.add('has-img');
+        }
+
+        // Load custom deco image (middle decoration only, no top banner)
+        var decoImg = customData.decoImg;
+        var decoWrap2 = document.getElementById('dg-deco-img-wrap');
+        var decoImgEl2 = document.getElementById('dg-deco-img');
+        if (decoWrap2 && decoImgEl2) {
+            if (decoImg) {
+                decoImgEl2.src = decoImg;
+                decoWrap2.style.display = 'block';
+            } else {
+                decoWrap2.style.display = 'none';
+            }
+        }
     } catch(e) { console.warn('Daily greeting build error:', e); }
+}
+
+window.toggleImmersiveMode = function(force) {
+    var isOn = (force !== undefined) ? force : !document.body.classList.contains('immersive-mode');
+    document.body.classList.toggle('immersive-mode', isOn);
+    var toggle = document.getElementById('immersive-toggle');
+    if (toggle) toggle.classList.toggle('active', isOn);
+    try { localStorage.setItem('immersive_mode', isOn ? '1' : '0'); } catch(e) {}
+    if (!isOn && typeof showNotification === 'function') showNotification('已退出沉浸式模式', 'info');
+};
+(function() {
+    try {
+        if (localStorage.getItem('immersive_mode') === '1') {
+            document.body.classList.add('immersive-mode');
+            var t = document.getElementById('immersive-toggle');
+            if (t) t.classList.add('active');
+        }
+    } catch(e) {}
+})();
+
+window.openDailyGreetingEditor = function() {
+    var modal = document.getElementById('dg-editor-modal');
+    if (!modal) return;
+    var customData = {};
+    try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(e) {}
+    var titleEl = document.getElementById('dg-edit-title');
+    var noteEl = document.getElementById('dg-edit-note');
+    if (titleEl) titleEl.value = (customData.titles && customData.titles.length) ? customData.titles.join('\n') : (customData.title || '');
+    if (noteEl) noteEl.value = (customData.notes && customData.notes.length) ? customData.notes.join('\n') : (customData.note || '');
+
+    // Load deco image preview
+    if (customData.decoImg) {
+        var prev = document.getElementById('dg-deco-preview');
+        var prevImg = document.getElementById('dg-deco-preview-img');
+        if (prev && prevImg) { prevImg.src = customData.decoImg; prev.style.display = 'block'; }
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+};
+window.closeDailyGreetingEditor = function() {
+    var modal = document.getElementById('dg-editor-modal');
+    if (modal) { modal.style.display = 'none'; modal.classList.remove('active'); }
+};
+window.saveDailyGreetingCustom = function() {
+    var customData = {};
+    try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(e) {}
+    var titleEl = document.getElementById('dg-edit-title');
+    var noteEl = document.getElementById('dg-edit-note');
+    if (titleEl && titleEl.value.trim()) {
+        var titles = titleEl.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+        customData.titles = titles;
+        customData.title = titles[0]; // backward compat
+    } else { delete customData.titles; delete customData.title; }
+    if (noteEl && noteEl.value.trim()) {
+        var notes = noteEl.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+        customData.notes = notes;
+        customData.note = notes[0]; // backward compat
+    } else { delete customData.notes; delete customData.note; }
+    localStorage.setItem('dg_custom_data', JSON.stringify(customData));
+    closeDailyGreetingEditor();
+    if (typeof _buildDailyGreeting === 'function') _buildDailyGreeting();
+    if (typeof showNotification === 'function') showNotification('公告已保存 ✦', 'success');
+};
+window.clearDgDecoImg = function() {
+    var customData = {};
+    try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(e) {}
+    delete customData.decoImg;
+    localStorage.setItem('dg_custom_data', JSON.stringify(customData));
+    var prev = document.getElementById('dg-deco-preview');
+    if (prev) prev.style.display = 'none';
+    var wrap = document.getElementById('dg-deco-img-wrap');
+    if (wrap) wrap.style.display = 'none';
+};
+window.clearDgHeaderBg = function() {
+    localStorage.removeItem('dg_header_bg');
+    var bgEl = document.getElementById('dg-header-band-bg');
+    if (bgEl) { bgEl.style.backgroundImage = ''; bgEl.classList.remove('has-img'); }
+};
+
+// ─── Announcement Panel (in custom replies modal) ───
+window.switchToAnnouncementPanel = function() {
+    var listArea = document.getElementById('custom-replies-list');
+    var annPanel = document.getElementById('announcement-panel');
+    var toolbar = document.getElementById('cr-toolbar');
+    var subTabs = document.getElementById('cr-sub-tabs');
+    var addBtn = document.getElementById('add-custom-reply');
+    var titleEl = document.getElementById('cr-modal-title');
+    if (listArea) listArea.style.display = 'none';
+    if (annPanel) annPanel.style.display = 'block';
+    if (toolbar) toolbar.style.display = 'none';
+    if (subTabs) subTabs.style.display = 'none';
+    if (addBtn) addBtn.style.display = 'none';
+    if (titleEl) titleEl.textContent = '今日公告配置';
+    // Load saved data
+    var customData = {};
+    try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(e2) {}
+    var titleInput = document.getElementById('dg-edit-title');
+    var noteInput = document.getElementById('dg-edit-note');
+    if (titleInput) titleInput.value = (customData.titles && customData.titles.length) ? customData.titles.join('\n') : (customData.title || '');
+    if (noteInput) noteInput.value = (customData.notes && customData.notes.length) ? customData.notes.join('\n') : (customData.note || '');
+    if (customData.decoImg) {
+        var prev = document.getElementById('dg-deco-preview');
+        var prevImg = document.getElementById('dg-deco-preview-img');
+        if (prev && prevImg) { prevImg.src = customData.decoImg; prev.style.display = 'block'; }
+    }
+    renderAnnStatusPool();
+};
+
+window.renderAnnStatusPool = function() {
+    var listEl = document.getElementById('ann-status-pool-list');
+    if (!listEl) return;
+    var pool = [];
+    try { pool = JSON.parse(localStorage.getItem('dg_status_pool') || '[]'); } catch(e2) {}
+    listEl.innerHTML = '';
+    if (pool.length === 0) {
+        listEl.innerHTML = '<div style="font-size:12px;color:var(--text-secondary);text-align:center;padding:10px 0;opacity:0.6;">暂无条目，添加后将随机抽取</div>';
+        return;
+    }
+    pool.forEach(function(item, idx) {
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.05),rgba(var(--accent-color-rgb),0.02));border-radius:12px;border:1px solid rgba(var(--accent-color-rgb),0.15);font-size:13px;transition:box-shadow 0.2s;';
+        var iconHtml = item.iconImg
+            ? '<img src="' + item.iconImg + '" style="width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0;">'
+            : '<span style="font-size:18px;min-width:26px;text-align:center;flex-shrink:0;">' + (item.icon || '✦') + '</span>';
+        row.innerHTML = iconHtml
+            + '<div style="flex:1;min-width:0;">'
+            + '<div style="color:var(--text-primary);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (item.status || '—') + '</div>'
+            + (item.label ? '<div style="color:var(--accent-color);font-size:10px;letter-spacing:1.5px;margin-top:2px;opacity:0.8;">' + item.label + '</div>' : '')
+            + '</div>'
+            + '<button onclick="removeAnnStatusPoolItem(' + idx + ')" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:14px;padding:3px 5px;border-radius:6px;opacity:0.6;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</button>';
+        listEl.appendChild(row);
+    });
+};
+
+window.addAnnStatusPoolItem = function() {
+    var statusInput = document.getElementById('ann-status-pool-input');
+    var labelInput = document.getElementById('ann-status-label-input');
+    var iconInput = document.getElementById('ann-status-icon-input');
+    var status = statusInput ? statusInput.value.trim() : '';
+    var label = labelInput ? labelInput.value.trim() : '';
+    var icon = iconInput ? iconInput.value.trim() : '';
+    var iconImg = iconInput ? (iconInput.dataset.imgSrc || '') : '';
+    if (!status && !label) { if (typeof showNotification === 'function') showNotification('请至少填写状态或标签', 'warning'); return; }
+    var pool = [];
+    try { pool = JSON.parse(localStorage.getItem('dg_status_pool') || '[]'); } catch(e2) {}
+    var entry = { status: status, label: label, icon: icon || '✦' };
+    if (iconImg) entry.iconImg = iconImg;
+    pool.push(entry);
+    localStorage.setItem('dg_status_pool', JSON.stringify(pool));
+    if (statusInput) statusInput.value = '';
+    if (labelInput) labelInput.value = '';
+    if (iconInput) { iconInput.value = ''; delete iconInput.dataset.imgSrc; }
+    renderAnnStatusPool();
+    if (typeof showNotification === 'function') showNotification('已添加到随机库', 'success');
+};
+
+window.handleAnnStatusIconUpload = function(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        var iconInput = document.getElementById('ann-status-icon-input');
+        if (iconInput) {
+            iconInput.dataset.imgSrc = ev.target.result;
+            iconInput.value = '[图片]';
+            iconInput.style.fontSize = '10px';
+        }
+    };
+    reader.readAsDataURL(file);
+};
+
+window.removeAnnStatusPoolItem = function(idx) {
+    var pool = [];
+    try { pool = JSON.parse(localStorage.getItem('dg_status_pool') || '[]'); } catch(e2) {}
+    pool.splice(idx, 1);
+    localStorage.setItem('dg_status_pool', JSON.stringify(pool));
+    renderAnnStatusPool();
+};
+
+// Header bg image upload
+document.addEventListener('DOMContentLoaded', function() {
+    var headerInput = document.getElementById('dg-header-img-input');
+    if (headerInput) {
+        headerInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var data = ev.target.result;
+                localStorage.setItem('dg_header_bg', data);
+                var bgEl = document.getElementById('dg-header-band-bg');
+                if (bgEl) { bgEl.style.backgroundImage = 'url(' + data + ')'; bgEl.classList.add('has-img'); }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+    var decoInput = document.getElementById('dg-deco-img-input');
+    if (decoInput) {
+        decoInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var data = ev.target.result;
+                var customData = {};
+                try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(ex) {}
+                customData.decoImg = data;
+                localStorage.setItem('dg_custom_data', JSON.stringify(customData));
+                var prev = document.getElementById('dg-deco-preview');
+                var prevImg = document.getElementById('dg-deco-preview-img');
+                if (prev && prevImg) { prevImg.src = data; prev.style.display = 'block'; }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+});
+
+// ─── Dynamic name updater ───
+window.updateDynamicNames = function() {
+    try {
+        var pName = (typeof settings !== 'undefined' && settings.partnerName) ? settings.partnerName : '梦角';
+        var mName = (typeof settings !== 'undefined' && settings.myName) ? settings.myName : '我';
+
+        // Mood editor tabs
+        var tabPartner = document.getElementById('mood-tab-partner');
+        if (tabPartner) tabPartner.textContent = pName + '的记录';
+        var tabMe = document.getElementById('mood-tab-me');
+        if (tabMe) tabMe.textContent = mName + '的记录';
+
+        // Detail view titles
+        var detailPartnerTitle = document.getElementById('detail-partner-title');
+        if (detailPartnerTitle) detailPartnerTitle.textContent = pName + '的';
+
+        // Detail partner no-record
+        var partnerNoRec = document.getElementById('detail-partner-no-record');
+        if (partnerNoRec) {
+            var msgEl = partnerNoRec;
+            if (!msgEl.querySelector('span')) msgEl.textContent = pName + ' 这天还没有留下记录';
+        }
+
+        // Edit partner button
+        var editPartnerBtn = document.getElementById('edit-partner-mood');
+        if (editPartnerBtn) editPartnerBtn.textContent = '修改' + pName;
+        var deletePartnerBtn = document.getElementById('delete-partner-mood');
+        if (deletePartnerBtn) deletePartnerBtn.textContent = '删除' + pName;
+
+        // Continue btn title
+        var continueBtn = document.getElementById('continue-btn');
+        if (continueBtn) continueBtn.title = '让' + pName + '继续说';
+
+        // Envelope info
+        var envInfo = document.querySelector('.env-send-info');
+        if (envInfo) {
+            var textNodes = Array.from(envInfo.childNodes).filter(n => n.nodeType === 3);
+            textNodes.forEach(function(n) {
+                if (n.textContent.includes('对方将在') || n.textContent.includes('小时内回信')) {
+                    n.textContent = pName + ' 将在 10-24 小时内回信（8-12 句话）';
+                }
+            });
+        }
+
+        // Daily greeting labels
+        setDgLabel('dg-section-label-partner', pName + ' 今日状态');
+        setDgLabel('dg-weather-label', pName + ' 的天气');
+        setDgLabel('dg-status-label', pName + ' 的状态');
+
+        // Envelope info text
+        var envInfoSpan = document.getElementById('env-reply-time-info');
+        if (envInfoSpan) envInfoSpan.textContent = pName + ' 将在 10-24 小时内回信（8-12 句话）';
+
+        // Poke input placeholder
+        var pokeInput = document.getElementById('poke-input');
+        if (pokeInput) pokeInput.placeholder = '例如：拍了拍"' + pName + '"的肩膀';
+
+        // Stats labels
+        document.querySelectorAll('[data-name-partner]').forEach(function(el) {
+            el.textContent = pName + '的记录';
+        });
+        document.querySelectorAll('[data-name-me]').forEach(function(el) {
+            el.textContent = mName + '的记录';
+        });
+        document.querySelectorAll('[data-delete-partner]').forEach(function(el) {
+            el.textContent = '删除' + pName;
+        });
+        document.querySelectorAll('[data-edit-partner]').forEach(function(el) {
+            el.textContent = '修改' + pName;
+        });
+    } catch(e) { console.warn('updateDynamicNames error:', e); }
+};
+function setDgLabel(id, txt) {
+    var el = document.getElementById(id);
+    if (el && el.tagName !== 'INPUT') el.textContent = txt;
 }
 
 window.closeDailyGreeting = function() {
@@ -17495,6 +18828,21 @@ window.closeDailyGreeting = function() {
             }, 320);
         }
         localStorage.setItem('dailyGreetingShown', new Date().toDateString());
+    } catch(e) {}
+};
+
+window.reopenDailyGreeting = function() {
+    try {
+        if (typeof _buildDailyGreeting === 'function') _buildDailyGreeting();
+        var modal = document.getElementById('daily-greeting-modal');
+        if (modal) {
+            modal.style.opacity = '0';
+            modal.classList.remove('hidden');
+            requestAnimationFrame(function() {
+                modal.style.transition = 'opacity 0.3s ease';
+                modal.style.opacity = '1';
+            });
+        }
     } catch(e) {}
 };
 
