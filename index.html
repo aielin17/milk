@@ -26,6 +26,9 @@
             display: none;
             width: 0;
         }
+        html {
+            max-width: 100vw;
+        }
 
 :root {
             --primary-bg: #f9f9f9;
@@ -125,7 +128,7 @@
         }
 
         html[data-theme="dark"][data-color-theme="black-white"] .message-sent {
-            color: #1a1a1a !important;
+            color: var(--message-sent-text, #1a1a1a);
         }
 
         html[data-theme="dark"][data-color-theme="gold"] .message-sent,
@@ -137,7 +140,7 @@
         html[data-theme="dark"][data-color-theme="sunset"] .message-sent,
         html[data-theme="dark"][data-color-theme="forest"] .message-sent,
         html[data-theme="dark"][data-color-theme="ocean"] .message-sent {
-            color: #ffffff !important;
+            color: var(--message-sent-text, #ffffff);
         }
 
         .message.rounded {
@@ -173,10 +176,11 @@
             color: var(--text-primary);
             transition: background-color 0.5s ease, color 0.5s ease;
             height: 100vh;
+            overflow-x: hidden !important;
+            max-width: 100vw;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            overflow-x: hidden;
             font-family: var(--font-family);
             font-weight: 400;
             position: relative;
@@ -203,7 +207,8 @@
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            transition: background-image 0.5s ease;
+            transition: background-color 0.5s ease;
+            will-change: transform;
         }
 
         .header {
@@ -220,7 +225,6 @@
             transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
         }
 
-        /* ── Immersive Mode ── */
         body.immersive-mode .header {
             transform: translateY(-110%);
             opacity: 0;
@@ -237,7 +241,6 @@
         #immersive-exit-btn {
             display: none;
             position: fixed;
-            /* 移至右下角，避开安全区 */
             bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
             right: 20px;
             left: auto;
@@ -254,18 +257,22 @@
             padding: 0;
             font-size: 16px;
             color: var(--accent-color);
-            cursor: pointer;
+            cursor: grab;
             letter-spacing: 0;
-            transition: all 0.22s ease;
+            transition: background 0.22s ease, box-shadow 0.22s ease;
             font-family: var(--font-family);
-            display: none;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            touch-action: none;
         }
         #immersive-exit-btn:hover {
             background: rgba(var(--accent-color-rgb), 0.32);
-            transform: scale(1.1);
+        }
+        #immersive-exit-btn.dragging {
+            cursor: grabbing;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            transition: none;
         }
         body.immersive-mode #immersive-exit-btn {
             display: flex;
@@ -482,7 +489,6 @@ gap: 10px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* 为固定定位的输入框留空间，包含安全区高度 */
             padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
         }
         .chat-container {
@@ -512,7 +518,7 @@ gap: 10px;
             opacity: 0;
             position: relative;
             gap: 10px;
-            align-items: var(--avatar-align, flex-start);
+            align-items: var(--avatar-align, flex-end);
         }
         .message-avatar {
             width: var(--in-chat-avatar-size);
@@ -679,13 +685,11 @@ gap: 10px;
             left: 0;
             right: 0;
             z-index: 50;
-            /* 底部安全区：让内容在Home Bar上方 */
             padding-bottom: env(safe-area-inset-bottom, 0px);
             padding-left: env(safe-area-inset-left, 0px);
             padding-right: env(safe-area-inset-right, 0px);
         }
 
-        /* 全屏/沉浸模式下确保输入区域始终可见 */
         body.immersive-mode .input-area-wrapper {
             position: fixed;
             bottom: 0;
@@ -945,7 +949,6 @@ gap: 10px;
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* ─── Pill toggle row ─── */
         .setting-pill-row {
             display: flex;
             align-items: center;
@@ -1065,7 +1068,7 @@ gap: 10px;
         .modal-content {
             background-color: var(--secondary-bg);
             border-radius: var(--radius);
-            padding: 24px;
+            padding: 24px 24px 0;
             width: 90%;
             max-width: 400px;
             max-height: 80vh;
@@ -1321,7 +1324,6 @@ gap: 10px;
         .dg-mood-info { flex: 1; }
         .dg-mood-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
         .dg-mood-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; line-height: 1.45; }
-        /* ── Daily note / 每日寄语 ─ beautifully styled ── */
         .dg-note-box {
             font-size: 13px; color: var(--text-secondary); line-height: 1.75;
             padding: 14px 16px; border-radius: 14px;
@@ -1369,8 +1371,6 @@ gap: 10px;
             box-shadow: 0 6px 18px rgba(var(--accent-color-rgb),0.35);
         }
         .daily-greeting-close-btn:active { transform: translateY(0); }
-        /* Legacy selectors kept for JS compatibility */
-        /* ─── Daily Greeting Enhanced CSS ─── */
         .dg-header-band-bg {
             position: absolute; inset: 0;
             background-size: cover; background-position: center;
@@ -1393,28 +1393,23 @@ gap: 10px;
         .daily-greeting-row { display: none; }
         .daily-greeting-note { display: none; }
 
-        /* ─── Global Visual Enhancements ─── */
-        /* Smoother button interactions */
         .action-btn, .input-btn, .modal-btn {
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
         .action-btn:active, .input-btn:active {
             transform: scale(0.92) !important;
         }
-        /* Ripple-like active feedback for most interactive elements */
         .modal-btn:active { transform: scale(0.96) !important; }
         .poke-quick-item:active { transform: scale(0.97) !important; }
         .settings-item:active { transform: scale(0.98) !important; }
         .sidebar-btn:active { transform: scale(0.95) !important; }
 
-        /* Better message bubbles */
         .message {
             transition: box-shadow 0.2s ease, transform 0.2s ease;
         }
         .message:hover {
             box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
         }
-        /* Refined modal */
         .modal-content {
             animation: modalSlideUp 0.32s cubic-bezier(0.34, 1.3, 0.64, 1) !important;
         }
@@ -1422,7 +1417,6 @@ gap: 10px;
             from { opacity: 0; transform: translateY(24px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        /* Card hover lifts */
         .ann-item-card, .env-letter-item, .dg-info-cell, .dg-mood-panel {
             transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s ease !important;
         }
@@ -1430,7 +1424,6 @@ gap: 10px;
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(var(--accent-color-rgb), 0.1) !important;
         }
-        /* Calendar day hover */
         .calendar-day:not(.empty) {
             transition: all 0.2s cubic-bezier(0.4,0,0.2,1) !important;
         }
@@ -1438,26 +1431,21 @@ gap: 10px;
             transform: scale(1.06) !important;
             z-index: 2;
         }
-        /* Mood selector card */
         .mood-selector-card {
             border-radius: 22px !important;
             box-shadow: 0 16px 48px rgba(0,0,0,0.22) !important;
         }
-        /* Input focus glow */
         .message-input:focus {
             box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.12) !important;
         }
-        /* Settings pill hover */
         .setting-pill-row {
             border-radius: 14px !important;
         }
-        /* Notification toast */
         .notification-toast {
             border-radius: 14px !important;
             backdrop-filter: blur(12px) !important;
         }
 
-        /* ─── Important Days Layout Tweaks ─── */
         .ann-item-card {
             padding: 12px 14px 12px 16px !important;
         }
@@ -1469,7 +1457,6 @@ gap: 10px;
             font-size: 28px !important;
         }
 
-        /* ─── Stats UI Enhancements ─── */
         .stats-card {
             border-radius: 18px !important;
             border: none !important;
@@ -1760,13 +1747,8 @@ gap: 10px;
         .file-input {
             display: none;
         }
-        .typing-indicator, .empty-state {
-            position: absolute;
-            left: 20px;
-            bottom: 20px;
-            z-index: 5;
-        }
         .empty-state {
+            position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
@@ -1779,6 +1761,7 @@ gap: 10px;
             padding: 20px;
             width: 100%;
             transition: color 0.5s ease;
+            pointer-events: none;
         }
         .empty-state i {
             font-size: 64px;
@@ -1790,42 +1773,111 @@ gap: 10px;
             font-weight: 500;
         }
 
-        .typing-indicator {
-            align-self: flex-start;
-            background-color: var(--message-received-bg);
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            border-bottom-left-radius: 6px;
-            box-shadow: var(--shadow);
-            animation: fadeIn 0.4s ease-out;
+        #typing-indicator-wrapper {
             display: none;
-            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+            position: fixed;
+            bottom: 0;          
+            left: 16px;
+            z-index: 49;        
+            pointer-events: auto;
+            padding-bottom: 8px;
+            background: transparent !important; 
         }
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(var(--secondary-bg-rgb), 0.88);
+            backdrop-filter: blur(22px) saturate(1.9);
+            -webkit-backdrop-filter: blur(22px) saturate(1.9);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.28);
+            padding: 7px 14px 7px 9px;
+            border-radius: 22px;
+            box-shadow:
+                0 6px 28px rgba(0,0,0,0.13),
+                0 2px 6px rgba(0,0,0,0.08),
+                0 0 0 0px rgba(var(--accent-color-rgb), 0),
+                inset 0 1px 0 rgba(255,255,255,0.45);
+            animation: typingIndicatorIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+            transition: background 0.4s ease, box-shadow 0.3s ease, transform 0.25s ease;
+            cursor: default;
+        }
+        .typing-indicator:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 10px 36px rgba(0,0,0,0.16),
+                0 3px 10px rgba(0,0,0,0.10),
+                0 0 0 3px rgba(var(--accent-color-rgb), 0.10),
+                inset 0 1px 0 rgba(255,255,255,0.50);
+        }
+        .typing-indicator-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(var(--accent-color-rgb),0.22), rgba(var(--accent-color-rgb),0.10));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 1.5px solid rgba(var(--accent-color-rgb), 0.35);
+            box-shadow: 0 2px 8px rgba(var(--accent-color-rgb),0.20);
+            animation: avatarPulse 2.8s ease-in-out infinite;
+        }
+        @keyframes avatarPulse {
+            0%, 100% { box-shadow: 0 2px 8px rgba(var(--accent-color-rgb),0.20); }
+            50%       { box-shadow: 0 2px 14px rgba(var(--accent-color-rgb),0.40), 0 0 0 3px rgba(var(--accent-color-rgb),0.10); }
+        }
+        .typing-indicator-avatar img {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+        }
+        .typing-indicator-avatar i {
+            font-size: 11px;
+            color: var(--accent-color);
+        }
+        .typing-indicator-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-color);
+            opacity: 0.90;
+            letter-spacing: 0.3px;
+            max-width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        @keyframes typingIndicatorIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.85); }
+            to   { opacity: 1; transform: translateY(0)   scale(1); }
+        }
+        @keyframes typingIndicatorOut {
+            from { opacity: 1; transform: translateY(0)   scale(1); }
+            to   { opacity: 0; transform: translateY(6px)  scale(0.92); }
+        }
+        .typing-indicator.hiding {
+            animation: typingIndicatorOut 0.25s ease forwards;
+        }
+
         .typing-dots {
             display: flex;
-            gap: 5px;
+            gap: 3.5px;
+            align-items: center;
         }
         .typing-dot {
-            width: 8px;
-            height: 8px;
+            width: 5.5px;
+            height: 5.5px;
             border-radius: 50%;
-            background-color: var(--text-secondary);
-            animation: typing 1.4s infinite ease-in-out both;
+            background: var(--accent-color);
+            animation: typingBounce 1.2s infinite ease-in-out both;
+            opacity: 0.6;
         }
-        .typing-dot:nth-child(1) {
-            animation-delay: -0.32s;
-        }
-        .typing-dot:nth-child(2) {
-            animation-delay: -0.16s;
-        }
-@keyframes typing {
-            0%, 80%, 100% {
-                transform: scale(0);
-            }
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.30s; }
 
-            40% {
-                transform: scale(1.0);
-            }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0) scale(1);    opacity: 0.45; }
+            30%            { transform: translateY(-6px) scale(1.3); opacity: 1; }
         }
 
         .settings-item-list {
@@ -4683,13 +4735,21 @@ html[data-theme="dark"] .ann-item-card.type-future .ann-item-days { color: #c4b5
     }
 }
 
-/* ── Tablet responsive: prevent bottom panel overflow ── */
 @media (min-width: 481px) and (max-width: 1024px) {
     .sticker-picker-popover {
         width: min(320px, calc(100vw - 40px));
-        height: min(350px, calc(100vh - 180px));
+        height: min(350px, calc(100svh - 200px));
         right: 0;
-        max-height: calc(100vh - 150px);
+        bottom: calc(100% + 6px);
+        max-height: calc(100svh - 180px);
+    }
+    .input-area {
+        padding: 8px 10px;
+    }
+    .input-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
     }
 }
 
@@ -4697,10 +4757,8 @@ html[data-theme="dark"] .ann-item-card.type-future .ann-item-days { color: #c4b5
     .sticker-picker-popover {
         max-height: calc(100svh - 160px);
         height: min(350px, calc(100svh - 160px));
-        /* Ensure it doesn't go off screen bottom */
         bottom: calc(100% + 6px);
     }
-    /* Emoji grid scrollable within constrained height */
     .combo-content-area {
         overflow-y: auto;
         flex: 1;
@@ -6255,13 +6313,11 @@ html[data-theme="dark"] .tour-btn-primary {
     flex-shrink: 0;
 }
 
-/* Avatar shape presets */
 .avatar-shape-circle img, .avatar-shape-circle i { border-radius: 50%; overflow: hidden; }
 .avatar-shape-square img, .avatar-shape-square i { border-radius: 8px; clip-path: inset(0 round 8px); }
 .avatar-shape-pentagon img, .avatar-shape-pentagon i { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); border-radius: 0 !important; }
 .avatar-shape-heart img, .avatar-shape-heart i { clip-path: path('M 50 80 C 20 60 0 45 0 30 C 0 15 12 5 25 5 C 35 5 45 12 50 20 C 55 12 65 5 75 5 C 88 5 100 15 100 30 C 100 45 80 60 50 80 Z'); border-radius: 0 !important; }
 
-/* In-chat message avatar shapes */
 .message-avatar.shape-circle img { border-radius: 50%; }
 .message-avatar.shape-square img { border-radius: 4px; clip-path: inset(0 round 4px); }
 .message-avatar.shape-pentagon img { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); border-radius: 0; }
@@ -6617,7 +6673,7 @@ html[data-theme="light"] #custom-bubble-css {
 .legend-item .dot.partner { background-color: #ff6b6b; }
 
 .mood-selector-overlay {
-    position: absolute;
+    position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5);
     z-index: 2100;
@@ -6625,7 +6681,6 @@ html[data-theme="light"] #custom-bubble-css {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(2px);
-    border-radius: var(--radius);
 }
 .mood-selector-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
 .mood-selector-card {
@@ -6845,7 +6900,6 @@ html[data-theme="light"] #custom-bubble-css {
 .mood-kaomoji { font-size: 20px; margin-bottom: 4px; white-space: nowrap; line-height: 1; }
 .mood-label { font-size: 11px; opacity: 0.75; font-weight: 500; }
 
-/* Custom mood edit/delete actions */
 .mood-custom-actions {
     position: absolute;
     top: 2px; right: 2px;
@@ -6864,7 +6918,6 @@ html[data-theme="light"] #custom-bubble-css {
 }
 .mood-custom-action-btn:hover { background: var(--border-color); }
 
-/* Stats page weather tag */
 .stats-weather-tag {
     font-size: 11px;
     color: var(--text-secondary);
@@ -7869,16 +7922,13 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 .picker-add-btn:hover { opacity: 1 !important; }
 .wheel-option-input { flex:1; border:none; background:transparent; border-bottom:1px solid var(--border-color); padding:3px 4px; font-size:14px; outline:none; font-family:var(--font-family); color:var(--text-primary); }
 
-/* ═══════ Global UI Polish & Animation Enhancements ═══════ */
 
-/* Enhanced message appear with subtle spring */
 @keyframes messageAppear {
     0% { opacity: 0; transform: translateY(10px) scale(0.94); }
     60% { opacity: 1; transform: translateY(-2px) scale(1.01); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Ripple effect on interactive elements */
 .modal-btn, .settings-item, .setting-pill-row, .action-btn, .input-btn {
     position: relative;
     overflow: hidden;
@@ -7900,13 +7950,11 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     transition: 0s;
 }
 
-/* Smoother modal slide-in */
 @keyframes modalContentSlideIn {
     from { opacity: 0; transform: translateY(28px) scale(0.93); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Enhanced settings-item hover */
 .settings-item {
     transition: all 0.2s cubic-bezier(0.25,0.8,0.25,1);
 }
@@ -7914,35 +7962,29 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     transform: translateX(2px);
 }
 
-/* Smooth notification with better spring */
 @keyframes slideUpNotif {
     from { opacity:0; transform:translateX(-50%) translateY(24px) scale(0.9); }
     60% { transform: translateX(-50%) translateY(-4px) scale(1.02); }
     to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
 }
 
-/* Action button hover glow */
 .action-btn:hover {
     box-shadow: 0 0 0 6px rgba(var(--accent-color-rgb), 0.1);
 }
 
-/* Send button pulse on hover */
 .send-btn:hover {
     box-shadow: 0 4px 16px rgba(var(--accent-color-rgb), 0.45), 0 0 0 4px rgba(var(--accent-color-rgb),0.1);
 }
 
-/* Input focus glow */
 .message-input:focus {
     box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.12);
 }
 
-/* Calendar day click feedback */
 .calendar-day {
     transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, border-color 0.2s;
 }
 .calendar-day:active { transform: scale(0.9); }
 
-/* Mood overlay card animation */
 .mood-selector-card, .day-detail-card {
     animation: cardSlideUp 0.38s cubic-bezier(0.34,1.4,0.64,1) forwards;
     opacity: 0;
@@ -7952,17 +7994,14 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     to { opacity:1; transform: translateY(0) scale(1); }
 }
 
-/* Smooth tab switch */
 .mood-tab-btn, .combo-tab, .stats-toggle-btn, .view-switch-btn {
     transition: all 0.22s cubic-bezier(0.25,0.8,0.25,1) !important;
 }
 
-/* Picker item hover spring */
 .picker-item:hover {
     transform: scale(1.12) translateY(-2px) !important;
 }
 
-/* Sticker picker slide-up */
 #user-sticker-picker.active {
     animation: pickerSlideUp 0.3s cubic-bezier(0.34,1.2,0.64,1) forwards;
 }
@@ -7996,7 +8035,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         <div class="welcome-bg-gradient"></div>
         <div class="stars-container" id="stars-container"></div>
         <div class="welcome-particles" id="welcome-particles"></div>
-        <!-- 新增：流星效果 -->
         <div id="welcome-meteors" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;"></div>
         <div class="welcome-content-wrapper">
             <div class="logo-tech-container">
@@ -8007,7 +8045,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
                 <div class="orbit-dot"></div>
                 <div class="orbit-dot-2"></div>
-                <!-- 新增：第三个轨道点 -->
                 <div class="orbit-dot-3"></div>
             </div>
 
@@ -8023,7 +8060,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="loader-tech">
                 <div class="loader-tech-bar" id="loader-tech-bar"></div>
             </div>
-            <!-- 新增：加载状态文字 -->
             <div id="loader-status-text" style="font-size:10px;opacity:0.5;letter-spacing:1px;color:var(--welcome-text-sub);margin-top:4px;font-family:monospace;"></div>
         </div>
     </div>
@@ -8076,18 +8112,29 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="history-spinner"></div>
         </div>
 
-        <div class="chat-container" id="chat-container"></div>
-        <div class="empty-state" id="empty-state">
-            <i class="far fa-comments"></i><p></p>
-        </div>
+        <div class="chat-container" id="chat-container">
+        <div class="batch-preview" id="batch-preview"></div>
+    </div>
+    <div class="empty-state" id="empty-state" style="display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;width:100%;pointer-events:none;z-index:1;">
+            <div style="position:relative;margin-bottom:20px;">
+                <i class="fas fa-heart" style="font-size:52px;opacity:0.55;color:var(--accent-color);"></i>
+                <i class="fas fa-comment-dots" style="position:absolute;bottom:-6px;right:-10px;font-size:26px;opacity:0.65;color:var(--accent-color);"></i>
+            </div>
+            <p style="font-size:15px;font-weight:600;color:var(--accent-color);opacity:0.9;letter-spacing:1px;">✦ 我们的故事，始于此刻 ✦</p>
+            <p style="font-size:12px;margin-top:8px;opacity:0.65;letter-spacing:0.5px;color:var(--text-secondary);">说点什么，让对话开始吧</p>
+    </div>
+    <div id="typing-indicator-wrapper">
         <div class="typing-indicator" id="typing-indicator">
+            <div class="typing-indicator-avatar" id="typing-indicator-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <span class="typing-indicator-label" id="typing-indicator-label"></span>
             <div class="typing-dots">
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
             </div>
         </div>
-        <div class="batch-preview" id="batch-preview"></div>
     </div>
     <div class="input-area-wrapper">
         <div id="reply-preview-container"></div>
@@ -8107,19 +8154,25 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         
         <div class="sticker-picker-popover" id="user-sticker-picker">
             <div class="combo-tabs-header">
-                <button class="combo-tab-btn active" data-tab="sticker">表情库</button>
+                <button class="combo-tab-btn active" data-tab="my-sticker"><i class="fas fa-user" style="font-size:10px;"></i> 我</button>
+                <button class="combo-tab-btn" data-tab="partner-sticker"><i class="fas fa-heart" style="font-size:10px;"></i> 对方</button>
                 <button class="combo-tab-btn" data-tab="poke">拍一拍</button>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:4px;">
+                    <button id="sticker-add-btn" onclick="document.getElementById('my-sticker-quick-upload').click()" title="添加我的表情" style="background:var(--accent-color);border:none;cursor:pointer;padding:4px 10px;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px;border-radius:8px;transition:all 0.2s;box-shadow:0 2px 8px rgba(var(--accent-color-rgb),0.35);" onmouseover="this.style.opacity='0.85';this.style.transform='scale(1.05)'" onmouseout="this.style.opacity='1';this.style.transform='scale(1)'"><i class="fas fa-plus"></i> 添加</button>
+                    <button onclick="window.openMyStickerSettings()" title="管理表情库" style="background:none;border:none;cursor:pointer;padding:4px 8px;color:var(--text-secondary);font-size:12px;display:flex;align-items:center;gap:3px;border-radius:6px;transition:all 0.2s;" onmouseover="this.style.background='rgba(var(--accent-color-rgb),0.12)';this.style.color='var(--accent-color)'" onmouseout="this.style.background='none';this.style.color='var(--text-secondary)'"><i class="fas fa-cog"></i></button>
+                </div>
             </div>
             <div class="combo-content-area" id="combo-content-area">
             </div>
         </div>
     </div>
     <input type="file" id="image-input" class="file-input" accept="image/*">
+    <input type="file" id="my-sticker-quick-upload" class="file-input" accept="image/*" multiple>
 </div>
     </div>
 
 
-    <div class="modal" id="edit-modal">
+    <div class="modal" id="edit-modal" style="z-index:3000;">
         <div class="modal-content">
             <div class="modal-title">
                 <i class="fas fa-user-edit"></i><span id="edit-modal-title">修改昵称</span>
@@ -8167,9 +8220,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     <div class="env-wrapper">
         <div class="env-header-flap">
             <svg class="env-header-icon" width="40" height="30" viewBox="0 0 40 30" fill="none">
-                <!-- Envelope body -->
                 <rect x="1" y="7" width="38" height="22" rx="3" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
-                <!-- Flap fold lines -->
                 <path d="M1 9 L20 20 L39 9" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" fill="none"/>
                 <path d="M1 29 L14 18" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
                 <path d="M39 29 L26 18" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
@@ -8237,16 +8288,13 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 <div class="modal" id="envelope-view-modal" style="z-index:2100;">
     <div class="modal-content" style="overflow:hidden;padding:0;background:transparent;max-height:92vh;display:flex;flex-direction:column;">
     <div style="background:var(--secondary-bg);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;max-height:92vh;">
-        <!-- 信封顶部：邮戳式设计 -->
         <div style="background:var(--accent-color);padding:0;position:relative;overflow:hidden;flex-shrink:0;">
-            <!-- 斜纹装饰 -->
             <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 2px,transparent 2px,transparent 12px);pointer-events:none;"></div>
             <div style="position:relative;padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;">
                 <div style="display:flex;align-items:center;gap:10px;color:white;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
                     <span id="env-view-title" style="font-size:14px;font-weight:700;letter-spacing:2px;">信件内容</span>
                 </div>
-                <!-- 邮戳装饰 -->
                 <div style="border:2px solid rgba(255,255,255,0.5);border-radius:50%;width:48px;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0.7;">
                     <span style="font-size:7px;color:white;letter-spacing:0.5px;">已送达</span>
                     <span id="env-view-stamp-date" style="font-size:8px;color:white;font-weight:600;"></span>
@@ -8255,40 +8303,26 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
         </div>
 
-        <!-- 信纸内容区域 -->
         <div style="padding:0;overflow-y:auto;flex:1;min-height:0;">
             <div id="env-view-content" style="display:none;">
-                <!-- 信纸主体 -->
                 <div style="background:var(--primary-bg);margin:16px;border-radius:12px;border:1px solid var(--border-color);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                    <!-- 信纸顶部装饰条 -->
                     <div style="height:6px;background:linear-gradient(90deg,var(--accent-color),rgba(var(--accent-color-rgb),0.4),var(--accent-color));"></div>
-                    <!-- 信件内容 -->
                     <div style="padding:20px 20px 16px;position:relative;">
-                        <!-- 左侧红线（信纸感） -->
                         <div style="position:absolute;left:52px;top:0;bottom:0;width:1px;background:rgba(220,80,80,0.15);pointer-events:none;"></div>
-                        <!-- 横线背景 -->
                         <div style="position:absolute;inset:0;background:repeating-linear-gradient(transparent,transparent 31px,rgba(var(--accent-color-rgb),0.06) 31px,rgba(var(--accent-color-rgb),0.06) 32px);pointer-events:none;border-radius:12px;"></div>
                         
                         <div style="position:relative;z-index:1;">
-                            <!-- 日期行 -->
                             <div id="env-view-date-line" style="font-size:11px;color:var(--text-secondary);text-align:right;margin-bottom:16px;letter-spacing:1px;opacity:0.8;font-style:italic;"></div>
-                            <!-- To 行 -->
                             <div id="env-view-to-line" style="font-size:13px;color:var(--text-primary);margin-bottom:4px;font-weight:500;"></div>
-                            <!-- 开头语 -->
                             <div id="env-view-greeting-line" style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;font-style:italic;opacity:0.8;"></div>
-                            <!-- 正文 -->
                             <div id="env-view-text" class="env-letter-paper" style="border:none;background:transparent;padding:0 0 0 8px;line-height:32px;margin-bottom:16px;"></div>
-                            <!-- 落款分隔 -->
                             <div style="border-top:1px dashed rgba(var(--accent-color-rgb),0.25);margin:12px 0;"></div>
-                            <!-- 落款日期 -->
                             <div id="env-view-sign-date" style="font-size:11px;color:var(--text-secondary);text-align:right;margin-bottom:4px;letter-spacing:0.5px;"></div>
-                            <!-- 落款署名 -->
                             <div id="env-view-sign-name" style="font-size:14px;color:var(--accent-color);text-align:right;font-weight:600;letter-spacing:1px;"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- 编辑区域 -->
             <div id="env-view-edit" style="display:none;padding:16px;">
                 <div class="env-compose-paper" style="padding:14px;">
                     <textarea class="modal-textarea" id="env-edit-input" style="height:160px;background:transparent;border:none;outline:none;font-family:var(--font-family);font-size:14px;line-height:1.9;width:100%;resize:none;"></textarea>
@@ -8304,14 +8338,12 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     </div>
     </div>
 </div>
-<!-- 群聊设置 Modal -->
 <div class="modal" id="group-chat-modal">
     <div class="modal-content">
         <div class="modal-title">
             <i class="fas fa-users"></i><span>群聊设置</span>
         </div>
 
-        <!-- 群聊总开关 -->
         <div class="settings-section">
             <div class="settings-section-title"><i class="fas fa-toggle-on"></i>群聊模式</div>
             <div id="group-mode-toggle" style="display:flex;align-items:center;gap:12px;background:var(--primary-bg);border:1px solid var(--border-color);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
@@ -8328,17 +8360,9 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
         </div>
 
-        <!-- 显示开关 -->
         <div class="settings-section" id="group-display-section" style="display:none;">
             <div class="settings-section-title"><i class="fas fa-eye"></i>显示选项</div>
             <div style="display:flex;flex-direction:column;gap:8px;">
-                <div id="group-show-avatar-toggle" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--primary-bg);border:1px solid var(--border-color);border-radius:10px;cursor:pointer;">
-                    <i class="fas fa-user-circle" style="color:var(--accent-color);width:18px;"></i>
-                    <span style="flex:1;font-size:13px;">显示成员头像</span>
-                    <div id="group-show-avatar-pill" style="width:36px;height:20px;border-radius:20px;background:var(--accent-color);position:relative;transition:background 0.3s;">
-                        <div id="group-show-avatar-knob" style="position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;right:3px;transition:right 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
-                    </div>
-                </div>
                 <div id="group-show-name-toggle" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--primary-bg);border:1px solid var(--border-color);border-radius:10px;cursor:pointer;">
                     <i class="fas fa-tag" style="color:var(--accent-color);width:18px;"></i>
                     <span style="flex:1;font-size:13px;">显示成员名称</span>
@@ -8349,7 +8373,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
         </div>
 
-        <!-- 成员管理 -->
         <div class="settings-section" id="group-members-section" style="display:none;">
             <div class="settings-section-title" style="display:flex;align-items:center;justify-content:space-between;">
                 <span><i class="fas fa-users"></i>群成员</span>
@@ -8364,14 +8387,12 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     </div>
 </div>
 
-<!-- 群成员编辑 Modal -->
 <div class="modal" id="group-member-edit-modal" style="z-index:2200;">
     <div class="modal-content" style="max-width:320px;">
         <div class="modal-title">
             <i class="fas fa-user-edit"></i><span id="group-member-edit-title">添加成员</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:12px;padding:4px 0;">
-            <!-- 头像上传 -->
             <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
                 <div id="group-member-avatar-preview" onclick="document.getElementById('group-member-avatar-input').click()" style="width:64px;height:64px;border-radius:50%;background:var(--primary-bg);border:2px dashed var(--border-color);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;">
                     <i class="fas fa-camera" style="font-size:20px;color:var(--text-secondary);"></i>
@@ -8432,7 +8453,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     <i class="fas fa-palette"></i><span>外观设置</span>
 </div>
 
-<!-- 板块导航网格 -->
 <div id="appearance-nav-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:4px 0 12px;">
     <div class="settings-card" onclick="showAppearancePanel('theme')" style="cursor:pointer;">
         <i class="fas fa-paint-roller"></i><span>主题配色</span>
@@ -8448,7 +8468,78 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     </div>
 </div>
 
-<!-- 面板容器 -->
+<div id="update-notice-btn" onclick="(function(){var m=document.getElementById('update-notice-modal');m.style.display='flex';})()" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(var(--accent-color-rgb),0.08);border:1px dashed rgba(var(--accent-color-rgb),0.4);border-radius:12px;cursor:pointer;margin-bottom:12px;transition:all 0.2s;">
+    <i class="fas fa-bell" style="color:var(--accent-color);font-size:16px;"></i>
+    <span style="flex:1;font-size:13px;color:var(--text-primary);font-weight:500;">✨ 更新公告 & 新功能</span>
+    <i class="fas fa-chevron-right" style="color:var(--text-secondary);font-size:12px;"></i>
+</div>
+
+<style>
+#update-notice-modal { touch-action: pan-y; }
+@keyframes unModalIn { from { opacity:0; transform:scale(0.93) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
+.un-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:12px; background:var(--primary-bg); border:1px solid var(--border-color); transition:background 0.15s; }
+.un-item:active { background:rgba(var(--accent-color-rgb),0.07); }
+.un-dot { width:6px; height:6px; border-radius:50%; background:var(--accent-color); flex-shrink:0; margin-top:6px; opacity:0.75; }
+.un-section-header { display:flex; align-items:center; gap:8px; margin:18px 0 10px; }
+.un-section-label { font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-color); opacity:0.8; }
+.un-section-line { flex:1; height:1px; background:var(--border-color); }
+</style>
+<div id="update-notice-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:16px;">
+    <div style="background:var(--secondary-bg);border-radius:20px;width:100%;max-width:480px;height:min(88vh,700px);box-shadow:0 20px 60px rgba(0,0,0,0.25);display:flex;flex-direction:column;animation:unModalIn 0.3s cubic-bezier(0.34,1.2,0.64,1);">
+        <div style="padding:20px 20px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border-color);flex-shrink:0;">
+            <div style="width:42px;height:42px;border-radius:14px;background:rgba(var(--accent-color-rgb),0.12);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">✨</div>
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:16px;font-weight:800;color:var(--text-primary);letter-spacing:0.2px;">更新公告</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">共 18 项更新</div>
+            </div>
+            <button onclick="document.getElementById('update-notice-modal').style.display='none'" style="width:32px;height:32px;border-radius:50%;background:var(--primary-bg);border:1px solid var(--border-color);cursor:pointer;color:var(--text-secondary);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;">×</button>
+        </div>
+        <div style="overflow-y:auto;flex:1;padding:16px 18px;-webkit-overflow-scrolling:touch;">
+            <div style="background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.1),rgba(var(--accent-color-rgb),0.05));border:1px solid rgba(var(--accent-color-rgb),0.2);border-radius:14px;padding:14px 16px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                    <span style="font-size:16px;">🌐</span>
+                    <span style="font-size:13px;font-weight:700;color:var(--text-primary);">资源分享网站</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">分享气泡和字体资源，需 VPN 打开：</div>
+                <a href="https://aielin17.github.io/-/" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(var(--accent-color-rgb),0.12);border-radius:10px;text-decoration:none;">
+                    <i class="fas fa-link" style="color:var(--accent-color);font-size:11px;flex-shrink:0;"></i>
+                    <span style="color:var(--accent-color);font-size:12px;font-weight:700;">aielin17.github.io/-/</span>
+                </a>
+                <div style="margin-top:8px;font-size:11px;color:var(--text-secondary);line-height:1.5;">欢迎踊跃投稿 也欢迎有空闲的宝宝帮我整理投稿🥺🤲🏻</div>
+            </div>
+            <div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">最新</span><div class="un-section-line"></div></div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">查看大图功能全面重写，支持保存图片</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">退出沉浸式按钮可自由拖动</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">修复页面左右晃动问题</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">平板底部栏兼容性优化</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐优化，群聊成员存储机制升级</span></div>
+            </div>
+            <div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">功能</span><div class="un-section-line"></div></div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">正在输入指示器样式全面优化，显示迷你头像</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">我方表情库增加专属上传入口（仅我方可用）</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">聊天设置新增名称快捷修改入口</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">每日公告当日状态固定，混合自定义与默认内容</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">字卡导入新增「覆盖」/「追加」选项</span></div>
+            </div>
+            <div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">修复</span><div class="un-section-line"></div></div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐方式 bug 修复（CSS变量正确应用）</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">返回/关闭按钮紧贴底部，消除空白</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">数据管理简化：重置数据包含清空会话与全部清除</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">重置数据升级为精美弹窗，操作更清晰</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">导出时不再包含表情包（文件更小更快）</span></div>
+                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">气泡字体颜色、主题编辑器全面修复</span></div>
+            </div>
+            <div style="height:16px;"></div>
+        </div>
+        <div style="padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom,14px));border-top:1px solid var(--border-color);flex-shrink:0;">
+            <button onclick="document.getElementById('update-notice-modal').style.display='none'" style="width:100%;background:var(--accent-color);color:#fff;border:none;border-radius:14px;padding:13px;font-size:14px;cursor:pointer;font-weight:700;letter-spacing:0.3px;font-family:var(--font-family);">知道了 ✦</button>
+        </div>
+    </div>
+</div>
+
 <div id="appearance-panel-container" style="display:none;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
         <button onclick="hideAppearancePanel()" style="background:var(--primary-bg);border:1px solid var(--border-color);border-radius:10px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--text-secondary);">
@@ -8457,7 +8548,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         <span id="appearance-panel-title" style="font-size:14px;font-weight:600;color:var(--text-primary);"></span>
     </div>
 
-    <!-- 主题配色面板 -->
     <div id="appearance-panel-theme" class="appearance-sub-panel" style="display:none;">
         <div class="settings-section">
             <div class="settings-section-title"><i class="fas fa-paint-roller"></i>主题配色</div>
@@ -8500,7 +8590,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         </div>
     </div>
 
-    <!-- 字体设置面板 -->
     <div id="appearance-panel-font" class="appearance-sub-panel" style="display:none;">
         <div class="settings-section">
             <div class="settings-section-title"><i class="fas fa-font"></i>字体设置</div>
@@ -8523,12 +8612,14 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         </div>
     </div>
 
-    <!-- 聊天背景面板 -->
     <div id="appearance-panel-background" class="appearance-sub-panel" style="display:none;">
         <div class="settings-section">
             <div class="settings-section-title">
                 <i class="fas fa-image"></i>聊天背景
                 <input type="file" id="bg-gallery-input" accept="image/*" style="display: none;">
+            </div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;opacity:0.75;line-height:1.5;">
+                支持图片及 GIF 动图。点击 <i class="fas fa-plus" style="font-size:10px;"></i> 添加，点击项目应用。
             </div>
             <div class="bg-gallery" id="background-gallery-list"></div>
             <div style="text-align: center; margin-top: 10px;">
@@ -8539,7 +8630,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         </div>
     </div>
 
-    <!-- 气泡样式面板 -->
     <div id="appearance-panel-bubble" class="appearance-sub-panel" style="display:none;">
         <div class="settings-section">
             <div class="settings-section-title">
@@ -8563,7 +8653,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         </div>
     </div>
 
-    <!-- 聊天头像面板 -->
     <div id="appearance-panel-avatar" class="appearance-sub-panel" style="display:none;">
         <div class="settings-section">
             <div class="settings-section-title"><i class="fas fa-user-circle"></i>聊天头像</div>
@@ -8613,7 +8702,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
         </div>
 
-        <!-- 头像框设置（从聊天设置移来） -->
         <div class="settings-section">
             <div class="settings-section-title"><i class="fas fa-id-badge"></i>头像框设置</div>
             <h4 style="font-size:13px;font-weight:600;margin:10px 0 8px;color:var(--text-primary);">我的头像框</h4>
@@ -8676,7 +8764,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         </div>
     </div>
 
-    <!-- 自定义CSS面板 -->
     <div id="appearance-panel-css" class="appearance-sub-panel" style="display:none;">
         <div class="settings-section">
             <div class="settings-section-title"><i class="fas fa-code"></i>自定义 CSS</div>
@@ -8691,7 +8778,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <button id="reset-css-btn" class="modal-btn modal-btn-secondary" style="padding: 6px 12px; font-size: 12px;">清空</button>
                 <button id="apply-css-btn" class="modal-btn modal-btn-primary" style="padding: 6px 12px; font-size: 12px;">应用 CSS</button>
             </div>
-            <!-- Live CSS Preview -->
             <div style="margin-top:14px;">
                 <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;font-weight:500;letter-spacing:0.3px;">实时预览</div>
                 <div id="css-live-preview" style="background:var(--chat-bg,var(--primary-bg));border-radius:14px;padding:14px 12px;border:1px solid var(--border-color);">
@@ -8714,7 +8800,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     </div>
 </div>
 
-            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 4px;z-index:10;margin-top:8px;">
+            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 0;z-index:10;margin-top:8px;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;padding-bottom:max(12px, env(safe-area-inset-bottom, 0px));">
                 <button class="modal-btn modal-btn-secondary" id="back-appearance" onclick="(function(){hideModal(document.getElementById('appearance-modal'));showModal(document.getElementById('settings-modal'))})()">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
@@ -8730,6 +8816,23 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <i class="fas fa-comments"></i><span>聊天设置</span>
             </div>
             
+            <div class="settings-section">
+                <div class="settings-section-title">
+                    <i class="fas fa-user-edit"></i>昵称设置
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button onclick="(function(){var m=document.getElementById('edit-modal'),ti=m.querySelector('#edit-modal-title'),ni=m.querySelector('#name-input'),sb=m.querySelector('#save-name');ti.textContent='修改梦角的昵称';ni.value=(typeof settings!=='undefined'?settings.partnerName:'梦角');sb.disabled=!ni.value.trim();sb.onclick=function(){var n=ni.value.trim();if(n){settings.partnerName=n;var pEls=document.querySelectorAll('.username[data-role=partner],.partner-name,.contact-name');pEls.forEach(function(el){el.textContent=n;});if(typeof throttledSaveData==='function')throttledSaveData();if(typeof updateUI==='function')updateUI();if(typeof showNotification==='function')showNotification('梦角昵称已更新为「'+n+'」✦','success');}if(typeof hideModal==='function')hideModal(m);};if(typeof showModal==='function')showModal(m,ni);})()" style="flex:1;padding:11px 10px;border:1px solid var(--border-color);border-radius:12px;background:var(--primary-bg);color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:var(--font-family);transition:all 0.2s;">
+                        <i class="fas fa-user" style="color:var(--accent-color);font-size:14px;"></i>
+                        <span>修改梦角名称</span>
+                    </button>
+                    <button onclick="(function(){var m=document.getElementById('edit-modal'),ti=m.querySelector('#edit-modal-title'),ni=m.querySelector('#name-input'),sb=m.querySelector('#save-name');ti.textContent='修改我的昵称';ni.value=(typeof settings!=='undefined'?settings.myName:'我');sb.disabled=!ni.value.trim();sb.onclick=function(){var n=ni.value.trim();if(n){settings.myName=n;if(typeof throttledSaveData==='function')throttledSaveData();if(typeof updateUI==='function')updateUI();if(typeof showNotification==='function')showNotification('我的昵称已更新为「'+n+'」✦','success');}if(typeof hideModal==='function')hideModal(m);};if(typeof showModal==='function')showModal(m,ni);})()" style="flex:1;padding:11px 10px;border:1px solid var(--border-color);border-radius:12px;background:var(--primary-bg);color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:var(--font-family);transition:all 0.2s;">
+                        <i class="fas fa-user-circle" style="color:var(--accent-color);font-size:14px;"></i>
+                        <span>修改我方名称</span>
+                    </button>
+                </div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:6px;opacity:0.7;">专为看不见顶部昵称的机型设置</div>
+            </div>
+
             <div class="settings-section">
                 <div class="settings-section-title">
                     <i class="fas fa-hourglass-half"></i>对方回复速度
@@ -8846,7 +8949,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
             </div>
 
-            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 4px;z-index:10;margin-top:8px;">
+            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 0;z-index:10;margin-top:8px;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;padding-bottom:max(14px, env(safe-area-inset-bottom, 0px));">
                 <button class="modal-btn modal-btn-secondary" id="back-chat" onclick="(function(){hideModal(document.getElementById('chat-modal'));showModal(document.getElementById('settings-modal'))})()">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
@@ -8894,7 +8997,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
             </div>
 
-            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 4px;z-index:10;margin-top:8px;">
+            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 0;z-index:10;margin-top:8px;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;padding-bottom:max(14px, env(safe-area-inset-bottom, 0px));">
                 <button class="modal-btn modal-btn-secondary" id="back-advanced" onclick="(function(){hideModal(document.getElementById('advanced-modal'));showModal(document.getElementById('settings-modal'))})()">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
@@ -8952,14 +9055,11 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 
             <div class="settings-section">
                 <div class="settings-section-title">
-                    <i class="fas fa-trash-alt"></i>数据清理
+                    <i class="fas fa-sync-alt"></i>重置数据
                 </div>
                 <div class="settings-item-list">
-                    <div class="settings-item" id="clear-chat">
-                        <i class="fas fa-trash-alt"></i><span>清空当前会话</span>
-                    </div>
                     <div class="settings-item" id="clear-storage">
-                        <i class="fas fa-server"></i><span>重置所有数据</span>
+                        <i class="fas fa-sync-alt"></i><span>重置数据</span>
                     </div>
                 </div>
             </div>
@@ -8979,7 +9079,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
             </div>
 
-            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 4px;z-index:10;margin-top:8px;">
+            <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 0;z-index:10;margin-top:8px;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;padding-bottom:max(14px, env(safe-area-inset-bottom, 0px));">
                 <button class="modal-btn modal-btn-secondary" id="back-data" onclick="(function(){hideModal(document.getElementById('data-modal'));showModal(document.getElementById('settings-modal'))})()">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
@@ -8993,7 +9093,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="modal-title">
                 <i class="fas fa-chart-bar"></i><span>消息统计 & 收藏</span>
             </div>
-            <!-- Tab switcher -->
             <div style="display:flex;gap:8px;margin-bottom:14px;">
                 <button class="modal-btn modal-btn-primary" id="stats-tab-btn" onclick="switchStatsTab('stats')" style="flex:1;font-size:13px;padding:8px 0;">
                     <i class="fas fa-chart-bar"></i> 消息统计
@@ -9002,11 +9101,9 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <i class="fas fa-star"></i> 收藏夹
                 </button>
             </div>
-            <!-- Stats panel -->
             <div id="stats-panel">
                 <div class="stats-content" id="stats-content"></div>
             </div>
-            <!-- Favorites panel -->
             <div id="favorites-panel" style="display:none;">
                 <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
                     <button class="modal-btn modal-btn-secondary" id="batch-favorite-function" style="font-size:12px;padding:6px 14px;"><i class="fas fa-layer-group"></i> 批量收藏</button>
@@ -9223,7 +9320,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div id="theme-editor-grid" class="theme-editor-grid">
             </div>
             <div class="modal-buttons" style="margin-top:12px;">
-                <button class="modal-btn modal-btn-primary" id="apply-close-theme-editor" style="flex:2;" onclick="document.getElementById('close-theme-editor').click()"><i class="fas fa-check" style="margin-right:5px;"></i>应用并关闭</button>
+                <button class="modal-btn modal-btn-primary" id="apply-close-theme-editor" style="flex:2;"><i class="fas fa-check" style="margin-right:5px;"></i>应用并关闭</button>
                 <button class="modal-btn modal-btn-secondary" id="close-theme-editor">取消</button>
             </div>
         </div>
@@ -9263,7 +9360,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <div class="content-list-area" id="custom-replies-list">
                 </div>
 
-                <!-- 今日公告编辑面板 -->
                 <div id="announcement-panel" style="display:none; padding:0 16px 80px; overflow-y:auto; flex:1; min-height:0; -webkit-overflow-scrolling:touch;">
                     <div style="display:flex;flex-direction:column;gap:12px; padding:4px 0 16px;">
                         <div style="background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.12),rgba(var(--accent-color-rgb),0.05));border-radius:14px;padding:14px 16px;border:1px solid rgba(var(--accent-color-rgb),0.2);">
@@ -9400,7 +9496,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
             </div>
             <div class="modal-buttons" style="margin-top: 20px;">
-                <button class="modal-btn modal-btn-primary" id="accept-disclaimer" style="width: 100%;">关闭</button>
+                <button class="modal-btn modal-btn-primary" id="accept-disclaimer" onclick="(function(){var m=document.getElementById('disclaimer-modal');if(m&&typeof hideModal==='function')hideModal(m);})()" style="width: 100%;">关闭</button>
             </div>
         </div>
     </div>
@@ -10040,35 +10136,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     line2: "秋日里暗香浮动"
                 },
             ],
-            EMPTY_STATE_TEXTS: [
-                "由此开始我们的传闻",
-                "✦ 我们的故事，始于此刻 ✦",
-                "说点什么，让故事发生",
-                "所有伟大的交流都始于一声你好",
-                "在这里写下我们的故事",
-                "等待你的第一句话",
-                "让对话开始吧",
-                "从此刻开始连接",
-                "等待你的讯息",
-                "开始我们的对话",
-                "第一句话总是最难的",
-                "勇敢说出你想说的"
-            ],
-            INPUT_PLACEHOLDERS: [
-                "⋆ ᧔ෆ᧓ ⋆",
-                "♡ 让心意相通...",
-                "你的想法是...",
-                "在此处输入讯息...",
-                "聊聊天吧...",
-                "想对你说的话...",
-                "输入你的消息...",
-                "分享你的想法...",
-                "有什么想说的吗？",
-                "开始输入...",
-                "此时无声胜有声",
-                "欲语还休",
-                "千言万语",
-            ],
             WELCOME_ICONS: [
                 "fas fa-heart", "fas fa-star", "fas fa-moon", "fas fa-sun", "fas fa-cloud", "fas fa-feather", "fas fa-book", "fas fa-music", "fas fa-pen", "fas fa-key", "fas fa-compass", "fas fa-globe", "fas fa-leaf", "fas fa-water", "fas fa-fire", "fas fa-snowflake", "fas fa-umbrella", "fas fa-anchor", "fas fa-bell", "fas fa-gem", "fas fa-crown", "fas fa-dragon", "fas fa-feather-alt", "fas fa-fish", "fas fa-frog", "fas fa-hat-wizard", "fas fa-magic", "fas fa-ring", "fas fa-scroll", "fas fa-shield-alt", "fas fa-dove", "fas fa-cat", "fas fa-dog", "fas fa-horse", "fas fa-otter", "fas fa-paw", "fas fa-spider", "fas fa-kiwi-bird", "fas fa-crow", "fas fa-dove", "fas fa-seedling", "fas fa-tree", "fas fa-mountain", "fas fa-water", "fas fa-wind", "fas fa-volcano", "fas fa-meteor", "fas fa-satellite", "fas fa-rocket", "fas fa-user-astronaut"
             ],
@@ -10135,6 +10202,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         let disabledDefaultReplies = [];
         let anniversaries = [];
         let stickerLibrary = []; 
+        let myStickerLibrary = []; 
         let currentAnniversaryType = 'anniversary';
         let customThemes = [];
         let themeSchemes = []; 
@@ -10387,18 +10455,58 @@ async function initializeSession() {
 
 
         function clearAllAppData() {
-    if (confirm("【高危操作】确定要重置所有会话和设置吗？此操作将清除所有本地数据且无法恢复！")) {
-        localforage.clear().then(() => {
-            localStorage.clear(); 
-            showNotification('所有数据已重置，页面即将刷新', 'info', 2000);
-            setTimeout(() => {
-                window.location.href = window.location.pathname;
-            }, 2000);
-        }).catch(e => {
-            showNotification('清除数据时发生错误', 'error');
-            console.error("清除 localforage 失败:", e);
-        });
-    }
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;';
+    overlay.innerHTML = `
+        <div style="background:var(--secondary-bg);border-radius:20px;padding:24px;width:88%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:modalContentSlideIn 0.3s ease forwards;">
+            <div style="text-align:center;margin-bottom:20px;">
+                <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,80,80,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                    <i class="fas fa-trash-alt" style="color:#ff5050;font-size:20px;"></i>
+                </div>
+                <div style="font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">重置数据</div>
+                <div style="font-size:12px;color:var(--text-secondary);">请选择要重置的范围</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <button id="_reset_current" style="width:100%;padding:12px 16px;border:1px solid var(--border-color);border-radius:12px;background:var(--primary-bg);color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:all 0.2s;">
+                    <i class="fas fa-comment-slash" style="color:var(--accent-color);font-size:15px;width:18px;text-align:center;"></i>
+                    <span>仅清除当前会话消息</span>
+                </button>
+                <button id="_reset_all" style="width:100%;padding:12px 16px;border:1px solid rgba(255,80,80,0.3);border-radius:12px;background:rgba(255,80,80,0.06);color:#ff5050;font-size:13px;font-weight:600;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:all 0.2s;">
+                    <i class="fas fa-bomb" style="font-size:15px;width:18px;text-align:center;"></i>
+                    <span>重置所有数据（完全清空）</span>
+                </button>
+                <button id="_reset_cancel" style="width:100%;padding:10px 16px;border:none;border-radius:12px;background:none;color:var(--text-secondary);font-size:13px;cursor:pointer;transition:all 0.2s;">取消</button>
+            </div>
+        </div>`;
+    document.body.appendChild(overlay);
+
+    function closeDialog() { overlay.remove(); }
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeDialog(); });
+    document.getElementById('_reset_cancel').onclick = closeDialog;
+
+    document.getElementById('_reset_current').onclick = () => {
+        closeDialog();
+        if (confirm('确定要清除当前会话的所有消息吗？此操作无法恢复！')) {
+            messages = [];
+            throttledSaveData();
+            renderMessages();
+            showNotification('当前会话消息已清除', 'success');
+        }
+    };
+
+    document.getElementById('_reset_all').onclick = () => {
+        closeDialog();
+        if (confirm('【高危操作】确定要重置所有数据吗？此操作将清除所有本地数据且无法恢复！')) {
+            localforage.clear().then(() => {
+                localStorage.clear();
+                showNotification('所有数据已重置，页面即将刷新', 'info', 2000);
+                setTimeout(() => { window.location.href = window.location.pathname; }, 2000);
+            }).catch(e => {
+                showNotification('清除数据时发生错误', 'error');
+                console.error("清除 localforage 失败:", e);
+            });
+        }
+    };
 }
 
         function showNotification(message, type = 'info', duration = 3000) {
@@ -10471,7 +10579,6 @@ async function applyCustomFont(url) {
         const fontStack = `"${fontName}", 'Noto Serif SC', serif`;
         document.documentElement.style.setProperty('--font-family', fontStack);
         document.documentElement.style.setProperty('--message-font-family', fontStack);
-        // Persist into settings so updateUI doesn't overwrite it
         if (typeof settings !== 'undefined') {
             settings.messageFontFamily = fontStack;
         }
@@ -10565,22 +10672,18 @@ autoSendInterval: 5,
 
                 item.className = `bg-item ${isActive ? 'active': ''}`;
 
-                
                 if (bg.type === 'image') {
                     item.innerHTML = `<img src="${bg.value}" loading="lazy" alt="bg">`;
                 } else {
                     item.innerHTML = `<div class="bg-color-block" style="background: ${bg.value}"></div>`;
                 }
 
-                
                 item.onclick = (e) => {
-                    
                     if (e.target.closest('.bg-delete-btn')) return;
-
                     applyBackground(bg.value);
                     safeSetItem(getStorageKey('chatBackground'), bg.value);
                     localforage.setItem(getStorageKey('chatBackground'), bg.value);
-                    renderBackgroundGallery(); 
+                    renderBackgroundGallery();
                     showNotification('背景已切换', 'success');
                 };
 
@@ -10617,22 +10720,16 @@ autoSendInterval: 5,
 
 
         const applyBackground = (value) => {
-
             if (!value || typeof value !== 'string') return;
-
             try {
-
                 if (value.startsWith('linear-gradient') || value.startsWith('#') || value.startsWith('rgb')) {
                     document.documentElement.style.setProperty('--chat-bg-image', value);
                 } else {
-
-                    const cssValue = value.startsWith('url(') ? value: `url(${value})`;
+                    const cssValue = value.startsWith('url(') ? value : `url(${value})`;
                     document.documentElement.style.setProperty('--chat-bg-image', cssValue);
                 }
                 document.body.classList.add('with-background');
             } catch (e) {
-                console.error("背景应用出错，已自动重置", e);
-
                 if (typeof removeBackground === 'function') removeBackground();
             }
         };
@@ -10659,7 +10756,8 @@ const loadData = async () => {
             localforage.getItem(getStorageKey('myAvatar')),
             localforage.getItem(getStorageKey('partnerPersonas')), 
             localforage.getItem(getStorageKey('showPartnerNameInChat')),
-            localforage.getItem(`${APP_PREFIX}themeSchemes`)
+            localforage.getItem(`${APP_PREFIX}themeSchemes`),
+            localforage.getItem(getStorageKey('myStickerLibrary'))
         ]);
         const getVal = (index) => results[index].status === 'fulfilled' ? results[index].value : null;
 
@@ -10681,6 +10779,7 @@ const loadData = async () => {
         const savedPartnerPersonas = getVal(15);
         const savedShowNameConfig = getVal(16);
         const savedThemeSchemes = getVal(17);
+        const savedMyStickers = getVal(18);
 
         if (savedPartnerPersonas) partnerPersonas = savedPartnerPersonas; 
 
@@ -10725,6 +10824,7 @@ const loadData = async () => {
         if (savedDisabledDefaults) disabledDefaultReplies = savedDisabledDefaults;
         if (savedAnniversaries) anniversaries = savedAnniversaries;
         if (savedStickers) stickerLibrary = savedStickers;
+        if (savedMyStickers) myStickerLibrary = savedMyStickers;
         if (savedCustomThemes) customThemes = savedCustomThemes;
         if (savedThemeSchemes) themeSchemes = savedThemeSchemes;
         window._customReplies = customReplies;
@@ -10739,15 +10839,13 @@ const loadData = async () => {
         if (savedChatBg) {
             applyBackground(savedChatBg);
         } else {
-            // Fallback: check localStorage for background (compatibility with safeSetItem saves)
             const lsBg = safeGetItem(getStorageKey('chatBackground'));
             if (lsBg) {
                 applyBackground(lsBg);
-                // Migrate to localforage
                 localforage.setItem(getStorageKey('chatBackground'), lsBg);
             }
         }
-        
+
         try { await initMoodData(); } catch(e) { console.warn("心情数据加载失败", e); }
         try { await loadEnvelopeData(); } catch(e) { console.warn("信封数据加载失败", e); }
         
@@ -10789,6 +10887,20 @@ const LIBRARY_CONFIG = {
 };
 let currentAnnType = 'anniversary'; 
 
+window.openMyStickerSettings = function() {
+    const picker = document.getElementById('user-sticker-picker');
+    if (picker) picker.classList.remove('active');
+    if (typeof currentMajorTab !== 'undefined') {
+        currentMajorTab = 'reply';
+        currentSubTab = 'stickers';
+    }
+    var sidebarBtns = document.querySelectorAll('.sidebar-btn');
+    sidebarBtns.forEach(function(b) { b.classList.toggle('active', b.dataset.major === 'reply'); });
+    if (typeof renderReplyLibrary === 'function') renderReplyLibrary();
+    var modal = document.getElementById('custom-replies-modal');
+    if (modal && typeof showModal === 'function') showModal(modal);
+};
+
 window.switchAnnType = function(type) {
     currentAnnType = type;
     currentAnniversaryType = type; 
@@ -10828,6 +10940,7 @@ const saveData = async () => {
             localforage.setItem(getStorageKey('customMottos'), customMottos),
             localforage.setItem(getStorageKey('customIntros'), customIntros),
             localforage.setItem(getStorageKey('stickerLibrary'), stickerLibrary),
+            localforage.setItem(getStorageKey('myStickerLibrary'), myStickerLibrary),
             localforage.setItem(`${APP_PREFIX}customThemes`, customThemes),
             localforage.setItem(`${APP_PREFIX}themeSchemes`, themeSchemes),
             localforage.setItem(getStorageKey('chatMessages'), messages),
@@ -10857,7 +10970,7 @@ if (customMottos && customMottos.length > 0) {
 } else {
     document.querySelector('.header-motto').textContent = CONSTANTS.HEADER_MOTTOS[0];
 }
-            const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+            const placeholder = "";
             DOMElements.messageInput.placeholder = placeholder.length > 20 ? placeholder.substring(0, 20) + "...": placeholder;
 
 
@@ -11038,12 +11151,17 @@ function manageAutoSendTimer() {
                 DOMElements.html.setAttribute('data-color-theme', settings.colorTheme);
                 applyTheme(null, true);
             }
+            
+            if (settings.customThemeColors && Object.keys(settings.customThemeColors).length > 0) {
+                for (const [variable, value] of Object.entries(settings.customThemeColors)) {
+                    document.documentElement.style.setProperty(variable, value);
+                }
+            }
 
             DOMElements.html.setAttribute('data-theme', settings.isDarkMode ? 'dark': 'light');
             DOMElements.themeToggle.innerHTML = settings.isDarkMode ? '<i class="fas fa-sun"></i>': '<i class="fas fa-moon"></i>';
             DOMElements.partner.name.textContent = settings.partnerName;
             DOMElements.me.name.textContent = settings.myName;
-            // 随机显示对方状态（若状态池有内容）
             var displayStatus = settings.partnerStatus;
             if (customStatuses && customStatuses.length > 0 && (displayStatus === '在线' || !displayStatus)) {
                 displayStatus = customStatuses[Math.floor(Math.random() * customStatuses.length)];
@@ -11051,7 +11169,6 @@ function manageAutoSendTimer() {
             }
             DOMElements.partner.status.textContent = displayStatus;
             DOMElements.me.statusText.textContent = settings.myStatus;
-            // Update all dynamic name references
             if (typeof window.updateDynamicNames === 'function') window.updateDynamicNames();
             document.documentElement.style.setProperty('--font-size', `${settings.fontSize}px`);
             
@@ -11171,7 +11288,6 @@ function manageAutoSendTimer() {
                         const avatarShape = isUser ? (settings.myAvatarShape || 'circle') : (settings.partnerAvatarShape || 'circle');
                         avatarDiv.innerHTML = avatarElement.innerHTML;
                         applyAvatarFrame(avatarDiv, frameSettings);
-                        // Apply shape
                         ['circle','square','pentagon','heart'].forEach(s => avatarDiv.classList.remove('shape-' + s));
                         if (avatarShape !== 'none') avatarDiv.classList.add('shape-' + avatarShape);
                     }
@@ -11400,7 +11516,7 @@ if (!isBatchMode && type === 'normal') {
             DOMElements.batchBtn.classList.toggle('active', isBatchMode);
             DOMElements.batchBtn.title = isBatchMode ? "退出批量模式": "批量发送模式";
             DOMElements.batchPreview.style.display = isBatchMode ? 'flex': 'none';
-            const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+            const placeholder = "";
             DOMElements.messageInput.placeholder = isBatchMode ? "此刻，想说的有很多很多...": (placeholder.length > 20 ? placeholder.substring(0, 20) + "...": placeholder);
             if (isBatchMode) {
                 batchMessages = []; updateBatchPreview();
@@ -11455,13 +11571,39 @@ if (!isBatchMode && type === 'normal') {
             setTimeout(simulateReply, batchMessages.length * 300 + randomDelay);
             isBatchMode = false; batchMessages = [];
             DOMElements.batchBtn.classList.remove('active'); DOMElements.batchPreview.style.display = 'none';
-            const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+            const placeholder = "";
             DOMElements.messageInput.placeholder = placeholder.length > 20 ? placeholder.substring(0, 20) + "...": placeholder;
         }
 
+        function positionTypingIndicator() {
+            var tiW = document.getElementById('typing-indicator-wrapper');
+            var inputArea = document.querySelector('.input-area-wrapper');
+            if (!tiW || !inputArea) return;
+            var h = inputArea.offsetHeight;
+            tiW.style.bottom = h + 'px';
+        }
+        (function() {
+            var inputArea = document.querySelector('.input-area-wrapper');
+            if (!inputArea) return;
+            var ro = new ResizeObserver(function() {
+                var tiW = document.getElementById('typing-indicator-wrapper');
+                if (tiW && tiW.style.display !== 'none') positionTypingIndicator();
+            });
+            ro.observe(inputArea);
+        })();
+
         function simulateReply() {
             if (settings.typingIndicatorEnabled) {
-        DOMElements.typingIndicator.style.display = 'block'; 
+        const tiWrapper = document.getElementById('typing-indicator-wrapper');
+        const tiLabel = document.getElementById('typing-indicator-label');
+        const tiAvatar = document.getElementById('typing-indicator-avatar');
+        if (tiLabel) tiLabel.textContent = (settings.partnerName || '对方') + ' 正在输入';
+        if (tiWrapper) { positionTypingIndicator(); tiWrapper.style.display = 'block'; }
+        if (tiAvatar) {
+            const partnerImg = DOMElements.partner.avatar.querySelector('img');
+            if (partnerImg) { tiAvatar.innerHTML = `<img src="${partnerImg.src}">`; }
+            else { tiAvatar.innerHTML = '<i class="fas fa-user"></i>'; }
+        }
         DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight;
     }
             let changed = false;
@@ -11474,7 +11616,17 @@ if (!isBatchMode && type === 'normal') {
                 renderMessages(false); throttledSaveData();
             }
             if (settings.typingIndicatorEnabled) {
-                DOMElements.typingIndicator.style.display = 'block'; DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight;
+                const tiWrapper = document.getElementById('typing-indicator-wrapper');
+                const tiLabel = document.getElementById('typing-indicator-label');
+                const tiAvatar2 = document.getElementById('typing-indicator-avatar');
+                if (tiLabel) tiLabel.textContent = (settings.partnerName || '对方') + ' 正在输入';
+                if (tiWrapper) { positionTypingIndicator(); tiWrapper.style.display = 'block'; }
+                if (tiAvatar2) {
+                    const partnerImg2 = DOMElements.partner.avatar.querySelector('img');
+                    if (partnerImg2) { tiAvatar2.innerHTML = `<img src="${partnerImg2.src}">`; }
+                    else { tiAvatar2.innerHTML = '<i class="fas fa-user"></i>'; }
+                }
+                DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight;
             }
 if (partnerPersonas && partnerPersonas.length > 0 && Math.random() < 0.3) {
                 const currentPool = [
@@ -11525,7 +11677,7 @@ if (partnerPersonas && partnerPersonas.length > 0 && Math.random() < 0.3) {
             timestamp: new Date(),
             type: 'system'
         });
-        DOMElements.typingIndicator.style.display = 'none';
+        (function(){var _tiW=document.getElementById('typing-indicator-wrapper');if(_tiW){var _tiInner=_tiW.querySelector('.typing-indicator');if(_tiInner){_tiInner.classList.add('hiding');setTimeout(function(){_tiW.style.display='none';if(_tiInner)_tiInner.classList.remove('hiding');},240);}else{_tiW.style.display='none';}}})();
         return;
     }
 }
@@ -11601,7 +11753,7 @@ addMessage({
                             });
                         } catch(e) {}
                     }
-                    if (i === replyCount - 1) DOMElements.typingIndicator.style.display = 'none';
+                    if (i === replyCount - 1) (function(){var _tiW=document.getElementById('typing-indicator-wrapper');if(_tiW){var _tiInner=_tiW.querySelector('.typing-indicator');if(_tiInner){_tiInner.classList.add('hiding');setTimeout(function(){_tiW.style.display='none';if(_tiInner)_tiInner.classList.remove('hiding');},240);}else{_tiW.style.display='none';}}})();
                 },
                     delay);
             }
@@ -11775,21 +11927,24 @@ addMessage({
 
         function viewImage(src) {
             const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'flex';
-            modal.innerHTML = `<div class="modal-content" style="max-width: 90%; max-height: 90%; background: transparent; box-shadow: none; padding: 0;"><img src="${src}" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;"></div>`;
-            const closeModal = () => document.body.removeChild(modal);
-            modal.addEventListener('click', closeModal);
+            modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;touch-action:pinch-zoom;';
+            modal.innerHTML = `
+                <div style="position:relative;max-width:95vw;max-height:92vh;display:flex;align-items:center;justify-content:center;">
+                    <img src="${src}" style="max-width:95vw;max-height:88vh;object-fit:contain;display:block;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6);" draggable="false">
+                    <button onclick="this.closest('[style*=fixed]').remove()" style="position:fixed;top:16px;right:16px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);z-index:10;line-height:1;">×</button>
+                    <a href="${src}" download style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 24px;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:20px;color:#fff;font-size:13px;text-decoration:none;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;"><i class="fas fa-download"></i> 保存图片</a>
+                </div>`;
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal || e.target.tagName === 'IMG') modal.remove();
+            });
             document.body.appendChild(modal);
         }
 
         function exportChatHistory() {
             try {
-                // Gather announcement/custom settings
                 let dgCustomData = null, dgStatusPool = null, customWeatherMap = {};
                 try { dgCustomData = JSON.parse(localStorage.getItem('dg_custom_data') || 'null'); } catch(e2) {}
                 try { dgStatusPool = JSON.parse(localStorage.getItem('dg_status_pool') || 'null'); } catch(e2) {}
-                // Also grab customWeather entries
                 for (var ki = 0; ki < localStorage.length; ki++) {
                     var kk = localStorage.key(ki);
                     if (kk && kk.startsWith('customWeather_')) customWeatherMap[kk] = localStorage.getItem(kk);
@@ -12554,9 +12709,7 @@ function checkPartnerDailyMood() {
 
     if (!moodData[dateStr].partner && moodData[dateStr].partnerChecked === undefined) {
         moodData[dateStr].partnerChecked = true;
-        // 20% chance of no mood record today
         if (Math.random() < 0.20) {
-            // Skip recording - partner didn't record mood today
             saveMoodData();
             return;
         }
@@ -12583,7 +12736,6 @@ function checkPartnerDailyMood() {
 function saveMoodData() {
     localforage.setItem(getStorageKey('moodCalendar'), moodData);
     window.moodData = moodData;
-    // Only render if mood modal is visible
     var moodModal = document.getElementById('mood-modal');
     if (moodModal && !moodModal.classList.contains('hidden') && moodModal.style.display !== 'none') {
         renderMoodCalendar();
@@ -12941,8 +13093,10 @@ function openMoodSelector(dateStr, editTarget) {
     const detailView = document.getElementById('mood-detail-view');
     const dateTitle = document.getElementById('mood-selector-date');
 
+    overlay.classList.remove('active');
+    
     editorView.style.display = 'block';
-    detailView.style.display = 'none';
+    if (detailView) detailView.style.display = 'none';
 
     const [y, m, d] = dateStr.split('-');
     dateTitle.textContent = `${m}月${d}日`;
@@ -12979,7 +13133,9 @@ function openMoodSelector(dateStr, editTarget) {
     document.getElementById('mood-page-next').disabled = false;
 
     renderMoodOptionsGrid(currentKey);
-    overlay.classList.add('active');
+    requestAnimationFrame(() => {
+        overlay.classList.add('active');
+    });
 }
 
 window.editPartnerMoodRecord = function() {
@@ -13101,7 +13257,6 @@ window.openCustomMoodDialog = function() {
     colorsEl.innerHTML = CUSTOM_MOOD_COLORS.map((c,i) => 
         `<div class="custom-mood-color-dot ${i===0?'selected':''}" style="background:${c};" onclick="selectCustomColor('${c}',this)"></div>`
     ).join('');
-    // Reset save button to default add behavior
     const saveBtn = dialog.querySelector('.modal-btn-primary');
     saveBtn.onclick = window.saveCustomMood;
     dialog.style.display = 'block';
@@ -13145,7 +13300,6 @@ window.editCustomMood = function(key) {
         `<div class="custom-mood-color-dot ${c===mood.color?'selected':''}" style="background:${c};" onclick="selectCustomColor('${c}',this)"></div>`
     ).join('');
     dialog.style.display = 'block';
-    // Override save to update existing
     dialog._editingKey = key;
     const saveBtn = dialog.querySelector('.modal-btn-primary');
     saveBtn.onclick = function() {
@@ -13190,10 +13344,8 @@ function initMoodListeners() {
     if (entryBtn) {
         entryBtn.addEventListener('click', () => {
             if (typeof window.updateDynamicNames === 'function') window.updateDynamicNames();
-            // Hide advanced modal directly without animation to avoid timing conflict
             var advModal = document.getElementById('advanced-modal');
             if (advModal) advModal.style.display = 'none';
-            // Small delay to ensure no display:none conflict from prior hideModal timeout
             setTimeout(() => {
                 renderMoodCalendar();
                 showModal(modal);
@@ -13886,7 +14038,7 @@ function doPick() {
         if (isActive) {
             picker.classList.remove('active');
         } else {
-            switchTab('sticker');
+            switchTab('my-sticker');
             picker.classList.add('active');
         }
     });
@@ -13908,64 +14060,89 @@ function doPick() {
         });
     });
 
+    function updateAddBtnVisibility(tabId) {
+        const addBtn = document.getElementById('sticker-add-btn');
+        if (addBtn) addBtn.style.display = (tabId === 'my-sticker') ? 'flex' : 'none';
+    }
+
     function switchTab(tabId) {
         tabs.forEach(b => b.classList.remove('active'));
         const activeBtn = Array.from(tabs).find(b => b.dataset.tab === tabId);
         if (activeBtn) activeBtn.classList.add('active');
+        updateAddBtnVisibility(tabId);
 
-        if (tabId === 'sticker') {
-            renderStickerLibrary();
+        if (tabId === 'my-sticker') {
+            renderMyStickerLibrary();
+        } else if (tabId === 'partner-sticker') {
+            renderPartnerStickerLibrary();
         } else {
             renderUserPokeMenu();
         }
     }
 
-    function renderStickerLibrary() {
+    function makeStickerItem(src, onClick) {
+        const item = document.createElement('div');
+        item.className = 'sticker-grid-item';
+        item.innerHTML = `<img src="${src}" loading="lazy">`;
+        item.onclick = (e) => { e.stopPropagation(); onClick(); };
+        return item;
+    }
+
+    function renderMyStickerLibrary() {
         contentArea.innerHTML = '';
-        
-        if (!stickerLibrary || stickerLibrary.length === 0) {
+        if (!myStickerLibrary || myStickerLibrary.length === 0) {
             contentArea.innerHTML = `
                 <div class="empty-sticker-tip">
-                    <i class="far fa-images"></i>
-                    表情库还是空的哦<br>
-                    请去“高级功能”->“自定义回复”->“表情库”中添加图片~
+                    <i class="fas fa-user-circle"></i>
+                    还没有我的专属表情哦<br>
+                    点击右上角"添加"按钮上传图片~
                 </div>
             `;
             return;
         }
-
         const grid = document.createElement('div');
         grid.className = 'sticker-grid-view';
-
-        stickerLibrary.forEach(src => {
-            const item = document.createElement('div');
-            item.className = 'sticker-grid-item';
-            item.innerHTML = `<img src="${src}" loading="lazy">`;
-            
-            item.onclick = (e) => {
-                e.stopPropagation();
-                addMessage({
-                    id: Date.now(),
-                    sender: 'user',
-                    text: '',
-                    timestamp: new Date(),
-                    image: src, 
-                    status: 'sent',
-                    type: 'normal'
-                });
+        myStickerLibrary.forEach(src => {
+            const item = makeStickerItem(src, () => {
+                addMessage({ id: Date.now(), sender: 'user', text: '', timestamp: new Date(), image: src, status: 'sent', type: 'normal' });
                 playSound('send');
                 picker.classList.remove('active');
-                
                 const delayRange = settings.replyDelayMax - settings.replyDelayMin;
-                const randomDelay = settings.replyDelayMin + Math.random() * delayRange;
-                setTimeout(simulateReply, randomDelay);
-            };
+                setTimeout(simulateReply, settings.replyDelayMin + Math.random() * delayRange);
+            });
             grid.appendChild(item);
         });
-
         contentArea.appendChild(grid);
     }
 
+    function renderPartnerStickerLibrary() {
+        contentArea.innerHTML = '';
+        if (!stickerLibrary || stickerLibrary.length === 0) {
+            contentArea.innerHTML = `
+                <div class="empty-sticker-tip">
+                    <i class="far fa-images"></i>
+                    对方表情库还是空的哦<br>
+                    请去"高级功能"->"自定义回复"->"表情库"中添加图片~
+                </div>
+            `;
+            return;
+        }
+        const grid = document.createElement('div');
+        grid.className = 'sticker-grid-view';
+        stickerLibrary.forEach(src => {
+            const item = makeStickerItem(src, () => {
+                addMessage({ id: Date.now(), sender: 'user', text: '', timestamp: new Date(), image: src, status: 'sent', type: 'normal' });
+                playSound('send');
+                picker.classList.remove('active');
+                const delayRange = settings.replyDelayMax - settings.replyDelayMin;
+                setTimeout(simulateReply, settings.replyDelayMin + Math.random() * delayRange);
+            });
+            grid.appendChild(item);
+        });
+        contentArea.appendChild(grid);
+    }
+
+    function renderStickerLibrary() { renderMyStickerLibrary(); }
     function renderUserPokeMenu() {
         contentArea.innerHTML = '';
 
@@ -14574,7 +14751,7 @@ if (target.classList.contains('delete-btn')) {
                 if (e.target.matches('.batch-cancel-btn')) {
                     isBatchMode = false; DOMElements.batchBtn.classList.remove('active');
                     DOMElements.batchPreview.style.display = 'none';
-                    const placeholder = getRandomItem(CONSTANTS.INPUT_PLACEHOLDERS);
+                    const placeholder = "";
                     DOMElements.messageInput.placeholder = placeholder.length > 20 ? placeholder.substring(0, 20) + "...": placeholder;
                     batchMessages = [];
                 }
@@ -14853,12 +15030,10 @@ document.getElementById('chat-settings').addEventListener('click', () => {
     document.querySelectorAll('.time-fmt-opt').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.fmt === (settings.timeFormat || 'HH:mm'));
     });
-    // Update auto-send pill state
     const autoToggle = document.getElementById('auto-send-toggle');
     if (autoToggle) autoToggle.classList.toggle('active', !!settings.autoSendEnabled);
     updateAutoSendUI();
     updateDelayUI();
-    // Sync immersive toggle
     const immToggle = document.getElementById('immersive-toggle');
     if (immToggle) immToggle.classList.toggle('active', document.body.classList.contains('immersive-mode'));
     
@@ -15203,7 +15378,6 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                 const element = document.querySelector(selector);
                 if (!element) continue;
 
-                // Set initial pill state
                 element.classList.toggle('active', !!settings[prop]);
 
                 element.addEventListener('click', () => {
@@ -15292,28 +15466,23 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                 bgInput.addEventListener('change', (e) => {
                     const file = e.target.files[0];
                     if (!file) return;
-
-                    if (file.size > MAX_IMAGE_SIZE) {
-                        showNotification('背景图片不能超过5MB', 'error');
+                    if (file.size > 10 * 1024 * 1024) {
+                        showNotification('背景图片不能超过10MB', 'error');
                         return;
                     }
-
+                    if (file.size > 5 * 1024 * 1024) {
+                        showNotification('文件较大，正在处理中...', 'info', 2000);
+                    }
                     const reader = new FileReader();
                     reader.onload = (event) => {
                         const base64 = event.target.result;
-
-
                         savedBackgrounds.push({
                             id: `user-${Date.now()}`,
-                            type: 'image',
+                            type: file.type === 'image/gif' ? 'gif' : 'image',
                             value: base64
                         });
-
-
                         saveBackgroundGallery();
                         renderBackgroundGallery();
-
-
                         applyBackground(base64);
                         localforage.setItem(getStorageKey('chatBackground'), base64);
                         showNotification('新背景已添加并应用', 'success');
@@ -15523,16 +15692,6 @@ document.getElementById('cancel-envelope').addEventListener('click', () => {
                 }
             });
 
-
-            document.getElementById('clear-chat').addEventListener('click', () => {
-                if (confirm("确定要清空当前会话的所有聊天记录吗？此操作不可恢复")) {
-                    messages = [];
-                    throttledSaveData();
-                    renderMessages();
-                    hideModal(DOMElements.dataModal.modal);
-                    showNotification('聊天记录已清空', 'success');
-                }
-            });
             document.getElementById('clear-storage').addEventListener('click', clearAllAppData);
             const creditsBtn = document.getElementById('open-credits-btn');
             if (creditsBtn) {
@@ -16492,13 +16651,10 @@ function initReplyLibraryListeners() {
             
             currentMajorTab = btn.dataset.major;
 
-            // Handle announcement tab separately
             if (currentMajorTab === 'announcement') {
-                // switchToAnnouncementPanel called via onclick already
                 return;
             }
 
-            // Restore normal panels when switching away from announcement
             var listArea = document.getElementById('custom-replies-list');
             var annPanel = document.getElementById('announcement-panel');
             var toolbar = document.getElementById('cr-toolbar');
@@ -16530,13 +16686,13 @@ function initReplyLibraryListeners() {
                 customStatuses,
                 customMottos,
                 customIntros,
-                stickerLibrary,
                 disabledDefaultReplies, 
                 exportDate: new Date().toISOString()
             };
             const fileName = `reply-library-backup-${new Date().toISOString().slice(0, 10)}.json`;
             const dataStr = JSON.stringify(libraryData, null, 2);
             exportDataToMobileOrPC(dataStr, fileName);
+            showNotification('已导出（表情包因文件过大已排除，请单独管理）', 'info', 4000);
         });
     }
 
@@ -16556,23 +16712,34 @@ function initReplyLibraryListeners() {
             reader.onload = (event) => {
                 try {
                     const data = JSON.parse(event.target.result);
+                    
+                    const choice = confirm('选择导入方式：\n\n点击【确定】= 覆盖（替换当前内容）\n点击【取消】= 追加（保留现有内容并合并）');
+                    
                     let count = 0;
-                    
-                    if (data.customReplies) { customReplies = [...new Set([...customReplies, ...data.customReplies])]; count++; }
-                    if (data.customPokes) { customPokes = [...new Set([...customPokes, ...data.customPokes])]; count++; }
-                    if (data.customStatuses) { customStatuses = [...new Set([...customStatuses, ...data.customStatuses])]; count++; }
-                    if (data.customMottos) { customMottos = [...new Set([...customMottos, ...data.customMottos])]; count++; }
-                    if (data.customIntros) { customIntros = [...new Set([...customIntros, ...data.customIntros])]; count++; }
-                    if (data.stickerLibrary) { stickerLibrary = [...new Set([...stickerLibrary, ...data.stickerLibrary])]; count++; }
-                    
-                    if (data.disabledDefaultReplies) { 
-                        disabledDefaultReplies = [...new Set([...disabledDefaultReplies, ...data.disabledDefaultReplies])]; 
-                        count++; 
+                    if (choice) {
+                        if (data.customReplies) { customReplies = data.customReplies; count++; }
+                        if (data.customPokes) { customPokes = data.customPokes; count++; }
+                        if (data.customStatuses) { customStatuses = data.customStatuses; count++; }
+                        if (data.customMottos) { customMottos = data.customMottos; count++; }
+                        if (data.customIntros) { customIntros = data.customIntros; count++; }
+                        if (data.stickerLibrary) { stickerLibrary = data.stickerLibrary; count++; }
+                        if (data.disabledDefaultReplies) { disabledDefaultReplies = data.disabledDefaultReplies; count++; }
+                    } else {
+                        if (data.customReplies) { customReplies = [...new Set([...customReplies, ...data.customReplies])]; count++; }
+                        if (data.customPokes) { customPokes = [...new Set([...customPokes, ...data.customPokes])]; count++; }
+                        if (data.customStatuses) { customStatuses = [...new Set([...customStatuses, ...data.customStatuses])]; count++; }
+                        if (data.customMottos) { customMottos = [...new Set([...customMottos, ...data.customMottos])]; count++; }
+                        if (data.customIntros) { customIntros = [...new Set([...customIntros, ...data.customIntros])]; count++; }
+                        if (data.stickerLibrary) { stickerLibrary = [...new Set([...stickerLibrary, ...data.stickerLibrary])]; count++; }
+                        if (data.disabledDefaultReplies) { 
+                            disabledDefaultReplies = [...new Set([...disabledDefaultReplies, ...data.disabledDefaultReplies])]; 
+                            count++; 
+                        }
                     }
-
+                    
                     throttledSaveData();
                     renderReplyLibrary();
-                    showNotification('完整回复库数据导入成功！', 'success');
+                    showNotification(choice ? '覆盖导入成功！' : '追加导入成功！', 'success');
                 } catch (err) {
                     console.error(err);
                     showNotification('文件格式错误', 'error');
@@ -16833,7 +17000,6 @@ const updatePreview = () => {
         function applyAllAvatarFrames() {
             applyAvatarFrame(DOMElements.me.avatarContainer, settings.myAvatarFrame);
             applyAvatarFrame(DOMElements.partner.avatarContainer, settings.partnerAvatarFrame);
-            // Apply shape presets
             applyAvatarShapeToDOM('my', settings.myAvatarShape || 'circle');
             applyAvatarShapeToDOM('partner', settings.partnerAvatarShape || 'circle');
         }
@@ -16844,7 +17010,6 @@ const updatePreview = () => {
             if (!avatarContainer) return;
             SHAPES.forEach(s => avatarContainer.classList.remove('avatar-shape-' + s));
             if (shape && shape !== 'none') avatarContainer.classList.add('avatar-shape-' + shape);
-            // Also update all in-chat message avatars via re-render flag
             document.querySelectorAll('.message-avatar').forEach(el => {
                 SHAPES.forEach(s => el.classList.remove('shape-' + s));
             });
@@ -16980,8 +17145,29 @@ function initThemeEditor() {
     const closeBtn = document.getElementById('close-theme-editor');
     if (closeBtn) {
         closeBtn.onclick = () => {
-            hideModal(document.getElementById('theme-editor-modal'));
             updateUI();
+            hideModal(document.getElementById('theme-editor-modal'));
+        };
+    }
+    
+    const applyCloseBtn = document.getElementById('apply-close-theme-editor');
+    if (applyCloseBtn) {
+        applyCloseBtn.onclick = () => {
+            const root = document.documentElement;
+            const customColors = {};
+            for (const variable of Object.keys(themeColorMappings)) {
+                const val = root.style.getPropertyValue(variable);
+                if (val) customColors[variable] = val.trim();
+            }
+            for (const variable of Object.keys(themeExtraMappings)) {
+                const val = root.style.getPropertyValue(variable);
+                if (val) customColors[variable] = val.trim();
+            }
+            settings.customThemeColors = customColors;
+            throttledSaveData && throttledSaveData();
+            updateUI();
+            hideModal(document.getElementById('theme-editor-modal'));
+            showNotification('主题已应用', 'success');
         };
     }
     
@@ -17109,7 +17295,6 @@ function initThemeEditor() {
                         const v = rangeInput.value + cfg.unit;
                         document.documentElement.style.setProperty(variable, v);
                         valLabel.textContent = rangeInput.value + cfg.unit;
-                        // Sync settings
                         if (variable === '--radius') { settings.borderRadius = rangeInput.value; throttledSaveData && throttledSaveData(); }
                         if (variable === '--message-line-height') { settings.messageLineHeight = parseFloat(rangeInput.value); throttledSaveData && throttledSaveData(); }
                     });
@@ -17119,7 +17304,6 @@ function initThemeEditor() {
                     item.querySelector('select').addEventListener('change', (e) => {
                         const newVal = e.target.value;
                         document.documentElement.style.setProperty(variable, newVal);
-                        // Sync to settings if it maps to a known settings key
                         if (variable === '--message-font-weight') { settings.messageFontWeight = newVal; throttledSaveData && throttledSaveData(); }
                         if (variable === '--message-line-height') { settings.messageLineHeight = parseFloat(newVal); throttledSaveData && throttledSaveData(); }
                     });
@@ -17548,6 +17732,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
         }
+        
+        // Ensure disclaimer close button always works when reopened
+        if (acceptDisclaimerBtn && !acceptDisclaimerBtn._closeFixed) {
+            acceptDisclaimerBtn._closeFixed = true;
+            acceptDisclaimerBtn.addEventListener('click', () => {
+                if (disclaimerModal && disclaimerModal.style.display !== 'none') {
+                    hideModal(disclaimerModal);
+                }
+            });
+        }
 
         updateLoader('连接成功，欢迎回来。', '100%');
         setTimeout(hideWelcomeScreen, 3500);
@@ -17613,6 +17807,30 @@ const stickerInput = document.getElementById('sticker-file-input');
                     e.target.value = '';
                 });
             }
+const myStickerQuickUpload = document.getElementById('my-sticker-quick-upload');
+if (myStickerQuickUpload) {
+    myStickerQuickUpload.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+        const oversized = files.filter(f => f.size > 2 * 1024 * 1024);
+        if (oversized.length > 0) showNotification(oversized.length + ' 张图片超过 2MB，已跳过', 'warning');
+        const validFiles = files.filter(f => f.size <= 2 * 1024 * 1024);
+        if (!validFiles.length) return;
+        showNotification('正在处理 ' + validFiles.length + ' 张...', 'info');
+        let ok = 0, fail = 0;
+        for (const file of validFiles) {
+            try {
+                const base64 = await optimizeImage(file, 300, 0.8);
+                myStickerLibrary.push(base64);
+                ok++;
+            } catch(err) { fail++; }
+        }
+        throttledSaveData();
+        if (typeof renderComboContent === 'function') renderComboContent('my-sticker');
+        showNotification(fail > 0 ? `上传完成：${ok} 成功 ${fail} 失败` : `✓ 已添加 ${ok} 张到我的表情库`, fail > 0 ? 'warning' : 'success');
+        e.target.value = '';
+    });
+}
 const tourOverlay = document.getElementById('tour-overlay');
 const tourPopover = document.getElementById('tour-popover');
 const tourHighlightBox = document.getElementById('tour-highlight-box');
@@ -18174,7 +18392,6 @@ function setupTutorialListeners() {
 
 <div id="daily-greeting-modal" class="hidden">
     <div class="daily-greeting-card" id="daily-greeting-card">
-        <!-- Header band with image support -->
         <div class="dg-header-band" id="dg-header-band">
             <div class="dg-header-band-bg" id="dg-header-band-bg"></div>
             <div class="dg-header-band-overlay" id="dg-header-band-overlay"></div>
@@ -18191,11 +18408,8 @@ function setupTutorialListeners() {
             </div>
             <div class="dg-date-stamp" id="dg-date-stamp">— 今日公告已送达 —</div>
         </div>
-        <!-- Custom banner image removed per design update - use dg-deco-img in body instead -->
-        <!-- Body -->
         <div class="dg-body">
             <div class="dg-section-label" id="dg-section-label-partner">梦角今日状态</div>
-            <!-- Mood panel -->
             <div class="dg-mood-panel" id="dg-mood-panel">
                 <div class="dg-mood-icon-big" id="dg-partner-mood-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
@@ -18205,7 +18419,6 @@ function setupTutorialListeners() {
                     <div class="dg-mood-sub" id="dg-partner-mood-note"></div>
                 </div>
             </div>
-            <!-- Info grid -->
             <div class="dg-info-grid">
                 <div class="dg-info-cell">
                     <div class="dg-info-cell-icon">
@@ -18222,11 +18435,9 @@ function setupTutorialListeners() {
                     <div class="dg-info-cell-val" id="dg-status">一切都好</div>
                 </div>
             </div>
-            <!-- Custom decoration image -->
             <div id="dg-deco-img-wrap" style="display:none; margin-bottom:12px; border-radius:12px; overflow:hidden;">
                 <img id="dg-deco-img" src="" alt="" style="width:100%; max-height:160px; object-fit:cover; display:block; border-radius:12px;">
             </div>
-            <!-- Note -->
             <div class="dg-note-box" id="dg-note">
                 <div class="dg-note-inner">
                     <div class="dg-note-weather-badge" id="dg-note-weather-badge" style="display:none;">
@@ -18236,7 +18447,6 @@ function setupTutorialListeners() {
                     <div id="dg-note-text">今天也要元气满满，我在这里陪着你 ✦</div>
                 </div>
             </div>
-            <!-- Buttons -->
             <div class="dg-footer">
                 <button class="daily-greeting-close-btn" onclick="closeDailyGreeting()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:6px"><polyline points="20 6 9 17 4 12"/></svg>
@@ -18248,7 +18458,6 @@ function setupTutorialListeners() {
     </div>
 </div>
 
-<!-- Daily Greeting Editor Modal (stub, editing now in custom replies > 今日公告) -->
 <div id="dg-editor-modal" style="display:none;"></div>
 
 <script>
@@ -18396,10 +18605,14 @@ var statusPool = [
     var todayKey = String(now.getFullYear()) + String(month) + String(day);
     var seed = 0;
     for (var si = 0; si < todayKey.length; si++) seed += todayKey.charCodeAt(si) * (si + 1);
-    var defaultWeather = weathers[Math.floor(Math.random() * weathers.length)];
+    function seededRandDg(s, offset) {
+        var x = Math.sin(s * 9301 + offset * 49297 + 233) * 1000003;
+        return x - Math.floor(x);
+    }
+    var defaultWeather = weathers[Math.floor(seededRandDg(seed, 0) * weathers.length)];
     var customWeatherKey = 'customWeather_' + now.getFullYear() + '_' + month + '_' + day;
     var weather = localStorage.getItem(customWeatherKey) || defaultWeather;
-    var status = statusPool[Math.floor(Math.random() * statusPool.length)];
+    var status = statusPool[Math.floor(seededRandDg(seed, 1) * statusPool.length)];
 
     return { timeLabel: timeLabel, timeEmoji: timeEmoji, festival: festival, weather: weather, status: status };
 }
@@ -18420,12 +18633,11 @@ function _buildDailyGreeting() {
         var todayMood = moodDataRaw[todayStr];
         var allMoods = (typeof getAllMoodOptions === 'function') ? getAllMoodOptions() : [];
 
-        // Use dynamic partner name
         var pName = (typeof settings !== 'undefined' && settings.partnerName) ? settings.partnerName : '梦角';
         var mName = (typeof settings !== 'undefined' && settings.myName) ? settings.myName : '我';
 
         var partnerMoodText = pName + ' 今天还没有记录';
-        var partnerMoodIcon = null; // will use SVG default
+        var partnerMoodIcon = null; 
         var partnerMoodNote = '';
 
         if (todayMood && todayMood.partner) {
@@ -18444,42 +18656,41 @@ function _buildDailyGreeting() {
         var festLabel = festival ? festival.label : ('GOOD ' + (h < 12 ? 'MORNING' : h < 18 ? 'AFTERNOON' : 'EVENING'));
         var noteText = festival ? festival.note : '今天也要元气满满，我在这里陪着你 ✦';
 
-        // Load custom overrides
         var customData = {};
         try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(e2) {}
-        // Random selection seed based on date
-        var todaySeedForText = now.getDate() * 100 + now.getMonth() + now.getFullYear() * 3;
-        if (customData.titles && customData.titles.length > 0) {
-            mainTitle = customData.titles[todaySeedForText % customData.titles.length];
-        } else if (customData.title) {
-            mainTitle = customData.title;
-        }
-        if (customData.notes && customData.notes.length > 0) {
-            noteText = customData.notes[todaySeedForText % customData.notes.length];
-        } else if (customData.note) {
-            noteText = customData.note;
-        }
+        
+        var now2 = new Date();
+        var dailySeed = now2.getFullYear() * 10000 + (now2.getMonth()+1) * 100 + now2.getDate();
+        function seededRandom(seed) { return (Math.abs(Math.sin(seed * 9301 + 49297) * 233280) % 233280) / 233280; }
+        var todaySeedForText = dailySeed;
+
+        var defaultTitles = festival ? [(festival.name + '快乐')] : [timeLabel, '今天也要开心哦', '你在我心里呀', '想你'];
+        var defaultNotes = festival ? [festival.note] : ['今天也要元气满满，我在这里陪着你 ✦', '每一天都因为有你而特别 ✦', '想到你就觉得很安心 ✦', '你是我最喜欢的人 ✦'];
+
+        var mixedTitles = (customData.titles && customData.titles.length > 0) ? [...customData.titles, ...defaultTitles] : 
+                          (customData.title ? [customData.title, ...defaultTitles] : defaultTitles);
+        var mixedNotes = (customData.notes && customData.notes.length > 0) ? [...customData.notes, ...defaultNotes] :
+                         (customData.note ? [customData.note, ...defaultNotes] : defaultNotes);
+
+        mainTitle = mixedTitles[Math.floor(seededRandom(todaySeedForText) * mixedTitles.length)];
+        noteText = mixedNotes[Math.floor(seededRandom(todaySeedForText + 1) * mixedNotes.length)];
 
         function setEl(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
         function setElHTML(id, val) { var el = document.getElementById(id); if (el) el.innerHTML = val; }
 
-        // Update emoji circle - if mood icon is a real emoji use it, else keep SVG
         var emojiEl = document.getElementById('dg-emoji');
         if (emojiEl) {
             if (festival) {
                 emojiEl.textContent = festival.emoji;
             }
-            // else keep the SVG smile icon
         }
 
-        // Update mood icon
         var moodIconEl = document.getElementById('dg-partner-mood-icon');
         if (moodIconEl) {
             if (partnerMoodIcon) {
                 moodIconEl.textContent = partnerMoodIcon;
                 moodIconEl.style.fontSize = '32px';
             }
-            // else keep SVG
         }
 
         setEl('dg-festival', festLabel);
@@ -18487,11 +18698,10 @@ function _buildDailyGreeting() {
         setEl('dg-partner-mood', partnerMoodText);
         setEl('dg-partner-mood-note', partnerMoodNote || (todayMood && todayMood.partner ? pName + ' 记录了今天的心情 ☆' : ''));
 
-        // Status pool random selection
         var statusPoolData = [];
         try { statusPoolData = JSON.parse(localStorage.getItem('dg_status_pool') || '[]'); } catch(e2) {}
         if (statusPoolData.length > 0) {
-            var poolItem = statusPoolData[Math.floor(Math.random() * statusPoolData.length)];
+            var poolItem = statusPoolData[Math.floor(seededRandom(todaySeedForText + 2) * statusPoolData.length)];
             if (poolItem) {
                 setEl('dg-festival', poolItem.label || festLabel);
                 setEl('dg-status', poolItem.status || status);
@@ -18519,23 +18729,18 @@ function _buildDailyGreeting() {
             setEl('dg-weather', weather);
         }
 
-        // Update note box with inner structure
         var noteTextEl = document.getElementById('dg-note-text');
         if (noteTextEl) noteTextEl.textContent = noteText;
-        // Weather badge hidden — weather is shown in the info grid above
         var wBadge = document.getElementById('dg-note-weather-badge');
         if (wBadge) wBadge.style.display = 'none';
 
-        // Update dynamic labels with names
         setEl('dg-section-label-partner', pName + ' 今日状态');
         setEl('dg-weather-label', pName + ' 的天气');
         setEl('dg-status-label', pName + ' 的状态');
 
-        // Date stamp
         var months = ['一','二','三','四','五','六','七','八','九','十','十一','十二'];
         setEl('dg-date-stamp', now.getFullYear() + ' · ' + months[now.getMonth()] + '月' + now.getDate() + '日');
 
-        // Load custom header bg
         var headerBg = localStorage.getItem('dg_header_bg');
         var bgEl = document.getElementById('dg-header-band-bg');
         if (bgEl && headerBg) {
@@ -18543,7 +18748,6 @@ function _buildDailyGreeting() {
             bgEl.classList.add('has-img');
         }
 
-        // Load custom deco image (middle decoration only, no top banner)
         var decoImg = customData.decoImg;
         var decoWrap2 = document.getElementById('dg-deco-img-wrap');
         var decoImgEl2 = document.getElementById('dg-deco-img');
@@ -18566,6 +18770,57 @@ window.toggleImmersiveMode = function(force) {
     try { localStorage.setItem('immersive_mode', isOn ? '1' : '0'); } catch(e) {}
     if (!isOn && typeof showNotification === 'function') showNotification('已退出沉浸式模式', 'info');
 };
+
+(function() {
+    var btn = document.getElementById('immersive-exit-btn');
+    if (!btn) return;
+    var isDragging = false, hasMoved = false;
+    var startX, startY, origRight, origBottom;
+    
+    function getRight() { return parseInt(btn.style.right) || 20; }
+    function getBottom() { return parseInt(btn.style.bottom) || 100; }
+    
+    function onStart(e) {
+        isDragging = true; hasMoved = false;
+        btn.classList.add('dragging');
+        var touch = e.touches ? e.touches[0] : e;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        origRight = getRight();
+        origBottom = getBottom();
+        e.preventDefault();
+    }
+    function onMove(e) {
+        if (!isDragging) return;
+        var touch = e.touches ? e.touches[0] : e;
+        var dx = touch.clientX - startX;
+        var dy = touch.clientY - startY;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasMoved = true;
+        var newRight = Math.max(10, Math.min(window.innerWidth - 54, origRight - dx));
+        var newBottom = Math.max(10, Math.min(window.innerHeight - 54, origBottom - dy));
+        btn.style.right = newRight + 'px';
+        btn.style.bottom = newBottom + 'px';
+        btn.style.left = 'auto';
+        btn.style.top = 'auto';
+        e.preventDefault();
+    }
+    function onEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        btn.classList.remove('dragging');
+        if (!hasMoved) {
+            window.toggleImmersiveMode(false);
+        }
+    }
+    btn.addEventListener('mousedown', onStart, {passive: false});
+    btn.addEventListener('touchstart', onStart, {passive: false});
+    document.addEventListener('mousemove', onMove, {passive: false});
+    document.addEventListener('touchmove', onMove, {passive: false});
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchend', onEnd);
+    
+    btn.removeAttribute('onclick');
+})();
 (function() {
     try {
         if (localStorage.getItem('immersive_mode') === '1') {
@@ -18586,7 +18841,6 @@ window.openDailyGreetingEditor = function() {
     if (titleEl) titleEl.value = (customData.titles && customData.titles.length) ? customData.titles.join('\n') : (customData.title || '');
     if (noteEl) noteEl.value = (customData.notes && customData.notes.length) ? customData.notes.join('\n') : (customData.note || '');
 
-    // Load deco image preview
     if (customData.decoImg) {
         var prev = document.getElementById('dg-deco-preview');
         var prevImg = document.getElementById('dg-deco-preview-img');
@@ -18608,12 +18862,12 @@ window.saveDailyGreetingCustom = function() {
     if (titleEl && titleEl.value.trim()) {
         var titles = titleEl.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
         customData.titles = titles;
-        customData.title = titles[0]; // backward compat
+        customData.title = titles[0];
     } else { delete customData.titles; delete customData.title; }
     if (noteEl && noteEl.value.trim()) {
         var notes = noteEl.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
         customData.notes = notes;
-        customData.note = notes[0]; // backward compat
+        customData.note = notes[0]; 
     } else { delete customData.notes; delete customData.note; }
     localStorage.setItem('dg_custom_data', JSON.stringify(customData));
     closeDailyGreetingEditor();
@@ -18636,7 +18890,6 @@ window.clearDgHeaderBg = function() {
     if (bgEl) { bgEl.style.backgroundImage = ''; bgEl.classList.remove('has-img'); }
 };
 
-// ─── Announcement Panel (in custom replies modal) ───
 window.switchToAnnouncementPanel = function() {
     var listArea = document.getElementById('custom-replies-list');
     var annPanel = document.getElementById('announcement-panel');
@@ -18645,12 +18898,11 @@ window.switchToAnnouncementPanel = function() {
     var addBtn = document.getElementById('add-custom-reply');
     var titleEl = document.getElementById('cr-modal-title');
     if (listArea) listArea.style.display = 'none';
-    if (annPanel) annPanel.style.display = 'block';
+    if (annPanel) { annPanel.style.display = 'block'; annPanel.scrollTop = 0; }
     if (toolbar) toolbar.style.display = 'none';
     if (subTabs) subTabs.style.display = 'none';
     if (addBtn) addBtn.style.display = 'none';
     if (titleEl) titleEl.textContent = '今日公告配置';
-    // Load saved data
     var customData = {};
     try { customData = JSON.parse(localStorage.getItem('dg_custom_data') || '{}'); } catch(e2) {}
     var titleInput = document.getElementById('dg-edit-title');
@@ -18736,7 +18988,6 @@ window.removeAnnStatusPoolItem = function(idx) {
     renderAnnStatusPool();
 };
 
-// Header bg image upload
 document.addEventListener('DOMContentLoaded', function() {
     var headerInput = document.getElementById('dg-header-img-input');
     if (headerInput) {
@@ -18774,40 +19025,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ─── Dynamic name updater ───
 window.updateDynamicNames = function() {
     try {
         var pName = (typeof settings !== 'undefined' && settings.partnerName) ? settings.partnerName : '梦角';
         var mName = (typeof settings !== 'undefined' && settings.myName) ? settings.myName : '我';
 
-        // Mood editor tabs
         var tabPartner = document.getElementById('mood-tab-partner');
         if (tabPartner) tabPartner.textContent = pName + '的记录';
         var tabMe = document.getElementById('mood-tab-me');
         if (tabMe) tabMe.textContent = mName + '的记录';
 
-        // Detail view titles
         var detailPartnerTitle = document.getElementById('detail-partner-title');
         if (detailPartnerTitle) detailPartnerTitle.textContent = pName + '的';
 
-        // Detail partner no-record
         var partnerNoRec = document.getElementById('detail-partner-no-record');
         if (partnerNoRec) {
             var msgEl = partnerNoRec;
             if (!msgEl.querySelector('span')) msgEl.textContent = pName + ' 这天还没有留下记录';
         }
 
-        // Edit partner button
         var editPartnerBtn = document.getElementById('edit-partner-mood');
         if (editPartnerBtn) editPartnerBtn.textContent = '修改' + pName;
         var deletePartnerBtn = document.getElementById('delete-partner-mood');
         if (deletePartnerBtn) deletePartnerBtn.textContent = '删除' + pName;
 
-        // Continue btn title
         var continueBtn = document.getElementById('continue-btn');
         if (continueBtn) continueBtn.title = '让' + pName + '继续说';
 
-        // Envelope info
         var envInfo = document.querySelector('.env-send-info');
         if (envInfo) {
             var textNodes = Array.from(envInfo.childNodes).filter(n => n.nodeType === 3);
@@ -18818,20 +19062,16 @@ window.updateDynamicNames = function() {
             });
         }
 
-        // Daily greeting labels
         setDgLabel('dg-section-label-partner', pName + ' 今日状态');
         setDgLabel('dg-weather-label', pName + ' 的天气');
         setDgLabel('dg-status-label', pName + ' 的状态');
 
-        // Envelope info text
         var envInfoSpan = document.getElementById('env-reply-time-info');
         if (envInfoSpan) envInfoSpan.textContent = pName + ' 将在 10-24 小时内回信（8-12 句话）';
 
-        // Poke input placeholder
         var pokeInput = document.getElementById('poke-input');
         if (pokeInput) pokeInput.placeholder = '例如：拍了拍"' + pName + '"的肩膀';
 
-        // Stats labels
         document.querySelectorAll('[data-name-partner]').forEach(function(el) {
             el.textContent = pName + '的记录';
         });
@@ -19085,37 +19325,35 @@ var groupChatSettings = (function() {
     try {
         var saved = JSON.parse(localStorage.getItem('groupChatSettings') || 'null');
         if (!saved) return { enabled: false, showAvatar: true, showName: true, members: [] };
-        // 确保 members 存在
         if (!saved.members) saved.members = [];
         return saved;
     } catch(e) { return { enabled: false, showAvatar: true, showName: true, members: [] }; }
 })();
-// 异步加载成员头像（从 localforage）
 (function loadGroupAvatars() {
     if (!window.localforage) return;
     var members = groupChatSettings.members || [];
     if (members.length === 0) return;
     var promises = members.map(function(m, i) {
-        var ref = m.avatarRef || ('gca_' + i);
+        var ref = m.avatarRef || (m.id ? 'gca_' + m.id : 'gca_' + i);
         return localforage.getItem(ref).then(function(avatar) {
             m.avatar = avatar || null;
         }).catch(function() { m.avatar = null; });
     });
     Promise.all(promises).then(function() {
-        // 头像加载完成后刷新成员列表显示
         if (typeof renderGroupMembersList === 'function') renderGroupMembersList();
     });
 })();
 var _groupMemberAvatarDataUrl = null;
 
 function saveGroupChatSettings() {
-    // 分离头像数据，避免 localStorage 超限（大图base64会导致存储失败）
+    var members = groupChatSettings.members || [];
     var toSave = {
         enabled: groupChatSettings.enabled,
         showAvatar: groupChatSettings.showAvatar,
         showName: groupChatSettings.showName,
-        members: (groupChatSettings.members || []).map(function(m, i) {
-            return { name: m.name, avatarRef: 'gca_' + i };
+        members: members.map(function(m) {
+            if (!m.id) m.id = 'gcm_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+            return { name: m.name, id: m.id, avatarRef: 'gca_' + m.id };
         })
     };
     try {
@@ -19123,18 +19361,13 @@ function saveGroupChatSettings() {
     } catch(e) {
         console.warn('groupChatSettings localStorage保存失败:', e);
     }
-    // 用 localforage 存储每个成员的头像
     if (window.localforage) {
-        (groupChatSettings.members || []).forEach(function(m, i) {
-            localforage.setItem('gca_' + i, m.avatar || null).catch(function(e) {
-                console.warn('头像存储失败 index=' + i, e);
+        members.forEach(function(m) {
+            if (!m.id) m.id = 'gcm_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+            localforage.setItem('gca_' + m.id, m.avatar || null).catch(function(e) {
+                console.warn('头像存储失败 id=' + m.id, e);
             });
         });
-        // 清理多余的头像
-        var count = (groupChatSettings.members || []).length;
-        for (var ci = count; ci < count + 10; ci++) {
-            localforage.removeItem('gca_' + ci).catch(function(){});
-        }
     }
 }
 
@@ -19475,7 +19708,6 @@ window.startEditDgWeather = function(el) {
     });
 };
 
-// 聚焦时滚动到底
     document.addEventListener('focusin', function(e) {
         if (e.target && (e.target.classList.contains('message-input') || e.target.tagName === 'TEXTAREA')) {
             setTimeout(function() {
