@@ -8484,61 +8484,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 .un-section-label { font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-color); opacity:0.8; }
 .un-section-line { flex:1; height:1px; background:var(--border-color); }
 </style>
-<div id="update-notice-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:16px;">
-    <div style="background:var(--secondary-bg);border-radius:20px;width:100%;max-width:480px;height:min(88vh,700px);box-shadow:0 20px 60px rgba(0,0,0,0.25);display:flex;flex-direction:column;animation:unModalIn 0.3s cubic-bezier(0.34,1.2,0.64,1);">
-        <div style="padding:20px 20px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border-color);flex-shrink:0;">
-            <div style="width:42px;height:42px;border-radius:14px;background:rgba(var(--accent-color-rgb),0.12);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">✨</div>
-            <div style="flex:1;min-width:0;">
-                <div style="font-size:16px;font-weight:800;color:var(--text-primary);letter-spacing:0.2px;">更新公告</div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">共 18 项更新</div>
-            </div>
-            <button onclick="document.getElementById('update-notice-modal').style.display='none'" style="width:32px;height:32px;border-radius:50%;background:var(--primary-bg);border:1px solid var(--border-color);cursor:pointer;color:var(--text-secondary);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;">×</button>
-        </div>
-        <div style="overflow-y:auto;flex:1;padding:16px 18px;-webkit-overflow-scrolling:touch;">
-            <div style="background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.1),rgba(var(--accent-color-rgb),0.05));border:1px solid rgba(var(--accent-color-rgb),0.2);border-radius:14px;padding:14px 16px;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                    <span style="font-size:16px;">🌐</span>
-                    <span style="font-size:13px;font-weight:700;color:var(--text-primary);">资源分享网站</span>
-                </div>
-                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">分享气泡和字体资源，需 VPN 打开：</div>
-                <a href="https://aielin17.github.io/-/" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(var(--accent-color-rgb),0.12);border-radius:10px;text-decoration:none;">
-                    <i class="fas fa-link" style="color:var(--accent-color);font-size:11px;flex-shrink:0;"></i>
-                    <span style="color:var(--accent-color);font-size:12px;font-weight:700;">aielin17.github.io/-/</span>
-                </a>
-                <div style="margin-top:8px;font-size:11px;color:var(--text-secondary);line-height:1.5;">欢迎踊跃投稿 也欢迎有空闲的宝宝帮我整理投稿🥺🤲🏻</div>
-            </div>
-            <div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">最新</span><div class="un-section-line"></div></div>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">查看大图功能全面重写，支持保存图片</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">退出沉浸式按钮可自由拖动</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">修复页面左右晃动问题</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">平板底部栏兼容性优化</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐优化，群聊成员存储机制升级</span></div>
-            </div>
-            <div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">功能</span><div class="un-section-line"></div></div>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">正在输入指示器样式全面优化，显示迷你头像</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">我方表情库增加专属上传入口（仅我方可用）</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">聊天设置新增名称快捷修改入口</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">每日公告当日状态固定，混合自定义与默认内容</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">字卡导入新增「覆盖」/「追加」选项</span></div>
-            </div>
-            <div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">修复</span><div class="un-section-line"></div></div>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐方式 bug 修复（CSS变量正确应用）</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">返回/关闭按钮紧贴底部，消除空白</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">数据管理简化：重置数据包含清空会话与全部清除</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">重置数据升级为精美弹窗，操作更清晰</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">导出时不再包含表情包（文件更小更快）</span></div>
-                <div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">气泡字体颜色、主题编辑器全面修复</span></div>
-            </div>
-            <div style="height:16px;"></div>
-        </div>
-        <div style="padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom,14px));border-top:1px solid var(--border-color);flex-shrink:0;">
-            <button onclick="document.getElementById('update-notice-modal').style.display='none'" style="width:100%;background:var(--accent-color);color:#fff;border:none;border-radius:14px;padding:13px;font-size:14px;cursor:pointer;font-weight:700;letter-spacing:0.3px;font-family:var(--font-family);">知道了 ✦</button>
-        </div>
-    </div>
-</div>
+<!-- update-notice-modal moved to body level (below </body> tag area) to avoid transform stacking context issue -->
 
 <div id="appearance-panel-container" style="display:none;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
@@ -13093,6 +13039,12 @@ function openMoodSelector(dateStr, editTarget) {
     const detailView = document.getElementById('mood-detail-view');
     const dateTitle = document.getElementById('mood-selector-date');
 
+    // 取消之前挂起的 rAF，防止多次点击产生「僵尸遮罩」
+    if (window._moodOverlayRafId) {
+        cancelAnimationFrame(window._moodOverlayRafId);
+        window._moodOverlayRafId = null;
+    }
+
     overlay.classList.remove('active');
     
     editorView.style.display = 'block';
@@ -13133,7 +13085,8 @@ function openMoodSelector(dateStr, editTarget) {
     document.getElementById('mood-page-next').disabled = false;
 
     renderMoodOptionsGrid(currentKey);
-    requestAnimationFrame(() => {
+    window._moodOverlayRafId = requestAnimationFrame(() => {
+        window._moodOverlayRafId = null;
         overlay.classList.add('active');
     });
 }
@@ -13239,6 +13192,11 @@ document.getElementById('edit-existing-mood').addEventListener('click', () => {
 });
 
 window.closeMoodOverlay = function() {
+    // 取消挂起的 rAF，避免关闭后再次弹出空白遮罩
+    if (window._moodOverlayRafId) {
+        cancelAnimationFrame(window._moodOverlayRafId);
+        window._moodOverlayRafId = null;
+    }
     document.getElementById('mood-selector-overlay').classList.remove('active');
     document.getElementById('custom-mood-dialog').style.display = 'none';
 };
@@ -13485,6 +13443,9 @@ window.showAppearancePanel = function(panel) {
         'bubble-css': ['bubble', 'css']
     };
     document.getElementById('appearance-nav-grid').style.display = 'none';
+    // 进入子面板时隐藏更新公告入口，避免重复显示
+    var unBtn = document.getElementById('update-notice-btn');
+    if (unBtn) unBtn.style.display = 'none';
     document.getElementById('appearance-panel-container').style.display = 'block';
     document.getElementById('appearance-panel-title').textContent = APPEARANCE_PANEL_TITLES[panel] || panel;
     document.querySelectorAll('.appearance-sub-panel').forEach(p => p.style.display = 'none');
@@ -13503,6 +13464,9 @@ window.hideAppearancePanel = function() {
     document.getElementById('appearance-nav-grid').style.display = 'grid';
     document.getElementById('appearance-panel-container').style.display = 'none';
     document.querySelectorAll('.appearance-sub-panel').forEach(p => p.style.display = 'none');
+    // 返回主面板时恢复更新公告入口
+    var unBtn = document.getElementById('update-notice-btn');
+    if (unBtn) unBtn.style.display = 'flex';
 };
 
 window.openEnvelopeAndViewReply = function(replyId) {
@@ -19716,6 +19680,58 @@ window.startEditDgWeather = function(el) {
             }, 100);
         }
     });
+
+// ── 更新公告弹窗（body级，避免transform父级影响position:fixed） ──
+(function(){
+    var m = document.createElement('div');
+    m.id = 'update-notice-modal';
+    m.style.cssText = 'display:none;position:fixed;inset:0;z-index:99100;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:16px;';
+    m.innerHTML = '<div style="background:var(--secondary-bg);border-radius:20px;width:100%;max-width:480px;height:min(88vh,700px);box-shadow:0 20px 60px rgba(0,0,0,0.25);display:flex;flex-direction:column;animation:unModalIn 0.3s cubic-bezier(0.34,1.2,0.64,1);">'
+      + '<div style="padding:20px 20px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border-color);flex-shrink:0;">'
+      + '<div style="width:42px;height:42px;border-radius:14px;background:rgba(var(--accent-color-rgb),0.12);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">✨</div>'
+      + '<div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:800;color:var(--text-primary);letter-spacing:0.2px;">更新公告</div><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">共 18 项更新</div></div>'
+      + '<button onclick="document.getElementById(\'update-notice-modal\').style.display=\'none\'" style="width:32px;height:32px;border-radius:50%;background:var(--primary-bg);border:1px solid var(--border-color);cursor:pointer;color:var(--text-secondary);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;">×</button>'
+      + '</div>'
+      + '<div style="overflow-y:auto;flex:1;padding:16px 18px;-webkit-overflow-scrolling:touch;">'
+      + '<div style="background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.1),rgba(var(--accent-color-rgb),0.05));border:1px solid rgba(var(--accent-color-rgb),0.2);border-radius:14px;padding:14px 16px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:16px;">🌐</span><span style="font-size:13px;font-weight:700;color:var(--text-primary);">资源分享网站</span></div>'
+      + '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">分享气泡和字体资源，需 VPN 打开：</div>'
+      + '<a href="https://aielin17.github.io/-/" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(var(--accent-color-rgb),0.12);border-radius:10px;text-decoration:none;"><i class="fas fa-link" style="color:var(--accent-color);font-size:11px;flex-shrink:0;"></i><span style="color:var(--accent-color);font-size:12px;font-weight:700;">aielin17.github.io/-/</span></a>'
+      + '<div style="margin-top:8px;font-size:11px;color:var(--text-secondary);line-height:1.5;">欢迎踊跃投稿 也欢迎有空闲的宝宝帮我整理投稿🥺🤲🏻</div>'
+      + '</div>'
+      + '<div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">最新</span><div class="un-section-line"></div></div>'
+      + '<div style="display:flex;flex-direction:column;gap:6px;">'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">查看大图功能全面重写，支持保存图片</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">退出沉浸式按钮可自由拖动</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">修复页面左右晃动问题</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">平板底部栏兼容性优化</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐优化，群聊成员存储机制升级</span></div>'
+      + '</div>'
+      + '<div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">功能</span><div class="un-section-line"></div></div>'
+      + '<div style="display:flex;flex-direction:column;gap:6px;">'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">正在输入指示器样式全面优化，显示迷你头像</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">我方表情库增加专属上传入口（仅我方可用）</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">聊天设置新增名称快捷修改入口</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">每日公告当日状态固定，混合自定义与默认内容</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">字卡导入新增「覆盖」/「追加」选项</span></div>'
+      + '</div>'
+      + '<div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">修复</span><div class="un-section-line"></div></div>'
+      + '<div style="display:flex;flex-direction:column;gap:6px;">'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐方式 bug 修复（CSS变量正确应用）</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">返回/关闭按钮紧贴底部，消除空白</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">数据管理简化：重置数据包含清空会话与全部清除</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">重置数据升级为精美弹窗，操作更清晰</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">导出时不再包含表情包（文件更小更快）</span></div>'
+      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">气泡字体颜色、主题编辑器全面修复</span></div>'
+      + '</div>'
+      + '<div style="height:16px;"></div>'
+      + '</div>'
+      + '<div style="padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom,14px));border-top:1px solid var(--border-color);flex-shrink:0;">'
+      + '<button onclick="document.getElementById(\'update-notice-modal\').style.display=\'none\'" style="width:100%;background:var(--accent-color);color:#fff;border:none;border-radius:14px;padding:13px;font-size:14px;cursor:pointer;font-weight:700;letter-spacing:0.3px;font-family:var(--font-family);">知道了 ✦</button>'
+      + '</div>'
+      + '</div>';
+    document.body.appendChild(m);
+})();
 
 window.addEventListener('load', function() {
     setTimeout(function() {
