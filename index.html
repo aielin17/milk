@@ -166,24 +166,36 @@
         .message-sent { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .message-received { box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
 
+        html, body {
+            width: 100vw;
+            max-width: 100vw;
+            overflow-x: hidden !important;
+            overscroll-behavior-x: none;
+            margin: 0;
+            padding: 0;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             background-color: var(--primary-bg);
             color: var(--text-primary);
             transition: background-color 0.5s ease, color 0.5s ease;
             height: 100vh;
-            overflow-x: hidden !important;
-            max-width: 100vw;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; 
             font-family: var(--font-family);
             font-weight: 400;
-            position: relative;
+            position: absolute; 
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             font-size: var(--font-size);
             opacity: 0;
             animation: delayedShow 0.8s ease 0.2s forwards;
@@ -489,11 +501,13 @@ gap: 10px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            overflow-x: hidden;
             padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
         }
         .chat-container {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 25px 15px;
             display: flex;
             flex-direction: column;
@@ -503,6 +517,8 @@ gap: 10px;
             scrollbar-width: none;
             -ms-overflow-style: none;
             scroll-behavior: smooth;
+            width: 100%;
+            box-sizing: border-box;
         }
         .chat-container::-webkit-scrollbar {
             display: none;
@@ -519,6 +535,7 @@ gap: 10px;
             position: relative;
             gap: 10px;
             align-items: var(--avatar-align, flex-end);
+            flex-shrink: 0;
         }
         .message-avatar {
             width: var(--in-chat-avatar-size);
@@ -627,10 +644,10 @@ gap: 10px;
             transform: translateY(0);
         }
         .message-wrapper.sent .message-meta-actions {
-            left: -20px;
+            left: 0;
         }
         .message-wrapper.received .message-meta-actions {
-            right: -20px;
+            right: 0;
         }
 
         .meta-action-btn {
@@ -1786,73 +1803,97 @@ gap: 10px;
         .typing-indicator {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(var(--secondary-bg-rgb), 0.88);
-            backdrop-filter: blur(22px) saturate(1.9);
-            -webkit-backdrop-filter: blur(22px) saturate(1.9);
-            border: 1px solid rgba(var(--accent-color-rgb), 0.28);
-            padding: 7px 14px 7px 9px;
-            border-radius: 22px;
+            gap: 9px;
+            background: rgba(var(--secondary-bg-rgb), 0.92);
+            backdrop-filter: blur(28px) saturate(2);
+            -webkit-backdrop-filter: blur(28px) saturate(2);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.22);
+            padding: 8px 16px 8px 8px;
+            border-radius: 26px;
             box-shadow:
-                0 6px 28px rgba(0,0,0,0.13),
-                0 2px 6px rgba(0,0,0,0.08),
+                0 8px 32px rgba(0,0,0,0.12),
+                0 2px 8px rgba(0,0,0,0.07),
                 0 0 0 0px rgba(var(--accent-color-rgb), 0),
-                inset 0 1px 0 rgba(255,255,255,0.45);
+                inset 0 1px 0 rgba(255,255,255,0.55),
+                inset 0 -1px 0 rgba(0,0,0,0.04);
             animation: typingIndicatorIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
-            transition: background 0.4s ease, box-shadow 0.3s ease, transform 0.25s ease;
-            cursor: default;
+            transition: background 0.4s ease, box-shadow 0.3s ease, transform 0.25s ease, border-color 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .typing-indicator:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.02);
+            border-color: rgba(var(--accent-color-rgb), 0.40);
             box-shadow:
-                0 10px 36px rgba(0,0,0,0.16),
-                0 3px 10px rgba(0,0,0,0.10),
-                0 0 0 3px rgba(var(--accent-color-rgb), 0.10),
-                inset 0 1px 0 rgba(255,255,255,0.50);
+                0 12px 40px rgba(0,0,0,0.16),
+                0 4px 14px rgba(0,0,0,0.10),
+                0 0 0 4px rgba(var(--accent-color-rgb), 0.10),
+                inset 0 1px 0 rgba(255,255,255,0.60),
+                inset 0 -1px 0 rgba(0,0,0,0.04);
+        }
+        .typing-indicator:active {
+            transform: translateY(0) scale(0.97);
+            box-shadow:
+                0 4px 16px rgba(0,0,0,0.10),
+                0 1px 4px rgba(0,0,0,0.07),
+                inset 0 1px 0 rgba(255,255,255,0.40);
         }
         .typing-indicator-avatar {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(var(--accent-color-rgb),0.22), rgba(var(--accent-color-rgb),0.10));
+            background: linear-gradient(135deg, rgba(var(--accent-color-rgb),0.25), rgba(var(--accent-color-rgb),0.10));
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             overflow: hidden;
-            border: 1.5px solid rgba(var(--accent-color-rgb), 0.35);
-            box-shadow: 0 2px 8px rgba(var(--accent-color-rgb),0.20);
-            animation: avatarPulse 2.8s ease-in-out infinite;
+            border: 2px solid rgba(var(--accent-color-rgb), 0.30);
+            box-shadow: 0 2px 10px rgba(var(--accent-color-rgb),0.22);
+            animation: avatarPulse 3s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+        .typing-indicator:hover .typing-indicator-avatar {
+            transform: scale(1.08);
         }
         @keyframes avatarPulse {
             0%, 100% { box-shadow: 0 2px 8px rgba(var(--accent-color-rgb),0.20); }
-            50%       { box-shadow: 0 2px 14px rgba(var(--accent-color-rgb),0.40), 0 0 0 3px rgba(var(--accent-color-rgb),0.10); }
+            50%       { box-shadow: 0 2px 16px rgba(var(--accent-color-rgb),0.45), 0 0 0 3px rgba(var(--accent-color-rgb),0.12); }
         }
         .typing-indicator-avatar img {
             width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
         }
         .typing-indicator-avatar i {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--accent-color);
         }
         .typing-indicator-label {
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 600;
             color: var(--accent-color);
-            opacity: 0.90;
-            letter-spacing: 0.3px;
-            max-width: 80px;
+            opacity: 0.88;
+            letter-spacing: 0.4px;
+            max-width: 100px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .typing-indicator-settings-hint {
+            font-size: 9px;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-left: -2px;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
         @keyframes typingIndicatorIn {
-            from { opacity: 0; transform: translateY(12px) scale(0.85); }
+            from { opacity: 0; transform: translateY(14px) scale(0.82); }
             to   { opacity: 1; transform: translateY(0)   scale(1); }
         }
         @keyframes typingIndicatorOut {
             from { opacity: 1; transform: translateY(0)   scale(1); }
-            to   { opacity: 0; transform: translateY(6px)  scale(0.92); }
+            to   { opacity: 0; transform: translateY(8px)  scale(0.90); }
         }
         .typing-indicator.hiding {
             animation: typingIndicatorOut 0.25s ease forwards;
@@ -1860,25 +1901,224 @@ gap: 10px;
 
         .typing-dots {
             display: flex;
-            gap: 3.5px;
+            gap: 4px;
             align-items: center;
         }
         .typing-dot {
-            width: 5.5px;
-            height: 5.5px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: var(--accent-color);
-            animation: typingBounce 1.2s infinite ease-in-out both;
-            opacity: 0.6;
+            animation: typingBounce 1.3s infinite ease-in-out both;
+            opacity: 0.55;
         }
         .typing-dot:nth-child(1) { animation-delay: 0s; }
-        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.30s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.18s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.36s; }
 
         @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0) scale(1);    opacity: 0.45; }
-            30%            { transform: translateY(-6px) scale(1.3); opacity: 1; }
+            0%, 60%, 100% { transform: translateY(0) scale(1);     opacity: 0.40; }
+            30%            { transform: translateY(-7px) scale(1.4); opacity: 1; }
         }
+
+        #ti-settings-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99200;
+            background: rgba(0,0,0,0.50);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0;
+        }
+        #ti-settings-modal.open {
+            display: flex;
+            animation: tiModalOverlayIn 0.25s ease both;
+        }
+        @keyframes tiModalOverlayIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        #ti-settings-panel {
+            background: var(--secondary-bg);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 520px;
+            padding: 0 0 env(safe-area-inset-bottom, 16px);
+            box-shadow: 0 -8px 48px rgba(0,0,0,0.18);
+            animation: tiPanelSlideUp 0.35s cubic-bezier(0.34,1.15,0.64,1) both;
+            overflow: hidden;
+        }
+        @keyframes tiPanelSlideUp {
+            from { transform: translateY(100%); }
+            to   { transform: translateY(0); }
+        }
+        .ti-settings-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .ti-settings-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            background: rgba(var(--accent-color-rgb), 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .ti-settings-title {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .ti-settings-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .ti-settings-close:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+        .ti-settings-body {
+            padding: 18px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .ti-settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .ti-settings-row-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ti-settings-row-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(var(--accent-color-rgb), 0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        .ti-settings-row-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .ti-settings-row-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+        .ti-text-edit-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ti-text-edit-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .ti-text-input-wrap {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .ti-text-input {
+            flex: 1;
+            background: var(--primary-bg);
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .ti-text-input:focus {
+            border-color: rgba(var(--accent-color-rgb), 0.60);
+        }
+        .ti-text-save-btn {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            font-family: var(--font-family);
+            transition: opacity 0.2s;
+        }
+        .ti-text-save-btn:hover { opacity: 0.85; }
+        .ti-text-reset-btn {
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: var(--font-family);
+            transition: color 0.2s;
+        }
+        .ti-text-reset-btn:hover { color: var(--accent-color); }
+        .ti-preview-box {
+            background: var(--primary-bg);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border: 1px dashed rgba(var(--accent-color-rgb),0.25);
+        }
+        .ti-preview-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .ti-preview-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: typingBounce 1.3s infinite ease-in-out both;
+            opacity: 0.55;
+        }
+        .ti-preview-dot:nth-child(1) { animation-delay: 0s; }
+        .ti-preview-dot:nth-child(2) { animation-delay: 0.18s; }
+        .ti-preview-dot:nth-child(3) { animation-delay: 0.36s; }
 
         .settings-item-list {
             display: flex;
@@ -2535,9 +2775,10 @@ gap: 10px;
 
         .batch-preview {
             position: absolute;
-            bottom: 85px;
+            bottom: 100%;
             left: 15px;
             right: 15px;
+            margin-bottom: 4px;
             background-color: var(--secondary-bg);
             border-radius: var(--radius);
             padding: 12px;
@@ -4667,7 +4908,7 @@ html[data-theme="dark"] .ann-item-card.type-future .ann-item-days { color: #c4b5
     .batch-preview {
         left: 10px;
         right: 10px;
-        bottom: 75px;
+        bottom: 100%;
     }
     .stats-content {
         max-height: 300px;
@@ -4724,7 +4965,7 @@ html[data-theme="dark"] .ann-item-card.type-future .ann-item-days { color: #c4b5
     .batch-preview {
         left: 8px;
         right: 8px;
-        bottom: 70px;
+        bottom: 100%;
         max-height: 130px;
     }
     .empty-state i {
@@ -5319,7 +5560,7 @@ html[data-theme="dark"] .report-card {
 
 
         .playlist-popup {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 320px;
@@ -5531,14 +5772,28 @@ html[data-theme="dark"] .report-card {
 }
 
 .custom-tag {
-    width: 6px;
-    height: 6px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background-color: var(--accent-color);
-    opacity: 0.6;
+    opacity: 0.8;
     box-shadow: 0 0 0 1px rgba(var(--accent-color-rgb), 0.3);
+    cursor: pointer;
+    position: relative;
 }
-
+.custom-tag::after {
+    content: "●";
+    font-size: 10px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.custom-tag:hover {
+    transform: scale(1.2);
+    opacity: 1;
+}
 .empty-search-result {
     text-align: center;
     padding: 30px 10px;
@@ -5938,15 +6193,6 @@ html[data-theme="dark"] .tour-btn-primary {
     filter: brightness(1.1);
 }
 
-        #custom-replies-modal .modal-content {
-    display: flex !important;
-    flex-direction: row !important; 
-    height: 85vh !important;       
-    max-height: 85vh !important;
-    overflow: hidden !important;   
-    padding: 0 !important;
-    background-color: var(--secondary-bg);
-}
 
         #custom-replies-modal .modal-title {
             flex-shrink: 0;
@@ -5971,11 +6217,6 @@ html[data-theme="dark"] .tour-btn-primary {
             gap: 12px;
             align-items: center;
         }
-#custom-replies-modal .modal-content {
-    flex-direction: column !important; 
-    overflow: hidden;
-    background-color: var(--secondary-bg);
-}
 
 .modal-sidebar {
     width: 100%;
@@ -6163,31 +6404,6 @@ html[data-theme="dark"] .tour-btn-primary {
     flex-shrink: 0;
 }
 
-.sticker-delete-btn {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 22px;
-    height: 22px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.sticker-item:hover .sticker-delete-btn {
-    opacity: 1;
-}
-
-.sticker-delete-btn:hover {
-    background: #ff4757;
-}
-
 .emoji-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
@@ -6313,16 +6529,17 @@ html[data-theme="dark"] .tour-btn-primary {
     flex-shrink: 0;
 }
 
-.avatar-shape-circle img, .avatar-shape-circle i { border-radius: 50%; overflow: hidden; }
-.avatar-shape-square img, .avatar-shape-square i { border-radius: 8px; clip-path: inset(0 round 8px); }
-.avatar-shape-pentagon img, .avatar-shape-pentagon i { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); border-radius: 0 !important; }
-.avatar-shape-heart img, .avatar-shape-heart i { clip-path: path('M 50 80 C 20 60 0 45 0 30 C 0 15 12 5 25 5 C 35 5 45 12 50 20 C 55 12 65 5 75 5 C 88 5 100 15 100 30 C 100 45 80 60 50 80 Z'); border-radius: 0 !important; }
+.avatar-shape-circle { border-radius: 50% !important; overflow: hidden !important; }
+.avatar-shape-circle img, .avatar-shape-circle i { border-radius: 50% !important; clip-path: none !important; }
+.avatar-shape-circle .avatar { border-radius: 50% !important; overflow: hidden; }
+.avatar-shape-square { border-radius: var(--avatar-corner-radius, 8px) !important; overflow: hidden !important; }
+.avatar-shape-square img, .avatar-shape-square i { border-radius: var(--avatar-corner-radius, 8px) !important; clip-path: none !important; }
+.avatar-shape-square .avatar { border-radius: var(--avatar-corner-radius, 8px) !important; overflow: hidden; }
 
-.message-avatar.shape-circle img { border-radius: 50%; }
-.message-avatar.shape-square img { border-radius: 4px; clip-path: inset(0 round 4px); }
-.message-avatar.shape-pentagon img { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); border-radius: 0; }
-.message-avatar.shape-heart img { clip-path: path('M 50 80 C 20 60 0 45 0 30 C 0 15 12 5 25 5 C 35 5 45 12 50 20 C 55 12 65 5 75 5 C 88 5 100 15 100 30 C 100 45 80 60 50 80 Z'); border-radius: 0; }
-
+.message-avatar.shape-circle { border-radius: 50% !important; overflow: hidden !important; }
+.message-avatar.shape-circle img, .message-avatar.shape-circle i { border-radius: 50% !important; clip-path: none !important;}
+.message-avatar.shape-square { border-radius: var(--avatar-corner-radius, 8px) !important; overflow: hidden !important; }
+.message-avatar.shape-square img, .message-avatar.shape-square i { border-radius: var(--avatar-corner-radius, 8px) !important; clip-path: none !important; }
 .avatar {
     width: 100% !important;
     height: 100% !important;
@@ -7624,18 +7841,18 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 }
 .fl-tab {
     flex: 1;
-    padding: 16px 10px;
+    padding: 14px 6px;
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     font-family: var(--font-family);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     transition: all 0.25s ease;
     position: relative;
 }
@@ -7767,6 +7984,275 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     border-radius: 12px !important;
     letter-spacing: 1px;
     box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.25);
+}
+
+/* ===== Horizontal Tarot Layout ===== */
+.tarot-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: visible;
+    padding: 4px 2px 8px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+}
+.tarot-row .fortune-card.tarot-style {
+    flex: 1 1 0;
+    min-width: 100px;
+    max-width: 160px;
+    scroll-snap-align: start;
+    margin-bottom: 0 !important;
+}
+/* Compact card styles for 3-card spread */
+.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-header {
+    padding: 12px 0 6px;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-card-name {
+    font-size: 15px;
+    margin-bottom: 3px;
+}
+.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-position-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    margin-bottom: 10px;
+}
+.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-keyword {
+    font-size: 11px;
+    margin-bottom: 6px;
+}
+.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-details {
+    padding: 0 12px 16px;
+}
+.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-details p {
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+}
+.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-divider {
+    margin-bottom: 8px;
+}
+.tarot-row:not(.single-card) .fortune-card.tarot-style i.fas {
+    font-size: 20px !important;
+}
+/* For single card, center it */
+.tarot-row.single-card {
+    justify-content: center;
+}
+.tarot-row.single-card .fortune-card.tarot-style {
+    flex: 0 0 80%;
+    max-width: 280px;
+}
+
+/* ===== Minor Arcana Fortune Supplement ===== */
+.minor-fortune-section {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: var(--primary-bg);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+}
+.minor-fortune-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.minor-fortune-cards {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.minor-card-chip {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    min-width: 80px;
+    transition: box-shadow 0.2s;
+}
+.minor-card-chip:hover {
+    box-shadow: 0 3px 10px rgba(var(--accent-color-rgb), 0.15);
+}
+.minor-card-chip-suit {
+    font-size: 16px;
+}
+.minor-card-chip-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+}
+.minor-card-chip-keyword {
+    font-size: 10px;
+    color: var(--accent-color);
+    text-align: center;
+}
+.minor-card-chip-badge {
+    font-size: 9px;
+    padding: 1px 7px;
+    border-radius: 20px;
+    background: rgba(var(--accent-color-rgb), 0.1);
+    color: var(--accent-color);
+}
+.minor-card-chip-badge.rev {
+    background: rgba(229,115,115,0.1);
+    color: #e07b6a;
+}
+.minor-fortune-insight {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+.tarot-spread-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 10px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--secondary-bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-family);
+    position: relative;
+    overflow: hidden;
+}
+.tarot-spread-btn .leno-btn-num {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+}
+.tarot-spread-btn .leno-btn-label {
+    font-size: 11px;
+    opacity: 0.6;
+}
+.tarot-spread-btn.active {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.35);
+    transform: translateY(-2px);
+}
+.tarot-spread-btn.active .leno-btn-label {
+    opacity: 0.85;
+}
+.tarot-spread-btn:hover:not(.active) {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* ===== Fortune Card Entrance Animation ===== */
+@keyframes cardReveal {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.fortune-card.tarot-style {
+    animation: cardReveal 0.45s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+}
+.fortune-card.tarot-style:nth-child(2) { animation-delay: 0.1s; }
+.fortune-card.tarot-style:nth-child(3) { animation-delay: 0.2s; }
+.fortune-card.tarot-style:nth-child(4) { animation-delay: 0.3s; }
+
+/* ===== Divination History ===== */
+.divi-history-item {
+    background: var(--primary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: box-shadow 0.2s;
+    cursor: default;
+}
+.divi-history-item:hover {
+    box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.15);
+}
+.divi-history-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.divi-history-type {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-color);
+    background: rgba(var(--accent-color-rgb), 0.1);
+    border-radius: 20px;
+    padding: 2px 10px;
+    letter-spacing: 0.5px;
+}
+.divi-history-time {
+    font-size: 11px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+.divi-history-question {
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-style: italic;
+    opacity: 0.85;
+}
+.divi-history-cards {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.divi-history-card-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background: var(--secondary-bg);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.divi-history-card-tag.reversed {
+    color: #e07b6a;
+    border-color: rgba(224,123,106,0.3);
+}
+.divi-history-expand-btn {
+    background: none;
+    border: none;
+    font-size: 11px;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-family: var(--font-family);
+    padding: 4px 0 0;
+    display: block;
+    width: 100%;
+    text-align: right;
+    opacity: 0.8;
+}
+.divi-history-detail {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+.divi-history-detail.open {
+    display: block;
 }
 
 .picker-wrapper {
@@ -7924,8 +8410,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 
 
 @keyframes messageAppear {
-    0% { opacity: 0; transform: translateY(10px) scale(0.94); }
-    60% { opacity: 1; transform: translateY(-2px) scale(1.01); }
+    0% { opacity: 0; transform: translateY(8px) scale(0.96); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -8113,7 +8598,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         </div>
 
         <div class="chat-container" id="chat-container">
-        <div class="batch-preview" id="batch-preview"></div>
     </div>
     <div class="empty-state" id="empty-state" style="display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;width:100%;pointer-events:none;z-index:1;">
             <div style="position:relative;margin-bottom:20px;">
@@ -8136,7 +8620,64 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
         </div>
     </div>
+
+    <div id="ti-settings-modal">
+        <div id="ti-settings-panel">
+            <div class="ti-settings-header">
+                <div class="ti-settings-icon">💬</div>
+                <div>
+                    <div class="ti-settings-title">正在输入</div>
+                </div>
+                <button class="ti-settings-close" id="ti-settings-close-btn">×</button>
+            </div>
+            <div class="ti-settings-body">
+                <div class="ti-settings-row">
+                    <div class="ti-settings-row-label">
+                        <div class="ti-settings-row-icon">❤︎</div>
+                        <div>
+                            <div class="ti-settings-row-text">显示头像</div>
+                            <div class="ti-settings-row-sub">在指示器左侧显示对方头像</div>
+                        </div>
+                    </div>
+                    <div class="setting-pill-row" id="ti-avatar-toggle" style="pointer-events:auto;cursor:pointer;background:var(--primary-bg);border-radius:14px;padding:10px 14px;border:1px solid var(--border-color);">
+                        <div class="setting-pill-switch" id="ti-avatar-pill"><div class="setting-pill-knob"></div></div>
+                    </div>
+                </div>
+
+                <div class="ti-text-edit-row">
+                    <div class="ti-text-edit-label">
+                        <i class="fas fa-pen" style="font-size:11px;color:var(--accent-color);"></i>
+                        <span>自定义文案</span>
+                        <button class="ti-text-reset-btn" id="ti-text-reset-btn">恢复默认</button>
+                    </div>
+                    <div class="ti-text-input-wrap">
+                        <input class="ti-text-input" id="ti-text-input" type="text" maxlength="20" placeholder="例：正在输入…">
+                        <button class="ti-text-save-btn" id="ti-text-save-btn">保存</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="ti-text-edit-label" style="margin-bottom:8px;">
+                        <i class="fas fa-eye" style="font-size:11px;color:var(--accent-color);"></i>
+                        <span>预览效果</span>
+                    </div>
+                    <div class="ti-preview-box">
+                        <div id="ti-preview-avatar" style="width:30px;height:30px;border-radius:50%;background:rgba(var(--accent-color-rgb),0.15);border:2px solid rgba(var(--accent-color-rgb),0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+                            <i class="fas fa-user" style="font-size:12px;color:var(--accent-color);"></i>
+                        </div>
+                        <span id="ti-preview-text" style="font-size:11.5px;font-weight:600;color:var(--accent-color);opacity:0.88;letter-spacing:0.4px;"></span>
+                        <div class="ti-preview-dots">
+                            <div class="ti-preview-dot"></div>
+                            <div class="ti-preview-dot"></div>
+                            <div class="ti-preview-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="input-area-wrapper">
+        <div class="batch-preview" id="batch-preview"></div>
         <div id="reply-preview-container"></div>
         <div class="input-area">
     <button class="attachment-btn input-btn" id="attachment-btn" title="发送图片"><i class="fas fa-image"></i></button>
@@ -8468,24 +9009,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     </div>
 </div>
 
-<div id="update-notice-btn" onclick="(function(){var m=document.getElementById('update-notice-modal');m.style.display='flex';})()" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(var(--accent-color-rgb),0.08);border:1px dashed rgba(var(--accent-color-rgb),0.4);border-radius:12px;cursor:pointer;margin-bottom:12px;transition:all 0.2s;">
-    <i class="fas fa-bell" style="color:var(--accent-color);font-size:16px;"></i>
-    <span style="flex:1;font-size:13px;color:var(--text-primary);font-weight:500;">✨ 更新公告 & 新功能</span>
-    <i class="fas fa-chevron-right" style="color:var(--text-secondary);font-size:12px;"></i>
-</div>
-
-<style>
-#update-notice-modal { touch-action: pan-y; }
-@keyframes unModalIn { from { opacity:0; transform:scale(0.93) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
-.un-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:12px; background:var(--primary-bg); border:1px solid var(--border-color); transition:background 0.15s; }
-.un-item:active { background:rgba(var(--accent-color-rgb),0.07); }
-.un-dot { width:6px; height:6px; border-radius:50%; background:var(--accent-color); flex-shrink:0; margin-top:6px; opacity:0.75; }
-.un-section-header { display:flex; align-items:center; gap:8px; margin:18px 0 10px; }
-.un-section-label { font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent-color); opacity:0.8; }
-.un-section-line { flex:1; height:1px; background:var(--border-color); }
-</style>
-<!-- update-notice-modal moved to body level (below </body> tag area) to avoid transform stacking context issue -->
-
 <div id="appearance-panel-container" style="display:none;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
         <button onclick="hideAppearancePanel()" style="background:var(--primary-bg);border:1px solid var(--border-color);border-radius:10px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--text-secondary);">
@@ -8627,10 +9150,26 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <button id="avatar-pos-bottom-2" class="modal-btn modal-btn-secondary" data-pos="bottom" style="flex:1;font-size:12px;padding:7px 0;"><i class="fas fa-arrow-down"></i> 底部</button>
                 </div>
             </div>
-            <div id="avatar-bubble-preview" style="margin-top:14px;background:var(--chat-bg,var(--primary-bg));border-radius:14px;padding:14px 12px;border:1px solid var(--border-color);display:none;">
-                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;opacity:0.7;text-align:center;letter-spacing:0.3px;">预览效果</div>
+            <div id="in-chat-avatar-shape-control-2" style="margin-top:12px;">
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;font-weight:500;">头像形状</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="modal-btn modal-btn-primary avatar-shape-btn-2" data-shape="circle" style="flex:1;font-size:12px;padding:7px 4px;min-width:60px;">● 圆形</button>
+                    <button class="modal-btn modal-btn-secondary avatar-shape-btn-2" data-shape="square" style="flex:1;font-size:12px;padding:7px 4px;min-width:60px;">■ 方形</button>
+                </div>
+                <div id="avatar-corner-radius-control-2" style="margin-top:10px;display:none;">
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">方形圆角:</div>
+                    <div class="font-size-control">
+                        <span class="font-size-label" style="font-size:11px;white-space:nowrap;">0px</span>
+                        <input type="range" min="0" max="24" value="8" class="font-size-slider" id="avatar-corner-radius-slider-2">
+                        <span class="font-size-value" id="avatar-corner-radius-value-2">8px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="avatar-bubble-preview" style="margin-top:14px;background:var(--chat-bg,var(--primary-bg));border-radius:14px;padding:14px 12px;border:1px solid var(--border-color);">
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;opacity:0.7;text-align:center;letter-spacing:0.3px;">实时预览效果</div>
                 <div class="preview-msg-row" style="display:flex;align-items:flex-end;gap:8px;margin-bottom:10px;">
-                    <div id="preview-partner-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                    <div id="preview-partner-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:border-radius 0.2s ease;">
                         <i class="fas fa-user" style="font-size:14px;color:var(--text-secondary);"></i>
                     </div>
                     <div style="background:var(--message-received-bg);color:var(--message-received-text);border-radius:16px 16px 16px 4px;padding:9px 13px;font-size:13px;max-width:160px;">
@@ -8641,7 +9180,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <div style="background:var(--message-sent-bg);color:var(--message-sent-text);border-radius:16px 16px 4px 16px;padding:9px 13px;font-size:13px;max-width:160px;">
                         你是我未曾拥有无法捕捉的亲昵
                     </div>
-                    <div id="preview-my-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                    <div id="preview-my-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:border-radius 0.2s ease;">
                         <i class="fas fa-user" style="font-size:14px;color:var(--text-secondary);"></i>
                     </div>
                 </div>
@@ -8879,6 +9418,9 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <div class="settings-item time-fmt-opt" data-fmt="h:mm:ss AM/PM">
                         <i class="fas fa-clock"></i><span>2:05:30 PM</span>
                     </div>
+                    <div class="settings-item time-fmt-opt" data-fmt="off" style="grid-column:1/-1;">
+                        <i class="fas fa-eye-slash"></i><span>关闭时间戳</span>
+                    </div>
                 </div>
             </div>
 
@@ -8939,6 +9481,9 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     </div>
                     <div class="settings-item" id="envelope-function">
                         <i class="fas fa-envelope"></i><span>信封投递</span>
+                    </div>
+                    <div class="settings-item" id="resource-share-function">
+                        <i class="fas fa-link"></i><span>气泡 &amp; 字体资源</span>
                     </div>
                 </div>
             </div>
@@ -9084,6 +9629,12 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <button class="fl-tab" id="fl-tab-lenormand" onclick="switchFLTab('lenormand')">
                     <i class="fas fa-moon"></i> 雷诺曼占卜
                 </button>
+                <button class="fl-tab" id="fl-tab-tarot" onclick="switchFLTab('tarot')">
+                    <i class="fas fa-star-and-crescent"></i> 塔罗占卜
+                </button>
+                <button class="fl-tab" id="fl-tab-divihistory" onclick="switchFLTab('divihistory')">
+                    <i class="fas fa-scroll"></i> 往昔
+                </button>
             </div>
             <div id="fl-panel-fortune" class="fl-panel fl-panel-active">
                 <div id="fortune-content"></div>
@@ -9116,9 +9667,47 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <button class="modal-btn modal-btn-secondary" id="close-lenormand">关闭</button>
                 </div>
             </div>
+            <div id="fl-panel-tarot" class="fl-panel">
+                <div id="tarot-divination-content">
+                    <div id="tarot-setup" style="padding:4px 0 12px;">
+                        <div class="leno-num-section">
+                            <div class="leno-section-label"><i class="fas fa-layer-group"></i> 牌阵选择</div>
+                            <div class="leno-num-btns">
+                                <button class="tarot-spread-btn active" data-spread="single"><span class="leno-btn-num">1</span><span class="leno-btn-label">单张</span></button>
+                                <button class="tarot-spread-btn" data-spread="three"><span class="leno-btn-num">3</span><span class="leno-btn-label">三张</span></button>
+                            </div>
+                            <div class="leno-num-desc" id="tarot-spread-desc">单张牌 · 直指当下</div>
+                        </div>
+                        <div class="leno-question-section">
+                            <div class="leno-section-label"><i class="fas fa-feather-alt"></i> 你的提问（可选）</div>
+                            <textarea id="tarot-question" placeholder="将内心的迷惑轻轻诉说..." class="leno-question-input"></textarea>
+                        </div>
+
+                        <button class="modal-btn modal-btn-primary leno-draw-btn" onclick="startTarotDraw()"><i class="fas fa-hand-sparkles"></i> 开始塔罗占卜</button>
+                    </div>
+                    <div id="tarot-result" style="display:none;"></div>
+                </div>
+                <div class="modal-buttons" style="margin-top:12px;">
+                    <button class="modal-btn modal-btn-secondary" id="tarot-reset-btn" onclick="resetTarotDivination()" style="display:none;">重新占卜</button>
+                    <button class="modal-btn modal-btn-secondary" id="close-tarot-divination">关闭</button>
+                </div>
+            </div>
+            <div id="fl-panel-divihistory" class="fl-panel">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="font-size:13px;color:var(--text-secondary);font-style:italic;">每一次占卜，皆是与命运的对话</div>
+                    <button id="clear-divi-history-btn" onclick="clearDiviHistory()" style="background:none;border:1px solid var(--border-color);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--text-secondary);cursor:pointer;font-family:var(--font-family);">清空记录</button>
+                </div>
+                <div id="divi-history-list" style="display:flex;flex-direction:column;gap:12px;min-height:120px;"></div>
+                <div id="divi-history-empty" style="text-align:center;padding:40px 20px;color:var(--text-secondary);font-size:13px;display:none;">
+                    <i class="fas fa-moon" style="font-size:32px;opacity:0.3;display:block;margin-bottom:12px;"></i>
+                    尚无占卜记录<br><span style="font-size:11px;opacity:0.6;">完成一次占卜后，结果将自动收录于此</span>
+                </div>
+                <div class="modal-buttons" style="margin-top:16px;">
+                    <button class="modal-btn modal-btn-secondary" id="close-divihistory">关闭</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="fortune-modal" style="display:none;"></div>
 
     <div id="lenormand-modal" style="display:none;"></div>
 
@@ -10146,6 +10735,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         let currentSubTab = 'custom';  
         let currentReplyTab = 'custom';
         let disabledDefaultReplies = [];
+        let customEmojis = [];
         let anniversaries = [];
         let stickerLibrary = []; 
         let myStickerLibrary = []; 
@@ -10773,6 +11363,8 @@ const loadData = async () => {
         if (savedMyStickers) myStickerLibrary = savedMyStickers;
         if (savedCustomThemes) customThemes = savedCustomThemes;
         if (savedThemeSchemes) themeSchemes = savedThemeSchemes;
+        // Load customEmojis
+        try { const ce = await localforage.getItem(getStorageKey('customEmojis')); if (ce && Array.isArray(ce)) customEmojis = ce; } catch(e) {}
         window._customReplies = customReplies;
         window._disabledDefaultReplies = disabledDefaultReplies;
         window._CONSTANTS = CONSTANTS;
@@ -10880,6 +11472,7 @@ const saveData = async () => {
             localforage.setItem(getStorageKey('chatSettings'), settings),
             localforage.setItem(getStorageKey('customReplies'), customReplies),
             localforage.setItem(getStorageKey('disabledDefaultReplies'), disabledDefaultReplies),
+            localforage.setItem(getStorageKey('customEmojis'), customEmojis),
             localforage.setItem(getStorageKey('anniversaries'), anniversaries),
             localforage.setItem(getStorageKey('customPokes'), customPokes),
             localforage.setItem(getStorageKey('customStatuses'), customStatuses),
@@ -11165,6 +11758,10 @@ function manageAutoSendTimer() {
             container.innerHTML = '';
 
             const fragment = new DocumentFragment();
+            // 撑底占位，使消息始终显示在聊天区域底部
+            const spacer = document.createElement('div');
+            spacer.style.flex = '1';
+            fragment.appendChild(spacer);
             let currentDate = '';
             let lastSender = null;
 
@@ -11194,7 +11791,9 @@ function manageAutoSendTimer() {
                 }
 
                 let showTimestamp = true;
-                if (index < msgsToRender.length - 1) {
+                if (settings.timeFormat === 'off') {
+                    showTimestamp = false;
+                } else if (index < msgsToRender.length - 1) {
                     const nextMsg = msgsToRender[index + 1];
                     const currentTs = new Date(msg.timestamp).getTime();
                     const nextTs = new Date(nextMsg.timestamp).getTime();
@@ -11312,13 +11911,20 @@ actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i cla
                     if (!showTimestamp && !metaHTML.includes('timestamp')) {
                          metaDiv.style.height = 'auto'; 
                          metaDiv.style.marginTop = '2px';
+                         if (settings.inChatAvatarPosition !== 'top') {
+                             avatarDiv.style.marginBottom = '18px';
+                         }
+                    } else {
+                         
+                         if (settings.inChatAvatarPosition !== 'top') {
+                             avatarDiv.style.marginBottom = '26px';
+                         }
                     }
                     metaDiv.innerHTML = metaHTML;
                     contentWrapper.append(actionsDiv, messageDiv, metaDiv);
                 } else {
                     contentWrapper.append(actionsDiv, messageDiv);
                 }
-
                 wrapper.appendChild(contentWrapper);
                 fragment.appendChild(wrapper);
                 
@@ -11539,19 +12145,23 @@ if (!isBatchMode && type === 'normal') {
         })();
 
         function simulateReply() {
-            if (settings.typingIndicatorEnabled) {
-        const tiWrapper = document.getElementById('typing-indicator-wrapper');
-        const tiLabel = document.getElementById('typing-indicator-label');
-        const tiAvatar = document.getElementById('typing-indicator-avatar');
-        if (tiLabel) tiLabel.textContent = (settings.partnerName || '对方') + ' 正在输入';
-        if (tiWrapper) { positionTypingIndicator(); tiWrapper.style.display = 'block'; }
-        if (tiAvatar) {
-            const partnerImg = DOMElements.partner.avatar.querySelector('img');
-            if (partnerImg) { tiAvatar.innerHTML = `<img src="${partnerImg.src}">`; }
-            else { tiAvatar.innerHTML = '<i class="fas fa-user"></i>'; }
-        }
-        DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight;
-    }
+            // 显示正在输入指示器
+            function showTypingIndicator() {
+                if (!settings.typingIndicatorEnabled) return;
+                const tiWrapper = document.getElementById('typing-indicator-wrapper');
+                const tiLabel = document.getElementById('typing-indicator-label');
+                const tiAvatar = document.getElementById('typing-indicator-avatar');
+                if (tiLabel) tiLabel.textContent = (settings.partnerName || '对方') + ' 正在输入';
+                if (tiWrapper) { positionTypingIndicator(); tiWrapper.style.display = 'block'; }
+                if (tiAvatar) {
+                    const partnerImg = DOMElements.partner.avatar.querySelector('img');
+                    tiAvatar.innerHTML = partnerImg ? `<img src="${partnerImg.src}">` : '<i class="fas fa-user"></i>';
+                }
+                DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight;
+            }
+
+            showTypingIndicator();
+
             let changed = false;
             messages.forEach(msg => {
                 if (msg.sender === 'user' && msg.status !== 'read') {
@@ -11561,19 +12171,8 @@ if (!isBatchMode && type === 'normal') {
             if (changed) {
                 renderMessages(false); throttledSaveData();
             }
-            if (settings.typingIndicatorEnabled) {
-                const tiWrapper = document.getElementById('typing-indicator-wrapper');
-                const tiLabel = document.getElementById('typing-indicator-label');
-                const tiAvatar2 = document.getElementById('typing-indicator-avatar');
-                if (tiLabel) tiLabel.textContent = (settings.partnerName || '对方') + ' 正在输入';
-                if (tiWrapper) { positionTypingIndicator(); tiWrapper.style.display = 'block'; }
-                if (tiAvatar2) {
-                    const partnerImg2 = DOMElements.partner.avatar.querySelector('img');
-                    if (partnerImg2) { tiAvatar2.innerHTML = `<img src="${partnerImg2.src}">`; }
-                    else { tiAvatar2.innerHTML = '<i class="fas fa-user"></i>'; }
-                }
-                DOMElements.chatContainer.scrollTop = DOMElements.chatContainer.scrollHeight;
-            }
+
+            showTypingIndicator();
 if (partnerPersonas && partnerPersonas.length > 0 && Math.random() < 0.3) {
                 const currentPool = [
                     ...partnerPersonas
@@ -11637,7 +12236,7 @@ if (partnerPersonas && partnerPersonas.length > 0 && Math.random() < 0.3) {
 let text = null;
 let image = null;
 
-const activeEmojis = CONSTANTS.REPLY_EMOJIS.filter(e => !disabledDefaultReplies.includes(e));
+const activeEmojis = [...CONSTANTS.REPLY_EMOJIS.filter(e => !disabledDefaultReplies.includes(e)), ...customEmojis];
 const nonTextPool = [...activeEmojis, ...stickerLibrary];
 
 const activeDefaults = CONSTANTS.REPLY_MESSAGES.filter(msg => !disabledDefaultReplies.includes(msg));
@@ -11850,12 +12449,18 @@ addMessage({
             }
         };
 
-        function showModal(modalElement, focusElement = null) {
+function showModal(modalElement, focusElement = null) {
+            if (modalElement._hideTimeout) {
+                clearTimeout(modalElement._hideTimeout);
+                modalElement._hideTimeout = null;
+            }
             modalElement.style.display = 'flex';
             requestAnimationFrame(() => {
                 const content = modalElement.querySelector('.modal-content');
-                content.style.opacity = '1';
-                content.style.transform = 'translateY(0) scale(1)';
+                if (content) {
+                    content.style.opacity = '1';
+                    content.style.transform = 'translateY(0) scale(1)';
+                }
                 if (focusElement) {
                     setTimeout(() => focusElement.focus(), 100);
                 }
@@ -11864,9 +12469,12 @@ addMessage({
 
         function hideModal(modalElement) {
             const content = modalElement.querySelector('.modal-content');
-            content.style.opacity = '0';
-            content.style.transform = 'translateY(20px) scale(0.95)';
-            setTimeout(() => {
+            if (content) {
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(20px) scale(0.95)';
+            }
+            if (modalElement._hideTimeout) clearTimeout(modalElement._hideTimeout);
+            modalElement._hideTimeout = setTimeout(() => {
                 modalElement.style.display = 'none';
             }, 300);
         }
@@ -12202,6 +12810,7 @@ function renderFortuneCardInteractive(data) {
 
     const card = CONSTANTS.TAROT_CARDS[data.cardIndex];
     const isUpright = data.isUpright;
+    const todayKey = data.date || new Date().toDateString();
 
     content.innerHTML = `
         <div style="text-align:center; margin-bottom:10px; color:var(--text-secondary); font-size:12px;">
@@ -12212,7 +12821,7 @@ function renderFortuneCardInteractive(data) {
             <div class="tarot-card-inner">
                 <div class="tarot-face tarot-front">
                     <div class="tarot-pattern"><i class="fas fa-star-and-crescent"></i></div>
-                    <div style="margin-top:10px; font-size:12px; letter-spacing:2px;">THE FATE</div>
+
                 </div>
 
                 <div class="tarot-face tarot-back">
@@ -12235,6 +12844,7 @@ function renderFortuneCardInteractive(data) {
             <div class="fortune-tip" style="font-size:12px; border-top:1px dashed var(--border-color); padding-top:8px;">
                 💡 指引：${isUpright ? "顺势而为，保持当下的能量。" : "换个角度思考，也许是转机。"}
             </div>
+            ${renderMinorFortune(todayKey)}
         </div>
     `;
 
@@ -12308,7 +12918,7 @@ function updateLenoNumDesc(n) {
     const desc = document.getElementById('leno-num-desc');
     if (!desc) return;
     if (n === 1) desc.textContent = '单张牌 · 直达答案';
-    else if (n === 3) desc.textContent = '三张牌 · 过去 · 现在 · 未来';
+    else if (n === 3) desc.textContent = '三张牌 · 洞察全局';
 }
 
 function switchFLTab(tab) {
@@ -12369,11 +12979,11 @@ function startLenormandDraw() {
         const n0 = drawn[0].name, n1 = drawn[1].name, n2 = drawn.length >= 3 ? drawn[2].name : '';
         
         const templates3 = [
-            `「${n0}」带来的过去，如同${m0}的底色；「${n1}」描绘当下正在发生的一切；「${n2}」则指向${m2}的未来轮廓。三张牌的能量流动，共同编织出一段关于${keywords}的故事。`,
-            `星盘之上，「${n0}」、「${n1}」、「${n2}」三张牌依次展开——过去的印记、当下的选择、未来的可能，皆在这三枚符号里悄悄低语。${keywords}，是此刻需要关注的核心能量。`,
-            `从「${n0}」到「${n2}」，时间在牌阵中流动。${m0}的过去造就了你现在的模样，而${m2}的方向，正等待你迈出那一步。愿此刻的「${n1}」，成为连接两端的桥梁。`,
-            `三张牌共同呈现了一段旅程：以「${n0}」为起点，经历「${n1}」的当下时刻，抵达「${n2}」所指引的远方。${keywords}的主题贯穿其中，指引着前行的方向。`,
-            `宇宙借${energies}的能量，向你传递信息：曾经${m0}，如今正经历转变，而前方${m2}的可能性已悄然开启。请相信这段旅程有其深意。`
+            `「${n0}」的能量如同${m0}的底色，与「${n1}」相互呼应；「${n2}」则带来${m2}的质感。三张牌的能量流动，共同编织出一段关于${keywords}的故事。`,
+            `星盘之上，「${n0}」、「${n1}」、「${n2}」三张牌依次展开——各自携带的能量在此汇聚，悄悄低语。${keywords}，是此刻需要关注的核心能量。`,
+            `「${n0}」与「${n1}」、「${n2}」共同呈现：${m0}的力量与${m2}的方向在这里交织，等待你迈出那一步。愿三张牌的能量，成为你此刻的指引。`,
+            `三张牌共同呈现了一段旅程：「${n0}」、「${n1}」、「${n2}」依次展开，${keywords}的主题贯穿其中，指引着前行的方向。`,
+            `宇宙借${energies}的能量，向你传递信息：${m0}的力量与${m2}的可能性已悄然开启，请相信这段旅程有其深意。`
         ];
         const templates2 = [
             `「${n0}」与「${n1}」的能量相遇，${keywords}的主题在此交汇。${m0}的力量遇见了新的可能，共同描绘出当下局势的面貌。`,
@@ -12406,7 +13016,362 @@ function startLenormandDraw() {
     document.getElementById('lenormand-setup').style.display = 'none';
     document.getElementById('lenormand-result').style.display = '';
     document.getElementById('lenormand-reset-btn').style.display = '';
+
+    // Save to history
+    const lCards = drawn.map(c => ({ name: c.name, keyword: c.keyword, position: '', isReversed: false, meaning: c.meaning }));
+    saveDiviHistory({ type: `雷诺曼${lenormandCount === 1 ? '单张' : '三张'}`, question, cards: lCards });
 }
+
+// ============ 塔罗占卜 (78张全套) ============
+const ALL_78_TAROT_CARDS = [
+    // 大阿卡纳 (22张)
+    { name: "愚人", num: "0", type: "major", eng: "The Fool", icon: "fa-hiking", keyword: "流浪", upright: "新的开始、冒险、天真无畏、自由精神、无限可能", reversed: "鲁莽、逃避、不负责任、缺乏方向感" },
+    { name: "魔术师", num: "I", type: "major", eng: "The Magician", icon: "fa-hat-wizard", keyword: "创造", upright: "创造力、技能、意志力、化腐朽为神奇、行动力", reversed: "欺骗、操纵、能力未发挥、意图不纯" },
+    { name: "女祭司", num: "II", type: "major", eng: "The High Priestess", icon: "fa-book-open", keyword: "智慧", upright: "直觉、潜意识、神秘、内在智慧、静待时机", reversed: "秘密、压抑直觉、信息隐藏、不理性" },
+    { name: "皇后", num: "III", type: "major", eng: "The Empress", icon: "fa-seedling", keyword: "丰收", upright: "丰饶、母性、自然、感官享受、创造力", reversed: "依赖、创意阻塞、过度保护、忽视自我" },
+    { name: "皇帝", num: "IV", type: "major", eng: "The Emperor", icon: "fa-crown", keyword: "支配", upright: "权威、结构、控制、稳定、父亲形象、领导力", reversed: "专横、刚愎自用、权力滥用、缺乏弹性" },
+    { name: "教皇", num: "V", type: "major", eng: "The Hierophant", icon: "fa-church", keyword: "援助", upright: "传统、信仰、教导、精神指引、制度", reversed: "叛逆传统、个人信仰、突破规范" },
+    { name: "恋人", num: "VI", type: "major", eng: "The Lovers", icon: "fa-heart", keyword: "结合", upright: "爱、和谐、关系、价值观的选择、灵魂连接", reversed: "失衡、误判、价值观冲突、分离" },
+    { name: "战车", num: "VII", type: "major", eng: "The Chariot", icon: "fa-horse-head", keyword: "胜利", upright: "意志力、胜利、决心、自我控制、前进", reversed: "失控、缺乏方向、挫败、固执" },
+    { name: "力量", num: "VIII", type: "major", eng: "Strength", icon: "fa-fist-raised", keyword: "意志", upright: "勇气、耐心、控制、内在力量、温柔的坚定", reversed: "怀疑自我、软弱、压抑内在力量" },
+    { name: "隐士", num: "IX", type: "major", eng: "The Hermit", icon: "fa-lightbulb", keyword: "探索", upright: "内省、孤独、寻求真理、内在指引、智慧", reversed: "孤立、拒绝帮助、过度孤独" },
+    { name: "命运之轮", num: "X", type: "major", eng: "Wheel of Fortune", icon: "fa-dharmachakra", keyword: "轮回", upright: "循环、命运、转折点、运气、因果", reversed: "逆境、抗拒改变、恶性循环" },
+    { name: "正义", num: "XI", type: "major", eng: "Justice", icon: "fa-balance-scale", keyword: "均衡", upright: "公正、真理、因果、法律、诚实", reversed: "不公正、逃避责任、不诚实" },
+    { name: "倒吊人", num: "XII", type: "major", eng: "The Hanged Man", icon: "fa-user-injured", keyword: "奉献", upright: "牺牲、新的视角、等待、放下、顿悟", reversed: "拖延、无谓牺牲、停滞不前" },
+    { name: "死神", num: "XIII", type: "major", eng: "Death", icon: "fa-skull", keyword: "结束", upright: "结束、转变、重生、放手、蜕变", reversed: "抗拒改变、无法放手、腐朽" },
+    { name: "节制", num: "XIV", type: "major", eng: "Temperance", icon: "fa-glass-whiskey", keyword: "净化", upright: "平衡、适度、耐心、调和、中庸之道", reversed: "失衡、过度、缺乏耐心" },
+    { name: "恶魔", num: "XV", type: "major", eng: "The Devil", icon: "fa-link", keyword: "诱惑", upright: "束缚、物质主义、欲望、诱惑、阴暗面", reversed: "解脱束缚、重获自由、自我觉醒" },
+    { name: "高塔", num: "XVI", type: "major", eng: "The Tower", icon: "fa-gopuram", keyword: "毁灭", upright: "突变、混乱、启示、破坏、真相大白", reversed: "延迟变化、避免灾难、内在崩溃" },
+    { name: "星星", num: "XVII", type: "major", eng: "The Star", icon: "fa-star", keyword: "希望", upright: "希望、灵感、平静、治愈、信念", reversed: "绝望、失去信仰、悲观" },
+    { name: "月亮", num: "XVIII", type: "major", eng: "The Moon", icon: "fa-moon", keyword: "不安", upright: "幻觉、恐惧、焦虑、潜意识、不确定性", reversed: "恐惧消散、真相浮现、走出迷惘" },
+    { name: "太阳", num: "XIX", type: "major", eng: "The Sun", icon: "fa-sun", keyword: "生命", upright: "快乐、成功、活力、清晰、正能量", reversed: "悲观、自我怀疑、短暂挫折" },
+    { name: "审判", num: "XX", type: "major", eng: "Judgement", icon: "fa-bullhorn", keyword: "复活", upright: "复活、觉醒、号召、决定、自我评价", reversed: "自我怀疑、拒绝接受审判、过去纠缠" },
+    { name: "世界", num: "XXI", type: "major", eng: "The World", icon: "fa-globe-americas", keyword: "达成", upright: "完成、整合、成就、圆满、世界在脚下", reversed: "未完成、拖延、缺乏完结" },
+    // 小阿卡纳 权杖 (14张)
+    { name: "权杖一", num: "Ace", type: "wands", eng: "Ace of Wands", icon: "fa-fire", keyword: "灵感", upright: "新的灵感、创意火花、激情开始、行动的欲望", reversed: "创意受阻、缺乏动力、计划搁浅" },
+    { name: "权杖二", num: "2", type: "wands", eng: "Two of Wands", icon: "fa-compass", keyword: "规划", upright: "规划、展望未来、个人力量、决策时刻", reversed: "恐惧未知、缺乏计划、自我设限" },
+    { name: "权杖三", num: "3", type: "wands", eng: "Three of Wands", icon: "fa-binoculars", keyword: "扩展", upright: "扩展、远见、探索、等待成果、贸易", reversed: "障碍、延迟、预期未达" },
+    { name: "权杖四", num: "4", type: "wands", eng: "Four of Wands", icon: "fa-home", keyword: "庆典", upright: "庆典、稳定基础、家庭幸福、里程碑", reversed: "不稳定、家庭矛盾、延迟庆祝" },
+    { name: "权杖五", num: "5", type: "wands", eng: "Five of Wands", icon: "fa-people-arrows", keyword: "竞争", upright: "竞争、冲突、挑战、意见分歧、斗争", reversed: "内部冲突、避免对抗、达成协议" },
+    { name: "权杖六", num: "6", type: "wands", eng: "Six of Wands", icon: "fa-trophy", keyword: "凯旋", upright: "胜利、认可、成功、公众认可、自信", reversed: "私下的成功、不稳定的成功、傲慢" },
+    { name: "权杖七", num: "7", type: "wands", eng: "Seven of Wands", icon: "fa-shield-alt", keyword: "坚守", upright: "防御、坚守立场、挑战、坚持信念", reversed: "放弃、被压倒、自我怀疑" },
+    { name: "权杖八", num: "8", type: "wands", eng: "Eight of Wands", icon: "fa-meteor", keyword: "速度", upright: "迅速行动、进展加速、旅行、消息传递", reversed: "延误、等待、障碍、计划受阻" },
+    { name: "权杖九", num: "9", type: "wands", eng: "Nine of Wands", icon: "fa-user-shield", keyword: "坚韧", upright: "坚韧、弹性、最后的挑战、边界、谨慎", reversed: "偏执、顽固、不愿妥协、防卫过度" },
+    { name: "权杖十", num: "10", type: "wands", eng: "Ten of Wands", icon: "fa-weight-hanging", keyword: "重担", upright: "责任过重、负担、压力、努力奋斗、接近终点", reversed: "放下重担、委派任务、精简" },
+    { name: "权杖侍者", num: "Page", type: "wands", eng: "Page of Wands", icon: "fa-feather-alt", keyword: "热情", upright: "热情、探索、新消息、好奇心、创意潜力", reversed: "轻率、三分钟热度、缺乏方向" },
+    { name: "权杖骑士", num: "Knight", type: "wands", eng: "Knight of Wands", icon: "fa-horse", keyword: "冒险", upright: "冒险、充沛能量、勇敢行动、自信进取", reversed: "鲁莽、分散注意力、缺乏耐心" },
+    { name: "权杖皇后", num: "Queen", type: "wands", eng: "Queen of Wands", icon: "fa-female", keyword: "魅力", upright: "魅力、自信、热情、独立、领袖气质", reversed: "自私、嫉妒、内向退缩" },
+    { name: "权杖国王", num: "King", type: "wands", eng: "King of Wands", icon: "fa-male", keyword: "领袖", upright: "领袖力、愿景、创业家精神、激励他人", reversed: "专横、冲动、高压控制" },
+    // 小阿卡纳 圣杯 (14张)
+    { name: "圣杯一", num: "Ace", type: "cups", eng: "Ace of Cups", icon: "fa-glass-cheers", keyword: "爱涌现", upright: "新的爱、情感开始、灵性连接、直觉、丰盛", reversed: "情感封闭、爱的阻塞、内心空虚" },
+    { name: "圣杯二", num: "2", type: "cups", eng: "Two of Cups", icon: "fa-heart", keyword: "联结", upright: "联结、伙伴关系、相互吸引、和谐关系", reversed: "失衡关系、误解、分离" },
+    { name: "圣杯三", num: "3", type: "cups", eng: "Three of Cups", icon: "fa-users", keyword: "庆祝", upright: "庆祝、友情、社群、喜悦、创意合作", reversed: "过度放纵、孤立、朋友冲突" },
+    { name: "圣杯四", num: "4", type: "cups", eng: "Four of Cups", icon: "fa-eye-slash", keyword: "冥想", upright: "冥想、无聊、再评估、内省、错过机会", reversed: "新机会、重新参与、走出冷漠" },
+    { name: "圣杯五", num: "5", type: "cups", eng: "Five of Cups", icon: "fa-sad-cry", keyword: "失落", upright: "失落、悲伤、后悔、专注于负面、遗憾", reversed: "从失去中恢复、接受、前进" },
+    { name: "圣杯六", num: "6", type: "cups", eng: "Six of Cups", icon: "fa-child", keyword: "怀旧", upright: "怀旧、过去记忆、天真、礼物、童年", reversed: "困在过去、不切实际、成长" },
+    { name: "圣杯七", num: "7", type: "cups", eng: "Seven of Cups", icon: "fa-cloud", keyword: "幻想", upright: "幻想、选择过多、白日梦、愿望投射", reversed: "聚焦、从幻想回归现实、决断" },
+    { name: "圣杯八", num: "8", type: "cups", eng: "Eight of Cups", icon: "fa-walking", keyword: "离去", upright: "离开、追寻更深意义、放下过去、旅程", reversed: "逃避、放弃、低落不前" },
+    { name: "圣杯九", num: "9", type: "cups", eng: "Nine of Cups", icon: "fa-smile-beam", keyword: "满足", upright: "满足感、愿望成真、幸福、感激、丰盛", reversed: "不满足、物质主义、过分自满" },
+    { name: "圣杯十", num: "10", type: "cups", eng: "Ten of Cups", icon: "fa-rainbow", keyword: "圆满", upright: "情感圆满、家庭幸福、内心平和、真爱", reversed: "家庭矛盾、不和谐、幸福幻灭" },
+    { name: "圣杯侍者", num: "Page", type: "cups", eng: "Page of Cups", icon: "fa-fish", keyword: "直觉", upright: "创意、直觉信息、情感探索、艺术、梦境", reversed: "情绪化、逃避现实、创意受阻" },
+    { name: "圣杯骑士", num: "Knight", type: "cups", eng: "Knight of Cups", icon: "fa-dove", keyword: "浪漫", upright: "浪漫、魅力、艺术、追求理想、情感冒险", reversed: "多愁善感、幻想、无法实现的诺言" },
+    { name: "圣杯皇后", num: "Queen", type: "cups", eng: "Queen of Cups", icon: "fa-water", keyword: "慈悲", upright: "同理心、慈悲、直觉、情感成熟、关怀", reversed: "情绪化、不安全感、依赖" },
+    { name: "圣杯国王", num: "King", type: "cups", eng: "King of Cups", icon: "fa-anchor", keyword: "情感智慧", upright: "情感平衡、智慧、外交、慷慨、情感成熟", reversed: "情绪操控、冷漠、情绪不稳定" },
+    // 小阿卡纳 宝剑 (14张)
+    { name: "宝剑一", num: "Ace", type: "swords", eng: "Ace of Swords", icon: "fa-bolt", keyword: "真相", upright: "清晰、真相、突破、新思想、正义", reversed: "混乱、谎言、思维混乱" },
+    { name: "宝剑二", num: "2", type: "swords", eng: "Two of Swords", icon: "fa-ban", keyword: "僵局", upright: "僵局、难以决断、封闭心门、逃避真相", reversed: "信息显现、做出决定、困境解除" },
+    { name: "宝剑三", num: "3", type: "swords", eng: "Three of Swords", icon: "fa-heart-broken", keyword: "心碎", upright: "心痛、悲伤、失去、分离、痛苦", reversed: "从悲伤恢复、宽恕、疗愈" },
+    { name: "宝剑四", num: "4", type: "swords", eng: "Four of Swords", icon: "fa-bed", keyword: "休养", upright: "休息、恢复、静默冥想、暂时撤退", reversed: "重返活动、再次激活、不耐烦" },
+    { name: "宝剑五", num: "5", type: "swords", eng: "Five of Swords", icon: "fa-skull-crossbones", keyword: "冲突", upright: "冲突、失败、空洞的胜利、不诚实", reversed: "和解、超越冲突、走向和平" },
+    { name: "宝剑六", num: "6", type: "swords", eng: "Six of Swords", icon: "fa-ship", keyword: "过渡", upright: "过渡期、逃离困境、平静旅程、向前迈进", reversed: "抗拒改变、无处可逃、困难过渡" },
+    { name: "宝剑七", num: "7", type: "swords", eng: "Seven of Swords", icon: "fa-user-secret", keyword: "策略", upright: "策略、欺骗、逃跑、单独行动、不诚实", reversed: "真相揭露、良心发现、归还所得" },
+    { name: "宝剑八", num: "8", type: "swords", eng: "Eight of Swords", icon: "fa-handcuffs", keyword: "束缚", upright: "受困、限制、负面思维、无助感、自我束缚", reversed: "重获自由、新的视角、接受帮助" },
+    { name: "宝剑九", num: "9", type: "swords", eng: "Nine of Swords", icon: "fa-nightmare", keyword: "焦虑", upright: "焦虑、噩梦、担忧、内心痛苦、罪恶感", reversed: "从绝望中走出、寻求帮助、希望" },
+    { name: "宝剑十", num: "10", type: "swords", eng: "Ten of Swords", icon: "fa-times-circle", keyword: "终结", upright: "终结、失败、被背叛、最低谷后的希望", reversed: "从失败中恢复、抗拒接受、新开始" },
+    { name: "宝剑侍者", num: "Page", type: "swords", eng: "Page of Swords", icon: "fa-eye", keyword: "洞察", upright: "好奇心、洞察力、机敏、新想法、警觉", reversed: "散漫、粗心大意、言语伤人" },
+    { name: "宝剑骑士", num: "Knight", type: "swords", eng: "Knight of Swords", icon: "fa-wind", keyword: "冲劲", upright: "行动力、冲劲、直接、野心、智慧战斗", reversed: "鲁莽、仓促、过于好斗" },
+    { name: "宝剑皇后", num: "Queen", type: "swords", eng: "Queen of Swords", icon: "fa-feather", keyword: "独立", upright: "独立、清晰思考、直接、聪明、设立界限", reversed: "刻薄、过于批判、痛苦" },
+    { name: "宝剑国王", num: "King", type: "swords", eng: "King of Swords", icon: "fa-gavel", keyword: "理性", upright: "理性权威、思维清晰、道德标准、客观决策", reversed: "操控、专横、滥用权力" },
+    // 小阿卡纳 星币 (14张)
+    { name: "星币一", num: "Ace", type: "pentacles", eng: "Ace of Pentacles", icon: "fa-coins", keyword: "机遇", upright: "新的物质机会、丰盛、富裕开始、安全感", reversed: "错失良机、财务不稳、固执" },
+    { name: "星币二", num: "2", type: "pentacles", eng: "Two of Pentacles", icon: "fa-yin-yang", keyword: "平衡", upright: "多任务处理、适应性、时间管理、平衡", reversed: "失去平衡、混乱、过度承诺" },
+    { name: "星币三", num: "3", type: "pentacles", eng: "Three of Pentacles", icon: "fa-drafting-compass", keyword: "协作", upright: "团队合作、技能提升、协作、学习", reversed: "缺乏团队精神、品质不达标、孤立" },
+    { name: "星币四", num: "4", type: "pentacles", eng: "Four of Pentacles", icon: "fa-lock", keyword: "守护", upright: "安全感、节俭、守护财富、控制欲", reversed: "过度节俭、贪婪、财务损失" },
+    { name: "星币五", num: "5", type: "pentacles", eng: "Five of Pentacles", icon: "fa-snowflake", keyword: "艰难", upright: "艰难时期、物质损失、孤立、健康问题", reversed: "从艰难中恢复、寻求帮助、好转" },
+    { name: "星币六", num: "6", type: "pentacles", eng: "Six of Pentacles", icon: "fa-hand-holding-usd", keyword: "给予", upright: "慷慨、给予与接受、平衡施受、慈善", reversed: "债务、吝啬、权力不平衡" },
+    { name: "星币七", num: "7", type: "pentacles", eng: "Seven of Pentacles", icon: "fa-seedling", keyword: "耕耘", upright: "长期投资、耐心、成果评估、持续努力", reversed: "缺乏远见、焦虑、无效努力" },
+    { name: "星币八", num: "8", type: "pentacles", eng: "Eight of Pentacles", icon: "fa-hammer", keyword: "精进", upright: "工匠精神、技能提升、投入工作、专注", reversed: "完美主义、缺乏专注、质量下降" },
+    { name: "星币九", num: "9", type: "pentacles", eng: "Nine of Pentacles", icon: "fa-spa", keyword: "优雅", upright: "丰盛、优雅、自给自足、物质享受", reversed: "过度劳累、物质主义、虚假繁荣" },
+    { name: "星币十", num: "10", type: "pentacles", eng: "Ten of Pentacles", icon: "fa-building", keyword: "圆满", upright: "家族传承、长期稳定、财富圆满、遗产", reversed: "家族冲突、财务不稳、传统破裂" },
+    { name: "星币侍者", num: "Page", type: "pentacles", eng: "Page of Pentacles", icon: "fa-book", keyword: "学习", upright: "学习、实际技能、计划、谨慎踏实", reversed: "缺乏进展、不切实际、懒惰" },
+    { name: "星币骑士", num: "Knight", type: "pentacles", eng: "Knight of Pentacles", icon: "fa-tractor", keyword: "务实", upright: "勤勉、可靠、务实、方法论、责任", reversed: "停滞、无聊、过于保守" },
+    { name: "星币皇后", num: "Queen", type: "pentacles", eng: "Queen of Pentacles", icon: "fa-leaf", keyword: "滋养", upright: "务实、养育、富足、关爱家庭、接地气", reversed: "工作与生活失衡、嫉妒、过度物质" },
+    { name: "星币国王", num: "King", type: "pentacles", eng: "King of Pentacles", icon: "fa-chess-king", keyword: "繁荣", upright: "物质成功、财务安全、商业头脑、可靠", reversed: "固执、物质主义、冒险财务" }
+];
+
+const TAROT_TYPE_NAMES = { major: '大阿卡纳', wands: '权杖', cups: '圣杯', swords: '宝剑', pentacles: '星币' };
+
+// Minor arcana suit icons and domain labels
+const MINOR_SUIT_INFO = {
+    wands:     { icon: '🔥', domain: '事业 & 行动', color: '#e07b3a' },
+    cups:      { icon: '💧', domain: '感情 & 内心', color: '#5b9bd5' },
+    swords:    { icon: '💨', domain: '思维 & 挑战', color: '#7b97b5' },
+    pentacles: { icon: '🌿', domain: '财富 & 现实', color: '#7aab72' },
+};
+
+function getMinorFortuneCards(seed) {
+    // Pick one card per suit deterministically per day (seed = date string)
+    const suits = ['wands', 'cups', 'swords', 'pentacles'];
+    const result = [];
+    suits.forEach((suit, si) => {
+        const pool = ALL_78_TAROT_CARDS.filter(c => c.type === suit);
+        // Use a simple hash of seed + suit index for daily determinism
+        let h = 0;
+        for (let i = 0; i < seed.length; i++) h = ((h << 5) - h + seed.charCodeAt(i) + si * 31) | 0;
+        const idx = Math.abs(h) % pool.length;
+        const card = pool[idx];
+        // Upright/reversed based on second hash
+        let h2 = h ^ (si * 0x9e3779b9);
+        const isReversed = ((h2 >>> 0) % 2) === 1;
+        result.push({ card, suit, isReversed });
+    });
+    return result;
+}
+
+function renderMinorFortune(dateKey) {
+    const cards = getMinorFortuneCards(dateKey);
+    const suitInsights = {
+        wands: {
+            upright: ['行动力充足，是推进计划的好时机', '充满热情与创造力，勇于迈出第一步', '积极进取，今日能量旺盛'],
+            reversed: ['节奏放慢，不必强行推动', '能量分散，先整理再行动', '适当休整，减少消耗']
+        },
+        cups: {
+            upright: ['情感流动顺畅，易与人产生共鸣', '内心平静，直觉敏锐', '感情运佳，适合表达心意'],
+            reversed: ['情绪需要整理，给自己多一些耐心', '内心有些波动，保持觉察', '感情上宜静观，少做冲动决定']
+        },
+        swords: {
+            upright: ['思维清晰，适合做出重要决策', '直面困难，问题将迎刃而解', '沟通顺畅，表达自我的好时机'],
+            reversed: ['思绪纷乱，先沉淀再思考', '避免争论，保持冷静', '小心误解，确认信息再行动']
+        },
+        pentacles: {
+            upright: ['物质运顺遂，财务与实务进展稳健', '脚踏实地，努力将获得回报', '今日宜处理现实事务'],
+            reversed: ['财务需谨慎，延后非必要支出', '现实层面有些阻滞，耐心应对', '避免急于求成，稳扎稳打']
+        }
+    };
+
+    const chips = cards.map(({ card, suit, isReversed }) => {
+        const info = MINOR_SUIT_INFO[suit];
+        const meaning = isReversed ? card.reversed : card.upright;
+        return `
+        <div class="minor-card-chip" title="${card.name} · ${isReversed ? '逆位' : '正位'}：${meaning}">
+            <span class="minor-card-chip-suit">${info.icon}</span>
+            <span class="minor-card-chip-name">${card.name}</span>
+            <span class="minor-card-chip-keyword" style="color:${info.color};">${card.keyword}</span>
+            <span class="minor-card-chip-badge ${isReversed ? 'rev' : ''}">${isReversed ? '逆位' : '正位'}</span>
+        </div>`;
+    }).join('');
+
+    const domainInsights = cards.map(({ suit, isReversed }) => {
+        const info = MINOR_SUIT_INFO[suit];
+        const pool = suitInsights[suit][isReversed ? 'reversed' : 'upright'];
+        // deterministic pick
+        let h = 0;
+        const key = suit + isReversed;
+        for (let i = 0; i < key.length; i++) h = ((h << 5) - h + key.charCodeAt(i)) | 0;
+        const text = pool[Math.abs(h) % pool.length];
+        return `<div style="font-size:12px;margin-bottom:5px;"><span style="color:${info.color};font-weight:600;">${info.icon} ${info.domain}：</span>${text}</div>`;
+    }).join('');
+
+    return `
+    <div class="minor-fortune-section">
+        <div class="minor-fortune-title"><i class="fas fa-layer-group"></i> 今日小牌指引</div>
+        <div class="minor-fortune-cards">${chips}</div>
+        <div class="minor-fortune-insight">${domainInsights}</div>
+    </div>`;
+}
+let currentTarotSpread = 'single';
+
+function setTarotSpread(spread) {
+    currentTarotSpread = spread;
+    document.querySelectorAll('.tarot-spread-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.spread === spread);
+    });
+    const desc = document.getElementById('tarot-spread-desc');
+    if (spread === 'single') {
+        if (desc) desc.textContent = '单张牌 · 直指当下';
+    } else if (spread === 'three') {
+        if (desc) desc.textContent = '三张牌 · 洞察全局';
+    }
+}
+
+function resetTarotDivination() {
+    const setup = document.getElementById('tarot-setup');
+    const result = document.getElementById('tarot-result');
+    const resetBtn = document.getElementById('tarot-reset-btn');
+    const qInput = document.getElementById('tarot-question');
+    if (setup) setup.style.display = '';
+    if (result) result.style.display = 'none';
+    if (resetBtn) resetBtn.style.display = 'none';
+    if (qInput) qInput.value = '';
+    currentTarotSpread = 'single';
+    document.querySelectorAll('.tarot-spread-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.spread === 'single');
+    });
+    const desc = document.getElementById('tarot-spread-desc');
+    if (desc) desc.textContent = '单张牌 · 直指当下';
+}
+
+function startTarotDraw() {
+    const shuffled = [...ALL_78_TAROT_CARDS].sort(() => Math.random() - 0.5);
+    const question = (document.getElementById('tarot-question') || {}).value || '';
+    const questionTrimmed = question.trim();
+    const drawnCards = [];
+
+    function cardHTML(card, position, labelOverride) {
+        const isReversed = Math.random() > 0.5;
+        const meaning = isReversed ? card.reversed : card.upright;
+        const posLabel = labelOverride || position;
+        const typeLabel = TAROT_TYPE_NAMES[card.type] || '';
+        drawnCards.push({ name: card.name, keyword: card.keyword, position: posLabel, isReversed, meaning });
+        return `
+        <div class="fortune-card tarot-style" style="margin-bottom:14px;">
+            <div class="tarot-header">
+                <div style="font-size:10px;color:var(--text-secondary);margin-bottom:4px;">${typeLabel} ${card.num}</div>
+                <div style="font-size:26px;margin:4px 0;"><i class="fas ${card.icon}" style="color:var(--accent-color);${isReversed?'transform:rotate(180deg);display:inline-block;':''}"></i></div>
+                <div class="tarot-card-name">${card.name}</div>
+                <div class="tarot-position-badge ${isReversed ? 'reversed' : 'upright'}" style="margin:6px auto;">${isReversed ? '逆位' : '正位'}</div>
+            </div>
+            <div class="tarot-keyword">「${card.keyword}」</div>
+            <div class="tarot-details">
+                <div class="tarot-divider"></div>
+                <p style="font-size:13px;line-height:1.7;color:var(--text-primary);">${meaning}</p>
+            </div>
+        </div>`;
+    }
+
+    let resultHTML = '';
+    const qDisplay = questionTrimmed ? `<div class="lenormand-question-show">「${questionTrimmed}」</div>` : '';
+    let spreadLabel = '';
+
+    if (currentTarotSpread === 'single') {
+        spreadLabel = '单张塔罗';
+        const card = shuffled[0];
+        resultHTML = `${qDisplay}
+        <div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:12px;"><i class="fas fa-star-and-crescent"></i> 塔罗为你揭示 · 一切皆有答案</div>
+        <div class="tarot-row single-card">${cardHTML(card, '当下')}</div>`;
+    } else if (currentTarotSpread === 'three') {
+        spreadLabel = '三张塔罗';
+        const [card1, card2, card3] = shuffled.slice(0, 3);
+        resultHTML = `${qDisplay}
+        <div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:12px;"><i class="fas fa-star-and-crescent"></i> 三张牌为你揭示 · 洞见能量流动</div>
+        <div class="tarot-row">${cardHTML(card1, 'Ⅰ')}${cardHTML(card2, 'Ⅱ')}${cardHTML(card3, 'Ⅲ')}</div>`;
+    }
+
+    const resultEl = document.getElementById('tarot-result');
+    const setupEl = document.getElementById('tarot-setup');
+    const resetBtn = document.getElementById('tarot-reset-btn');
+    if (resultEl) { resultEl.innerHTML = resultHTML; resultEl.style.display = ''; }
+    if (setupEl) setupEl.style.display = 'none';
+    if (resetBtn) resetBtn.style.display = '';
+
+    // Save to history
+    saveDiviHistory({ type: spreadLabel, question: questionTrimmed, cards: drawnCards });
+}
+
+// Tarot spread button event delegation
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.tarot-spread-btn');
+    if (!btn) return;
+    setTarotSpread(btn.dataset.spread);
+});
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'close-tarot-divination') {
+        const modal = document.getElementById('fortune-lenormand-modal');
+        if (modal) hideModal(modal);
+    }
+});
+// ============ End 塔罗占卜 ============
+
+// ============ 占卜历史记录 ============
+const DIVI_HISTORY_KEY = 'diviHistory_v1';
+const DIVI_HISTORY_MAX = 50;
+
+function getDiviHistory() {
+    try { return JSON.parse(localStorage.getItem(DIVI_HISTORY_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function saveDiviHistory(entry) {
+    const history = getDiviHistory();
+    entry.id = Date.now();
+    entry.time = new Date().toLocaleString('zh-CN', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+    history.unshift(entry);
+    if (history.length > DIVI_HISTORY_MAX) history.splice(DIVI_HISTORY_MAX);
+    localStorage.setItem(DIVI_HISTORY_KEY, JSON.stringify(history));
+}
+
+function clearDiviHistory() {
+    if (!confirm('确定要清空所有占卜记录吗？')) return;
+    localStorage.removeItem(DIVI_HISTORY_KEY);
+    renderDiviHistory();
+}
+
+function renderDiviHistory() {
+    const list = document.getElementById('divi-history-list');
+    const empty = document.getElementById('divi-history-empty');
+    if (!list) return;
+    const history = getDiviHistory();
+    if (!history.length) {
+        list.innerHTML = '';
+        if (empty) empty.style.display = '';
+        return;
+    }
+    if (empty) empty.style.display = 'none';
+    list.innerHTML = history.map(entry => {
+        const cardTags = (entry.cards || []).map(c =>
+            `<span class="divi-history-card-tag ${c.isReversed ? 'reversed' : ''}">
+                ${c.isReversed ? '<i class="fas fa-arrow-down" style="font-size:9px;"></i>' : '<i class="fas fa-arrow-up" style="font-size:9px;"></i>'}
+                ${c.name}${c.position ? ' · ' + c.position : ''}
+            </span>`
+        ).join('');
+        const detailLines = (entry.cards || []).map(c =>
+            `<div style="margin-bottom:6px;"><b>${c.name}${c.position ? ' （'+c.position+'）' : ''}${c.isReversed ? ' 逆位' : ' 正位'}</b><br>${c.keyword} — ${c.meaning}</div>`
+        ).join('');
+        return `
+        <div class="divi-history-item">
+            <div class="divi-history-meta">
+                <span class="divi-history-type">${entry.type || '占卜'}</span>
+                <span class="divi-history-time">${entry.time || ''}</span>
+            </div>
+            ${entry.question ? `<div class="divi-history-question">「${entry.question}」</div>` : ''}
+            <div class="divi-history-cards">${cardTags}</div>
+            ${detailLines ? `<button class="divi-history-expand-btn" onclick="toggleDiviDetail(this)">查看解读 ▾</button>
+            <div class="divi-history-detail">${detailLines}</div>` : ''}
+        </div>`;
+    }).join('');
+}
+
+function toggleDiviDetail(btn) {
+    const detail = btn.nextElementSibling;
+    if (!detail) return;
+    const open = detail.classList.toggle('open');
+    btn.textContent = open ? '收起 ▴' : '查看解读 ▾';
+}
+
+// Hook into switchFLTab to render history when tab is opened
+const _origSwitchFLTab = switchFLTab;
+window.switchFLTab = function(tab) {
+    _origSwitchFLTab(tab);
+    if (tab === 'divihistory') renderDiviHistory();
+};
+
+// Close button for history tab
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'close-divihistory') {
+        const modal = document.getElementById('fortune-lenormand-modal');
+        if (modal) hideModal(modal);
+    }
+});
+// ============ End 占卜历史记录 ============
 
 function toggleBatchFavoriteMode() {
             isBatchFavoriteMode = !isBatchFavoriteMode;
@@ -13039,7 +14004,6 @@ function openMoodSelector(dateStr, editTarget) {
     const detailView = document.getElementById('mood-detail-view');
     const dateTitle = document.getElementById('mood-selector-date');
 
-    // 取消之前挂起的 rAF，防止多次点击产生「僵尸遮罩」
     if (window._moodOverlayRafId) {
         cancelAnimationFrame(window._moodOverlayRafId);
         window._moodOverlayRafId = null;
@@ -13192,13 +14156,22 @@ document.getElementById('edit-existing-mood').addEventListener('click', () => {
 });
 
 window.closeMoodOverlay = function() {
-    // 取消挂起的 rAF，避免关闭后再次弹出空白遮罩
     if (window._moodOverlayRafId) {
         cancelAnimationFrame(window._moodOverlayRafId);
         window._moodOverlayRafId = null;
     }
-    document.getElementById('mood-selector-overlay').classList.remove('active');
-    document.getElementById('custom-mood-dialog').style.display = 'none';
+    const overlay = document.getElementById('mood-selector-overlay');
+    if(overlay) {
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            overlay.style.opacity = '';
+            overlay.style.transition = '';
+            const customDialog = document.getElementById('custom-mood-dialog');
+            if(customDialog) customDialog.style.display = 'none';
+        }, 250);
+    }
 };
 window.viewMoodDetailFromEditor = function() {
     if (!selectedDateStr || !moodData[selectedDateStr]) return;
@@ -13275,20 +14248,23 @@ window.editCustomMood = function(key) {
 };
 
 function initMoodListeners() {
-
     const btnCalendar = document.getElementById('btn-view-calendar');
     const btnStats = document.getElementById('btn-view-stats');
     const viewCalendar = document.getElementById('mood-calendar-view');
     const viewStats = document.getElementById('mood-stats-view');
 
-    if (btnCalendar && btnStats) {
+    if (btnCalendar && !btnCalendar.dataset.initialized) {
+        btnCalendar.dataset.initialized = 'true';
         btnCalendar.addEventListener('click', () => {
             btnCalendar.classList.add('active');
             btnStats.classList.remove('active');
             viewCalendar.classList.remove('hidden-view');
             viewStats.classList.add('hidden-view');
         });
+    }
 
+    if (btnStats && !btnStats.dataset.initialized) {
+        btnStats.dataset.initialized = 'true';
         btnStats.addEventListener('click', () => {
             btnStats.classList.add('active');
             btnCalendar.classList.remove('active');
@@ -13297,62 +14273,70 @@ function initMoodListeners() {
             renderMoodCalendar(); 
         });
     }
+
     const entryBtn = document.getElementById('mood-function');
     const modal = document.getElementById('mood-modal');
-    if (entryBtn) {
-        entryBtn.addEventListener('click', () => {
+    
+    if (entryBtn && !entryBtn.dataset.initialized) {
+        entryBtn.dataset.initialized = 'true';
+        const newBtn = entryBtn.cloneNode(true);
+        entryBtn.parentNode.replaceChild(newBtn, entryBtn);
+        
+        newBtn.addEventListener('click', () => {
             if (typeof window.updateDynamicNames === 'function') window.updateDynamicNames();
-            var advModal = document.getElementById('advanced-modal');
-            if (advModal) advModal.style.display = 'none';
+            const advModal = document.getElementById('advanced-modal');
+            if (advModal) hideModal(advModal); 
             setTimeout(() => {
                 renderMoodCalendar();
                 showModal(modal);
-            }, 50);
+            }, 150); 
         });
     }
 
     const closeMoodBtn = document.getElementById('close-mood');
-    if (closeMoodBtn) {
+    if (closeMoodBtn && !closeMoodBtn.dataset.initialized) {
+        closeMoodBtn.dataset.initialized = 'true';
         closeMoodBtn.addEventListener('click', () => hideModal(modal));
     }
     
-    const closeMoodSelectorBtn = document.getElementById('close-mood-selector');
-    if (closeMoodSelectorBtn) {
-        closeMoodSelectorBtn.addEventListener('click', () => {
-            const overlay = document.getElementById('mood-selector-overlay');
-            if (overlay) overlay.classList.remove('active');
-        });
-    }
-    
     const cancelMoodBtn = document.getElementById('cancel-mood-edit');
-    if (cancelMoodBtn) {
-        cancelMoodBtn.addEventListener('click', () => {
-            const overlay = document.getElementById('mood-selector-overlay');
-            if (overlay) overlay.classList.remove('active');
+    if (cancelMoodBtn && !cancelMoodBtn.dataset.initialized) {
+        cancelMoodBtn.dataset.initialized = 'true';
+        cancelMoodBtn.addEventListener('click', closeMoodOverlay);
+    }
+
+    const overlay = document.getElementById('mood-selector-overlay');
+    if (overlay && !overlay.dataset.initialized) {
+        overlay.dataset.initialized = 'true';
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeMoodOverlay();
+            }
         });
     }
 
     const prevMonthBtn = document.getElementById('prev-month');
-    if (prevMonthBtn) {
-        prevMonthBtn.onclick = () => {
+    if (prevMonthBtn && !prevMonthBtn.dataset.initialized) {
+        prevMonthBtn.dataset.initialized = 'true';
+        prevMonthBtn.addEventListener('click', () => {
             const y = currentCalendarDate.getFullYear();
             const m = currentCalendarDate.getMonth();
             currentCalendarDate = new Date(y, m - 1, 1);
             renderMoodCalendar();
-        };
+        });
     }
     
     const nextMonthBtn = document.getElementById('next-month');
-    if (nextMonthBtn) {
-        nextMonthBtn.onclick = () => {
+    if (nextMonthBtn && !nextMonthBtn.dataset.initialized) {
+        nextMonthBtn.dataset.initialized = 'true';
+        nextMonthBtn.addEventListener('click', () => {
             const y = currentCalendarDate.getFullYear();
             const m = currentCalendarDate.getMonth();
             currentCalendarDate = new Date(y, m + 1, 1);
             renderMoodCalendar();
-        };
+        });
     }
 }
-
 let envelopeData = { outbox: [], inbox: [] }; 
 let currentEnvTab = 'outbox';
 let editingEnvId = null; 
@@ -13443,7 +14427,6 @@ window.showAppearancePanel = function(panel) {
         'bubble-css': ['bubble', 'css']
     };
     document.getElementById('appearance-nav-grid').style.display = 'none';
-    // 进入子面板时隐藏更新公告入口，避免重复显示
     var unBtn = document.getElementById('update-notice-btn');
     if (unBtn) unBtn.style.display = 'none';
     document.getElementById('appearance-panel-container').style.display = 'block';
@@ -13464,7 +14447,6 @@ window.hideAppearancePanel = function() {
     document.getElementById('appearance-nav-grid').style.display = 'grid';
     document.getElementById('appearance-panel-container').style.display = 'none';
     document.querySelectorAll('.appearance-sub-panel').forEach(p => p.style.display = 'none');
-    // 返回主面板时恢复更新公告入口
     var unBtn = document.getElementById('update-notice-btn');
     if (unBtn) unBtn.style.display = 'flex';
 };
@@ -14213,6 +15195,19 @@ function showEmojiTab() {
     area.style.gap = '8px';
     
     CONSTANTS.REPLY_EMOJIS.forEach(emoji => {
+        const item = document.createElement('div');
+        item.className = 'picker-item';
+        item.innerHTML = `<span style="font-size:24px;">${emoji}</span>`;
+        item.onclick = () => {
+            const input = document.getElementById('message-input');
+            input.value += emoji;
+            document.getElementById('user-sticker-picker').classList.remove('active');
+            input.focus();
+        };
+        area.appendChild(item);
+    });
+    // Also show custom emojis in the picker
+    customEmojis.forEach(emoji => {
         const item = document.createElement('div');
         item.className = 'picker-item';
         item.innerHTML = `<span style="font-size:24px;">${emoji}</span>`;
@@ -15152,29 +16147,7 @@ document.getElementById('chat-settings').addEventListener('click', () => {
 
             if (!settings.inChatAvatarPosition) settings.inChatAvatarPosition = 'center';
 
-            function updateAvatarPreview() {
-                if (!avatarPreview) return;
-                const previewPartner = document.getElementById('preview-partner-avatar');
-                const previewMe = document.getElementById('preview-my-avatar');
-                const sz = `${settings.inChatAvatarSize}px`;
-                if (previewPartner) {
-                    previewPartner.style.width = sz;
-                    previewPartner.style.height = sz;
-                    const partnerImg = DOMElements.partner.avatar.querySelector('img');
-                    if (partnerImg && partnerImg.src) {
-                        previewPartner.innerHTML = `<img src="${partnerImg.src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                    }
-                }
-                if (previewMe) {
-                    previewMe.style.width = sz;
-                    previewMe.style.height = sz;
-                    const myImg = DOMElements.me.avatar.querySelector('img');
-                    if (myImg && myImg.src) {
-                        previewMe.innerHTML = `<img src="${myImg.src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                    }
-                }
-                updateBubblePreview();
-            }
+            // updateAvatarPreview is defined below (handles both size and shape updates)
 
             function updateBubblePreview() {
                 const receivedBubble = document.getElementById('preview-bubble-received');
@@ -15280,6 +16253,80 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                     });
                 }
             });
+
+            // Avatar shape buttons
+            function updateAvatarPreview(shape, cornerRadius) {
+                const previewPartner = document.getElementById('preview-partner-avatar');
+                const previewMy = document.getElementById('preview-my-avatar');
+                if (!previewPartner || !previewMy) return;
+                // If called with no args (original use), just update sizes and images
+                const sz = `${settings.inChatAvatarSize || 36}px`;
+                previewPartner.style.width = sz;
+                previewPartner.style.height = sz;
+                previewMy.style.width = sz;
+                previewMy.style.height = sz;
+                // Get actual avatar images
+                const partnerImg = DOMElements.partner && DOMElements.partner.avatar ? DOMElements.partner.avatar.querySelector('img') : null;
+                const myImg = DOMElements.me && DOMElements.me.avatar ? DOMElements.me.avatar.querySelector('img') : null;
+                const currentShape = shape || settings.myAvatarShape || 'circle';
+                
+                function applyToPreviewEl(el, img, shp, cr) {
+                    if (img && img.src) {
+                        el.innerHTML = `<img src="${img.src}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                    if (shp === 'circle') {
+                        el.style.borderRadius = '50%';
+                    } else if (shp === 'square') {
+                        el.style.borderRadius = (cr || 8) + 'px';
+                    }
+                }
+                const cr = cornerRadius !== undefined ? cornerRadius : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--avatar-corner-radius') || '8') || 8;
+                applyToPreviewEl(previewPartner, partnerImg, currentShape, cr);
+                applyToPreviewEl(previewMy, myImg, currentShape, cr);
+                if (typeof updateBubblePreview === 'function') updateBubblePreview();
+            }
+
+            function updateAvatarShapeBtns() {
+                const shape = settings.myAvatarShape || 'circle';
+                document.querySelectorAll('.avatar-shape-btn-2').forEach(b => {
+                    b.classList.toggle('modal-btn-primary', b.dataset.shape === shape);
+                    b.classList.toggle('modal-btn-secondary', b.dataset.shape !== shape);
+                });
+                const radiusCtrl = document.getElementById('avatar-corner-radius-control-2');
+                if (radiusCtrl) radiusCtrl.style.display = shape === 'square' ? '' : 'none';
+                updateAvatarPreview(shape);
+            }
+            document.querySelectorAll('.avatar-shape-btn-2').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const shape = btn.dataset.shape;
+                    settings.myAvatarShape = shape;
+                    settings.partnerAvatarShape = shape;
+                    applyAvatarShapeToDOM && applyAvatarShapeToDOM('my', shape);
+                    applyAvatarShapeToDOM && applyAvatarShapeToDOM('partner', shape);
+                    updateAvatarShapeBtns();
+                    updateAvatarPreview(shape);
+                    renderMessages(true);
+                    throttledSaveData();
+                });
+            });
+            const cornerSlider = document.getElementById('avatar-corner-radius-slider-2');
+            const cornerVal = document.getElementById('avatar-corner-radius-value-2');
+            if (cornerSlider) {
+                cornerSlider.value = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--avatar-corner-radius') || '8') || 8;
+                if (cornerVal) cornerVal.textContent = cornerSlider.value + 'px';
+                cornerSlider.addEventListener('input', () => {
+                    const r = cornerSlider.value;
+                    if (cornerVal) cornerVal.textContent = r + 'px';
+                    document.documentElement.style.setProperty('--avatar-corner-radius', r + 'px');
+                    updateAvatarPreview(settings.myAvatarShape || 'circle', parseInt(r));
+                    renderMessages(true);
+                });
+                cornerSlider.addEventListener('change', () => {
+                    settings.avatarCornerRadius = cornerSlider.value;
+                    throttledSaveData();
+                });
+            }
+            updateAvatarShapeBtns();
 
             document.querySelectorAll('[data-bubble-style]').forEach(item => {
                 item.addEventListener('click', () => {
@@ -15533,6 +16580,13 @@ autoSendSlider.addEventListener('change', () => {
             document.getElementById('env-main-close-btn').style.display = 'flex';
             renderEnvelopeLists();
             showModal(document.getElementById('envelope-modal'));
+        });
+    }
+    const resourceEntryBtn = document.getElementById('resource-share-function');
+    if (resourceEntryBtn) {
+        resourceEntryBtn.addEventListener('click', () => {
+            hideModal(DOMElements.advancedModal.modal);
+            window.open('https://aielin17.github.io/-/', '_blank');
         });
     }
 document.getElementById('send-envelope').addEventListener('click', handleSendEnvelope);
@@ -16297,8 +17351,8 @@ if (savedSongsStr) {
             player.style.top = Math.max(0, Math.min(newTop, maxTop)) + 'px';
             const rect = player.getBoundingClientRect();
             playlist.style.left = rect.left + 'px';
-            playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 70 : 170)) + 'px';
-        };
+playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 65 : 155)) + 'px';
+};
         const dragEnd = () => {
             if (!isDragging) return;
             isDragging = false;
@@ -16317,7 +17371,7 @@ if (savedSongsStr) {
                 player.classList.remove('collapsed');
                 setTimeout(() => {
                     const rect = player.getBoundingClientRect();
-                    playlist.style.top = (rect.top + 170) + 'px';
+                    playlist.style.top = (rect.top + 150) + 'px';
                 }, 300);
             }
         });
@@ -16357,7 +17411,7 @@ if (savedSongsStr) {
         e.stopPropagation();
         const rect = player.getBoundingClientRect();
         playlist.style.left = rect.left + 'px';
-        playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 70 : 170)) + 'px';
+        playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 62 : 150)) + 'px';
         playlist.classList.toggle('active');
     });
 
@@ -16424,7 +17478,8 @@ function renderReplyLibrary() {
         } else if (currentSubTab === 'emojis') {
             itemsToRender = CONSTANTS.REPLY_EMOJIS;
             renderType = 'emoji';
-            addButton.style.display = 'none';
+            addButton.innerHTML = '<i class="fas fa-plus"></i> 添加Emoji';
+            addButton.style.display = 'flex';
         } else if (currentSubTab === 'stickers') {
             itemsToRender = stickerLibrary;
             renderType = 'image';
@@ -16448,8 +17503,48 @@ function renderReplyLibrary() {
         }
     }
 
-    if (itemsToRender.length === 0) {
+    if (itemsToRender.length === 0 && renderType !== 'emoji') {
         list.innerHTML = renderEmptyState("列表空空如也");
+        return;
+    }
+
+    // Handle emoji rendering separately (includes custom emojis)
+    if (renderType === 'emoji') {
+        if (itemsToRender.length === 0 && customEmojis.length === 0) {
+            list.innerHTML = renderEmptyState("列表空空如也");
+            return;
+        }
+        // Render default emojis
+        itemsToRender.forEach(item => {
+            const isDisabled = disabledDefaultReplies.includes(item);
+            const div = document.createElement('div');
+            div.className = `emoji-item ${isDisabled ? 'disabled' : ''}`;
+            div.textContent = item;
+            div.onclick = () => { toggleEmoji(item); };
+            list.appendChild(div);
+        });
+        // Render custom emojis with delete button
+        if (customEmojis.length > 0) {
+            const sep = document.createElement('div');
+            sep.style.cssText = 'grid-column:1/-1;font-size:11px;color:var(--text-secondary);padding:4px 2px 2px;border-top:1px dashed var(--border-color);margin-top:4px;';
+            sep.textContent = '— 自定义 —';
+            list.appendChild(sep);
+            customEmojis.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'emoji-item';
+                div.style.position = 'relative';
+                div.innerHTML = `<span style="pointer-events:none;">${item}</span><span class="emoji-custom-del" style="position:absolute;top:-4px;right:-4px;font-size:10px;background:var(--text-secondary);color:#fff;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 0.2s;">×</span>`;
+                div.addEventListener('mouseenter', () => div.querySelector('.emoji-custom-del').style.opacity = '1');
+                div.addEventListener('mouseleave', () => div.querySelector('.emoji-custom-del').style.opacity = '0');
+                div.querySelector('.emoji-custom-del').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    customEmojis.splice(idx, 1);
+                    throttledSaveData();
+                    renderReplyLibrary();
+                });
+                list.appendChild(div);
+            });
+        }
         return;
     }
 
@@ -16471,18 +17566,6 @@ function renderReplyLibrary() {
                     renderReplyLibrary();
                 }
             });
-            list.appendChild(div);
-            return;
-        }
-
-        if (renderType === 'emoji') {
-            const isDisabled = disabledDefaultReplies.includes(item);
-            const div = document.createElement('div');
-            div.className = `emoji-item ${isDisabled ? 'disabled' : ''}`;
-            div.textContent = item;
-            div.onclick = () => {
-                toggleEmoji(item);
-            };
             list.appendChild(div);
             return;
         }
@@ -16650,7 +17733,8 @@ function initReplyLibraryListeners() {
                 customStatuses,
                 customMottos,
                 customIntros,
-                disabledDefaultReplies, 
+                disabledDefaultReplies,
+                customEmojis,
                 exportDate: new Date().toISOString()
             };
             const fileName = `reply-library-backup-${new Date().toISOString().slice(0, 10)}.json`;
@@ -16688,6 +17772,7 @@ function initReplyLibraryListeners() {
                         if (data.customIntros) { customIntros = data.customIntros; count++; }
                         if (data.stickerLibrary) { stickerLibrary = data.stickerLibrary; count++; }
                         if (data.disabledDefaultReplies) { disabledDefaultReplies = data.disabledDefaultReplies; count++; }
+                        if (data.customEmojis) { customEmojis = data.customEmojis; count++; }
                     } else {
                         if (data.customReplies) { customReplies = [...new Set([...customReplies, ...data.customReplies])]; count++; }
                         if (data.customPokes) { customPokes = [...new Set([...customPokes, ...data.customPokes])]; count++; }
@@ -16698,6 +17783,10 @@ function initReplyLibraryListeners() {
                         if (data.disabledDefaultReplies) { 
                             disabledDefaultReplies = [...new Set([...disabledDefaultReplies, ...data.disabledDefaultReplies])]; 
                             count++; 
+                        }
+                        if (data.customEmojis) {
+                            customEmojis = [...new Set([...customEmojis, ...data.customEmojis])];
+                            count++;
                         }
                     }
                     
@@ -16721,6 +17810,17 @@ function initReplyLibraryListeners() {
                 return;
             }
 
+            if (currentSubTab === 'emojis') {
+                const input = prompt('请输入要添加的 Emoji（支持组合表情）:');
+                if (input && input.trim()) {
+                    customEmojis.push(input.trim());
+                    throttledSaveData();
+                    renderReplyLibrary();
+                    showNotification('Emoji 已添加', 'success');
+                }
+                return;
+            }
+
             let input;
             if (currentSubTab === 'intros') {
                  const l1 = prompt("请输入主标题 (如: 𝑳𝒐𝒗𝒆):");
@@ -16731,18 +17831,33 @@ function initReplyLibraryListeners() {
                  input = prompt(`请输入新的${getCategoryName(currentSubTab)}:`);
             }
 
-            if (input && input.trim()) {
-                if (currentSubTab === 'custom') customReplies.unshift(input);
-                else if (currentSubTab === 'pokes') customPokes.unshift(input);
-                else if (currentSubTab === 'statuses') customStatuses.unshift(input);
-                else if (currentSubTab === 'mottos') customMottos.unshift(input);
-                else if (currentSubTab === 'intros') customIntros.unshift(input);
+if (input && input.trim()) {
+                const val = input.trim();
+                let isDuplicate = false;
+                const normalizeStr = s => s.trim().toLowerCase().replace(/\s+/g, ' ');
+                const valNorm = normalizeStr(val);
+
+                if (currentSubTab === 'custom' && (customReplies.some(r => normalizeStr(r) === valNorm) || CONSTANTS.REPLY_MESSAGES.some(r => normalizeStr(r) === valNorm))) isDuplicate = true;
+                else if (currentSubTab === 'pokes' && customPokes.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
+                else if (currentSubTab === 'statuses' && customStatuses.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
+                else if (currentSubTab === 'mottos' && customMottos.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
+                else if (currentSubTab === 'intros' && customIntros.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
+
+                if (isDuplicate) {
+                    showNotification('该内容已存在（包含系统预设中）', 'warning');
+                    return;
+                }
+
+                if (currentSubTab === 'custom') customReplies.unshift(val);
+                else if (currentSubTab === 'pokes') customPokes.unshift(val);
+                else if (currentSubTab === 'statuses') customStatuses.unshift(val);
+                else if (currentSubTab === 'mottos') customMottos.unshift(val);
+                else if (currentSubTab === 'intros') customIntros.unshift(val);
                 
                 throttledSaveData();
                 renderReplyLibrary();
                 showNotification('添加成功', 'success');
-            }
-        });
+            }        });
     }
 }
 function getCategoryName(tabId) {
@@ -16966,19 +18081,29 @@ const updatePreview = () => {
             applyAvatarFrame(DOMElements.partner.avatarContainer, settings.partnerAvatarFrame);
             applyAvatarShapeToDOM('my', settings.myAvatarShape || 'circle');
             applyAvatarShapeToDOM('partner', settings.partnerAvatarShape || 'circle');
+            if (settings.avatarCornerRadius) {
+                document.documentElement.style.setProperty('--avatar-corner-radius', settings.avatarCornerRadius + 'px');
+            }
         }
 
-        function applyAvatarShapeToDOM(type, shape) {
-            const SHAPES = ['circle','square','pentagon','heart'];
+function applyAvatarShapeToDOM(type, shape) {
+            const SHAPES = ['circle','square'];
             const avatarContainer = type === 'my' ? DOMElements.me.avatarContainer : DOMElements.partner.avatarContainer;
             if (!avatarContainer) return;
             SHAPES.forEach(s => avatarContainer.classList.remove('avatar-shape-' + s));
             if (shape && shape !== 'none') avatarContainer.classList.add('avatar-shape-' + shape);
-            document.querySelectorAll('.message-avatar').forEach(el => {
-                SHAPES.forEach(s => el.classList.remove('shape-' + s));
+            
+            document.querySelectorAll('.message-wrapper').forEach(wrapper => {
+                const isUser = wrapper.classList.contains('sent');
+                if ((type === 'my' && isUser) || (type === 'partner' && !isUser)) {
+                    const avatarDiv = wrapper.querySelector('.message-avatar');
+                    if (avatarDiv) {
+                        SHAPES.forEach(s => avatarDiv.classList.remove('shape-' + s));
+                        if (shape && shape !== 'none') avatarDiv.classList.add('shape-' + shape);
+                    }
+                }
             });
         }
-
         function setupAppearancePanelFrameSettings() {
             const setupFor = (type) => {
                 const suffix = '-2';
@@ -17697,7 +18822,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
         
-        // Ensure disclaimer close button always works when reopened
         if (acceptDisclaimerBtn && !acceptDisclaimerBtn._closeFixed) {
             acceptDisclaimerBtn._closeFixed = true;
             acceptDisclaimerBtn.addEventListener('click', () => {
@@ -19112,20 +20236,6 @@ window.tryShowDailyGreeting = function() {
     } catch(e) { console.warn('Daily greeting show error:', e); }
 };
 
-window.addEventListener('load', function() {
-    setTimeout(function() {
-        try {
-            if (window.localforage && window.APP_PREFIX) {
-                localforage.getItem(window.APP_PREFIX + 'tour_seen').then(function(seen) {
-                    if (seen) { window.tryShowDailyGreeting(); }
-                }).catch(function() { window.tryShowDailyGreeting(); });
-            } else {
-                window.tryShowDailyGreeting();
-            }
-        } catch(e) { window.tryShowDailyGreeting(); }
-    }, 2500);
-});
-
 function updateStorageUsageBar() {
     var fill = document.getElementById('storage-usage-fill');
     var text = document.getElementById('storage-usage-text');
@@ -19681,56 +20791,135 @@ window.startEditDgWeather = function(el) {
         }
     });
 
-// ── 更新公告弹窗（body级，避免transform父级影响position:fixed） ──
-(function(){
-    var m = document.createElement('div');
-    m.id = 'update-notice-modal';
-    m.style.cssText = 'display:none;position:fixed;inset:0;z-index:99100;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:16px;';
-    m.innerHTML = '<div style="background:var(--secondary-bg);border-radius:20px;width:100%;max-width:480px;height:min(88vh,700px);box-shadow:0 20px 60px rgba(0,0,0,0.25);display:flex;flex-direction:column;animation:unModalIn 0.3s cubic-bezier(0.34,1.2,0.64,1);">'
-      + '<div style="padding:20px 20px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border-color);flex-shrink:0;">'
-      + '<div style="width:42px;height:42px;border-radius:14px;background:rgba(var(--accent-color-rgb),0.12);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">✨</div>'
-      + '<div style="flex:1;min-width:0;"><div style="font-size:16px;font-weight:800;color:var(--text-primary);letter-spacing:0.2px;">更新公告</div><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">共 18 项更新</div></div>'
-      + '<button onclick="document.getElementById(\'update-notice-modal\').style.display=\'none\'" style="width:32px;height:32px;border-radius:50%;background:var(--primary-bg);border:1px solid var(--border-color);cursor:pointer;color:var(--text-secondary);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;">×</button>'
-      + '</div>'
-      + '<div style="overflow-y:auto;flex:1;padding:16px 18px;-webkit-overflow-scrolling:touch;">'
-      + '<div style="background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.1),rgba(var(--accent-color-rgb),0.05));border:1px solid rgba(var(--accent-color-rgb),0.2);border-radius:14px;padding:14px 16px;">'
-      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:16px;">🌐</span><span style="font-size:13px;font-weight:700;color:var(--text-primary);">资源分享网站</span></div>'
-      + '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.6;">分享气泡和字体资源，需 VPN 打开：</div>'
-      + '<a href="https://aielin17.github.io/-/" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(var(--accent-color-rgb),0.12);border-radius:10px;text-decoration:none;"><i class="fas fa-link" style="color:var(--accent-color);font-size:11px;flex-shrink:0;"></i><span style="color:var(--accent-color);font-size:12px;font-weight:700;">aielin17.github.io/-/</span></a>'
-      + '<div style="margin-top:8px;font-size:11px;color:var(--text-secondary);line-height:1.5;">欢迎踊跃投稿 也欢迎有空闲的宝宝帮我整理投稿🥺🤲🏻</div>'
-      + '</div>'
-      + '<div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">最新</span><div class="un-section-line"></div></div>'
-      + '<div style="display:flex;flex-direction:column;gap:6px;">'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">查看大图功能全面重写，支持保存图片</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">退出沉浸式按钮可自由拖动</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">修复页面左右晃动问题</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">平板底部栏兼容性优化</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐优化，群聊成员存储机制升级</span></div>'
-      + '</div>'
-      + '<div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">功能</span><div class="un-section-line"></div></div>'
-      + '<div style="display:flex;flex-direction:column;gap:6px;">'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">正在输入指示器样式全面优化，显示迷你头像</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">我方表情库增加专属上传入口（仅我方可用）</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">聊天设置新增名称快捷修改入口</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">每日公告当日状态固定，混合自定义与默认内容</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">字卡导入新增「覆盖」/「追加」选项</span></div>'
-      + '</div>'
-      + '<div class="un-section-header"><div class="un-section-line"></div><span class="un-section-label">修复</span><div class="un-section-line"></div></div>'
-      + '<div style="display:flex;flex-direction:column;gap:6px;">'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">头像对齐方式 bug 修复（CSS变量正确应用）</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">返回/关闭按钮紧贴底部，消除空白</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">数据管理简化：重置数据包含清空会话与全部清除</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">重置数据升级为精美弹窗，操作更清晰</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">导出时不再包含表情包（文件更小更快）</span></div>'
-      + '<div class="un-item"><div class="un-dot"></div><span style="font-size:13px;color:var(--text-primary);line-height:1.6;">气泡字体颜色、主题编辑器全面修复</span></div>'
-      + '</div>'
-      + '<div style="height:16px;"></div>'
-      + '</div>'
-      + '<div style="padding:14px 18px;padding-bottom:max(14px,env(safe-area-inset-bottom,14px));border-top:1px solid var(--border-color);flex-shrink:0;">'
-      + '<button onclick="document.getElementById(\'update-notice-modal\').style.display=\'none\'" style="width:100%;background:var(--accent-color);color:#fff;border:none;border-radius:14px;padding:13px;font-size:14px;cursor:pointer;font-weight:700;letter-spacing:0.3px;font-family:var(--font-family);">知道了 ✦</button>'
-      + '</div>'
-      + '</div>';
-    document.body.appendChild(m);
+(function() {
+    var TI_AVATAR_KEY = 'tiSettings_showAvatar';
+    var TI_TEXT_KEY = 'tiSettings_customText';
+    var tiShowAvatar = localStorage.getItem(TI_AVATAR_KEY) !== 'false';
+    var tiCustomText = localStorage.getItem(TI_TEXT_KEY) || '';
+
+    function applyTiAvatarVisibility() {
+        var avatarEl = document.getElementById('typing-indicator-avatar');
+        if (!avatarEl) return;
+        avatarEl.style.display = tiShowAvatar ? '' : 'none';
+    }
+
+    function getTiLabel() {
+        if (tiCustomText) return tiCustomText;
+        var name = (window.settings && settings.partnerName) ? settings.partnerName : '对方';
+        return name + ' 正在输入';
+    }
+
+    function updatePreview() {
+        var previewText = document.getElementById('ti-preview-text');
+        var previewAvatar = document.getElementById('ti-preview-avatar');
+        if (previewText) previewText.textContent = getTiLabel();
+        if (previewAvatar) previewAvatar.style.display = tiShowAvatar ? '' : 'none';
+        var label = document.getElementById('typing-indicator-label');
+        if (label && label.textContent) label.textContent = getTiLabel();
+        var actualAvatar = document.getElementById('typing-indicator-avatar');
+        if (actualAvatar) actualAvatar.style.display = tiShowAvatar ? '' : 'none';
+    }
+
+    function syncPillUI() {
+        var row = document.getElementById('ti-avatar-toggle');
+        if (!row) return;
+        if (tiShowAvatar) {
+            row.classList.add('active');
+        } else {
+            row.classList.remove('active');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        applyTiAvatarVisibility();
+    });
+
+    var _origSetLabel = null;
+    function patchTypingLabel() {
+        var label = document.getElementById('typing-indicator-label');
+        if (label && tiCustomText) {
+            label.textContent = tiCustomText;
+        }
+    }
+    var labelEl = null;
+    function initLabelObserver() {
+        labelEl = document.getElementById('typing-indicator-label');
+        if (!labelEl || labelEl._tiObserved) return;
+        labelEl._tiObserved = true;
+        var obs = new MutationObserver(function() {
+            if (tiCustomText && labelEl.textContent !== tiCustomText) {
+                labelEl.textContent = tiCustomText;
+            }
+        });
+        obs.observe(labelEl, { childList: true, characterData: true, subtree: true });
+    }
+    setTimeout(initLabelObserver, 1000);
+
+    document.addEventListener('click', function(e) {
+        var ti = e.target.closest('.typing-indicator');
+        if (!ti) return;
+        e.stopPropagation();
+        initLabelObserver();
+        var modal = document.getElementById('ti-settings-modal');
+        if (!modal) return;
+        var input = document.getElementById('ti-text-input');
+        if (input) input.value = tiCustomText;
+        syncPillUI();
+        updatePreview();
+        var partnerImg = document.querySelector('#partner-info .message-avatar img') ||
+                         document.querySelector('.partner-avatar img') ||
+                         document.querySelector('[id*="partner"] img');
+        var previewAvatar = document.getElementById('ti-preview-avatar');
+        if (previewAvatar && partnerImg) {
+            previewAvatar.innerHTML = '<img src="' + partnerImg.src + '" style="width:100%;height:100%;object-fit:cover;">';
+        }
+        modal.classList.add('open');
+    });
+
+    document.addEventListener('click', function(e) {
+        var modal = document.getElementById('ti-settings-modal');
+        if (!modal || !modal.classList.contains('open')) return;
+        if (e.target === modal) modal.classList.remove('open');
+    });
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'ti-settings-close-btn') {
+            var modal = document.getElementById('ti-settings-modal');
+            if (modal) modal.classList.remove('open');
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        var row = e.target.closest('#ti-avatar-toggle');
+        if (!row) return;
+        tiShowAvatar = !tiShowAvatar;
+        localStorage.setItem(TI_AVATAR_KEY, tiShowAvatar);
+        syncPillUI();
+        updatePreview();
+        applyTiAvatarVisibility();
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.id !== 'ti-text-save-btn') return;
+        var input = document.getElementById('ti-text-input');
+        if (!input) return;
+        tiCustomText = input.value.trim();
+        localStorage.setItem(TI_TEXT_KEY, tiCustomText);
+        updatePreview();
+        e.target.textContent = '已保存 ✓';
+        setTimeout(function() { e.target.textContent = '保存'; }, 1200);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.id !== 'ti-text-reset-btn') return;
+        tiCustomText = '';
+        localStorage.removeItem(TI_TEXT_KEY);
+        var input = document.getElementById('ti-text-input');
+        if (input) input.value = '';
+        updatePreview();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() { syncPillUI(); });
+    setTimeout(syncPillUI, 800);
 })();
 
 window.addEventListener('load', function() {
