@@ -501,13 +501,11 @@ gap: 10px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            overflow-x: hidden;
             padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
         }
         .chat-container {
             flex: 1;
             overflow-y: auto;
-            overflow-x: hidden;
             padding: 25px 15px;
             display: flex;
             flex-direction: column;
@@ -517,8 +515,6 @@ gap: 10px;
             scrollbar-width: none;
             -ms-overflow-style: none;
             scroll-behavior: smooth;
-            width: 100%;
-            box-sizing: border-box;
         }
         .chat-container::-webkit-scrollbar {
             display: none;
@@ -535,7 +531,6 @@ gap: 10px;
             position: relative;
             gap: 10px;
             align-items: var(--avatar-align, flex-end);
-            flex-shrink: 0;
         }
         .message-avatar {
             width: var(--in-chat-avatar-size);
@@ -644,10 +639,10 @@ gap: 10px;
             transform: translateY(0);
         }
         .message-wrapper.sent .message-meta-actions {
-            left: 0;
+            left: -20px;
         }
         .message-wrapper.received .message-meta-actions {
-            right: 0;
+            right: -20px;
         }
 
         .meta-action-btn {
@@ -1206,188 +1201,335 @@ gap: 10px;
 
         #daily-greeting-modal {
             position: fixed; inset: 0; z-index: 9998;
-            background: rgba(0,0,0,0.65); backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
             display: flex; align-items: center; justify-content: center;
-            animation: fadeIn 0.35s ease;
+            animation: dgModalFadeIn 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes dgModalFadeIn {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(20px); }
         }
         #daily-greeting-modal.hidden { display: none; }
+
         .daily-greeting-card {
             background: var(--secondary-bg);
-            border-radius: 24px;
-            max-width: 350px; width: 92%;
-            box-shadow: 0 32px 80px rgba(0,0,0,0.32), 0 0 0 1px rgba(var(--accent-color-rgb),0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+            border-radius: 32px;
+            max-width: 368px;
+            width: 92%;
+            box-shadow:
+                0 32px 80px rgba(0,0,0,0.22),
+                0 8px 24px rgba(0,0,0,0.12),
+                0 0 0 1px rgba(255,255,255,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.12);
             position: relative;
-            animation: slideUpBounce 0.5s cubic-bezier(0.34,1.56,0.64,1);
             overflow: hidden;
+            animation: dgCardEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes slideUpBounce {
-            from { opacity:0; transform: translateY(30px) scale(0.92); }
-            to { opacity:1; transform: translateY(0) scale(1); }
+
+        @keyframes dgCardEnter {
+            from { opacity: 0; transform: translateY(48px) scale(0.92); filter: blur(8px); }
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
+
+        .daily-greeting-card::before {
+            content: '';
+            position: absolute; inset: 0; z-index: 100;
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.13);
+            pointer-events: none;
+        }
+
         .dg-header-band {
-            background: linear-gradient(135deg, var(--accent-color) 0%, rgba(var(--accent-color-rgb),0.75) 100%);
-            padding: 22px 22px 20px;
+            background: linear-gradient(150deg,
+                rgba(var(--accent-color-rgb), 0.98) 0%,
+                rgba(var(--accent-color-rgb), 0.88) 40%,
+                rgba(var(--accent-color-rgb), 0.72) 100%);
+            padding: 34px 26px 40px;
             position: relative;
+            color: #fff;
+            border-radius: 32px 32px 0 0;
             overflow: hidden;
-            border-radius: 24px 24px 0 0;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.12);
         }
+
         .dg-header-band::before {
             content: '';
-            position: absolute; inset: 0;
-            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.04) 10px, rgba(255,255,255,0.04) 20px);
+            position: absolute; inset: 0; z-index: 1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.10'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
         }
+
         .dg-header-band::after {
-            content: '公告';
-            position: absolute; top: 10px; right: 14px;
-            font-size: 9px; letter-spacing: 2.5px; opacity: 0.45;
-            color: #fff; font-weight: 700; text-transform: uppercase;
+            content: '';
+            position: absolute;
+            width: 220px; height: 220px;
+            background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 50%, transparent 75%);
+            border-radius: 50%;
+            top: -80px; right: -50px;
+            z-index: 1; pointer-events: none;
         }
+
         .dg-header-band-shimmer {
-            position: absolute; inset: 0;
-            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
-            animation: shimmerSlide 3s ease-in-out infinite;
+            position: absolute; inset: 0; z-index: 2;
+            background: linear-gradient(108deg,
+                transparent 30%,
+                rgba(255,255,255,0.16) 46%,
+                rgba(255,255,255,0.08) 54%,
+                transparent 70%);
+            animation: shimmerSlide 5s ease-in-out infinite;
         }
         @keyframes shimmerSlide {
-            0% { transform: translateX(-100%); }
-            60%,100% { transform: translateX(200%); }
+            0% { transform: translateX(-130%); }
+            60%,100% { transform: translateX(230%); }
         }
+
+        .dg-header-label-tag {
+            position: absolute; top: 14px; right: 16px; z-index: 5;
+            font-size: 8.5px; letter-spacing: 2.5px; opacity: 0.85;
+            color: #fff; font-weight: 700; text-transform: uppercase;
+            background: rgba(0,0,0,0.22);
+            padding: 4px 11px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.28);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
         .dg-header-top {
-            display: flex; align-items: center; gap: 14px;
-            position: relative; z-index: 2;
+            display: flex; align-items: center; gap: 16px;
+            position: relative; z-index: 3;
         }
+
         .dg-emoji-circle {
-            width: 56px; height: 56px; border-radius: 50%;
-            background: rgba(255,255,255,0.22);
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.18);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; flex-shrink: 0;
-            border: 2px solid rgba(255,255,255,0.38);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.25);
-            animation: floatEmoji 2.8s ease-in-out infinite;
+            font-size: 36px;
+            border: 1.5px solid rgba(255,255,255,0.5);
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.25),
+                inset 0 1px 0 rgba(255,255,255,0.4),
+                inset 0 -1px 0 rgba(0,0,0,0.1);
+            animation: dgFloat 3.5s ease-in-out infinite;
+            flex-shrink: 0;
         }
-        @keyframes floatEmoji {
-            0%,100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(3deg); }
+
+        @keyframes dgFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-5px) rotate(-2deg); }
+            66% { transform: translateY(-3px) rotate(2deg); }
         }
-        .dg-header-text { flex: 1; }
+
+        .dg-header-text { flex: 1; min-width: 0; }
+
         .dg-festival-label {
-            font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-            color: rgba(255,255,255,0.72); margin-bottom: 4px;
+            font-size: 10px; letter-spacing: 2.5px;
+            opacity: 0.92; font-weight: 700;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.2);
+            text-transform: uppercase;
         }
+
         .dg-main-title {
-            font-size: 22px; font-weight: 700; color: #fff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            font-size: 28px; margin-top: 5px;
+            font-weight: 600;
+            text-shadow: 0 3px 16px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15);
+            line-height: 1.2;
             letter-spacing: 0.5px;
         }
+
         .dg-date-stamp {
-            position: relative; z-index: 2;
-            margin-top: 12px; font-size: 11px;
-            color: rgba(255,255,255,0.6); letter-spacing: 1px;
-            display: flex; align-items: center; gap: 6px;
+            position: relative; z-index: 3;
+            background: rgba(0,0,0,0.28);
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 5px 16px;
+            border-radius: 24px;
+            font-size: 10.5px;
+            margin-top: 18px;
+            border: 1px solid rgba(255,255,255,0.25);
+            letter-spacing: 1.2px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
         .dg-date-stamp::before {
-            content: '';
-            flex: 1; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35));
-            max-width: 30px;
+            content: '✦';
+            font-size: 7px; opacity: 0.7;
         }
         .dg-date-stamp::after {
-            content: '';
-            flex: 1; height: 1px;
-            background: linear-gradient(270deg, transparent, rgba(255,255,255,0.35));
-            max-width: 30px;
+            content: '✦';
+            font-size: 7px; opacity: 0.7;
         }
-        .dg-body { padding: 18px 20px 20px; }
+
+        .dg-body {
+            padding: 6px 22px 20px;
+            background: var(--secondary-bg);
+            background-image: 
+                radial-gradient(ellipse 60% 40% at 90% 10%, rgba(var(--accent-color-rgb),0.04) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 60% at 10% 90%, rgba(var(--accent-color-rgb),0.03) 0%, transparent 60%);
+        }
+
         .dg-section-label {
-            font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
-            color: var(--accent-color); font-weight: 700;
-            margin-bottom: 9px; opacity: 0.85;
-            display: flex; align-items: center; gap: 6px;
+            font-size: 9.5px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--accent-color); font-weight: 800;
+            margin-bottom: 10px; opacity: 0.9;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .dg-section-label::before {
+            content: '';
+            width: 3px; height: 10px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            flex-shrink: 0;
         }
         .dg-section-label::after {
             content: ''; flex: 1; height: 1px;
-            background: linear-gradient(90deg, rgba(var(--accent-color-rgb),0.3), transparent);
+            background: linear-gradient(90deg, rgba(var(--accent-color-rgb),0.25), transparent);
         }
+
         .dg-info-grid {
             display: grid; grid-template-columns: 1fr 1fr;
-            gap: 9px; margin-bottom: 13px;
+            gap: 10px; margin-bottom: 12px;
         }
+
         .dg-info-cell {
-            background: linear-gradient(135deg, var(--primary-bg), rgba(var(--accent-color-rgb),0.04));
-            border-radius: 14px; padding: 12px 14px;
-            border: 1px solid rgba(var(--accent-color-rgb),0.12);
-            transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s ease;
+            background: linear-gradient(145deg,
+                var(--primary-bg),
+                rgba(var(--accent-color-rgb),0.05));
+            border-radius: 16px; padding: 13px 15px;
+            border: 1px solid rgba(var(--accent-color-rgb),0.1);
+            transition: transform 0.25s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.25s ease;
+            position: relative; overflow: hidden;
+        }
+        .dg-info-cell::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(var(--accent-color-rgb),0.2), transparent);
         }
         .dg-info-cell:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(var(--accent-color-rgb), 0.12);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 24px rgba(var(--accent-color-rgb), 0.14);
         }
+
         .dg-info-cell-icon { font-size: 0; margin-bottom: 0; height: 28px; display: flex; align-items: center; }
         .dg-info-cell-icon svg { display: block; }
-        .dg-info-cell-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 3px; margin-top: 5px; letter-spacing: 0.3px; }
-        .dg-info-cell-val { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+        .dg-info-cell-label {
+            font-size: 9.5px; color: var(--text-secondary);
+            margin-bottom: 3px; margin-top: 6px;
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .dg-info-cell-val {
+            font-size: 13.5px; font-weight: 700; color: var(--text-primary);
+            letter-spacing: 0.2px;
+        }
+
         .dg-mood-panel {
-            background: linear-gradient(135deg, var(--primary-bg), rgba(var(--accent-color-rgb),0.04));
-            border-radius: 14px; padding: 13px 16px;
-            border: 1px solid rgba(var(--accent-color-rgb),0.12);
-            margin-bottom: 13px;
-            display: flex; align-items: center; gap: 12px;
-            transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s ease;
+            background: linear-gradient(145deg,
+                var(--primary-bg),
+                rgba(var(--accent-color-rgb),0.05));
+            border-radius: 16px; padding: 14px 16px;
+            border: 1px solid rgba(var(--accent-color-rgb),0.1);
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 14px;
+            transition: transform 0.25s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.25s ease;
+            position: relative; overflow: hidden;
+        }
+        .dg-mood-panel::after {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(var(--accent-color-rgb),0.2), transparent);
         }
         .dg-mood-panel:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(var(--accent-color-rgb), 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(var(--accent-color-rgb), 0.12);
         }
-        .dg-mood-icon-big { font-size: 32px; }
-        .dg-mood-info { flex: 1; }
-        .dg-mood-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-        .dg-mood-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; line-height: 1.45; }
+
+        .dg-mood-icon-big { font-size: 32px; flex-shrink: 0; }
+        .dg-mood-info { flex: 1; min-width: 0; }
+        .dg-mood-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+        .dg-mood-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
+
         .dg-note-box {
-            font-size: 13px; color: var(--text-secondary); line-height: 1.75;
-            padding: 14px 16px; border-radius: 14px;
-            margin-bottom: 15px;
+            font-size: 13.5px; color: var(--text-secondary); line-height: 1.85;
+            padding: 18px 20px; border-radius: 18px;
+            margin-bottom: 18px;
             position: relative; overflow: hidden;
-            background: linear-gradient(135deg, rgba(var(--accent-color-rgb),0.08), rgba(var(--accent-color-rgb),0.03));
-            border: 1px solid rgba(var(--accent-color-rgb),0.15);
+            background: linear-gradient(145deg,
+                rgba(var(--accent-color-rgb),0.09),
+                rgba(var(--accent-color-rgb),0.03));
+            border: 1px solid rgba(var(--accent-color-rgb),0.14);
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.5),
+                0 2px 12px rgba(var(--accent-color-rgb),0.06);
         }
         .dg-note-box::before {
             content: '\275D';
-            position: absolute; top: 6px; left: 10px;
-            font-size: 28px; color: var(--accent-color); opacity: 0.18;
+            position: absolute; top: 2px; left: 8px;
+            font-size: 42px; color: var(--accent-color); opacity: 0.1;
             font-family: Georgia, serif; line-height: 1;
         }
         .dg-note-box::after {
             content: '\275E';
-            position: absolute; bottom: 2px; right: 10px;
-            font-size: 28px; color: var(--accent-color); opacity: 0.18;
+            position: absolute; bottom: -6px; right: 8px;
+            font-size: 42px; color: var(--accent-color); opacity: 0.1;
             font-family: Georgia, serif; line-height: 1;
         }
+
         .dg-note-inner {
             position: relative; z-index: 1;
-            text-align: center; letter-spacing: 0.3px;
+            text-align: center; letter-spacing: 0.4px;
         }
+
         .dg-note-weather-badge {
             display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(var(--accent-color-rgb),0.12);
-            border-radius: 20px; padding: 3px 10px;
+            background: rgba(var(--accent-color-rgb),0.13);
+            border-radius: 20px; padding: 4px 12px;
             font-size: 11px; color: var(--accent-color);
-            font-weight: 600; margin-bottom: 8px;
+            font-weight: 700; margin-bottom: 9px;
             letter-spacing: 0.5px;
+            border: 1px solid rgba(var(--accent-color-rgb),0.15);
         }
+
         .dg-footer { display: flex; gap: 8px; }
+
         .daily-greeting-close-btn {
-            flex: 2; padding: 12px;
-            background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color-rgb),0.82));
-            color: white; border: none; border-radius: 14px; font-size: 13px;
-            font-weight: 600; font-family: var(--font-family);
-            cursor: pointer; transition: all 0.25s ease;
-            letter-spacing: 0.8px;
-            box-shadow: 0 4px 12px rgba(var(--accent-color-rgb),0.28);
+            flex: 2; padding: 14px;
+            background: linear-gradient(135deg,
+                var(--accent-color) 0%,
+                rgba(var(--accent-color-rgb),0.85) 100%);
+            color: white; border: none; border-radius: 16px; font-size: 13.5px;
+            font-weight: 700; font-family: var(--font-family);
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.34,1.4,0.64,1);
+            letter-spacing: 1px;
+            box-shadow:
+                0 6px 20px rgba(var(--accent-color-rgb),0.35),
+                inset 0 1px 0 rgba(255,255,255,0.25),
+                inset 0 -1px 0 rgba(0,0,0,0.1);
+            position: relative; overflow: hidden;
+        }
+        .daily-greeting-close-btn::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(108deg, transparent 30%, rgba(255,255,255,0.18) 46%, rgba(255,255,255,0.08) 54%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
         }
         .daily-greeting-close-btn:hover {
-            opacity: 0.9; transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(var(--accent-color-rgb),0.35);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 10px 32px rgba(var(--accent-color-rgb),0.45), inset 0 1px 0 rgba(255,255,255,0.25);
         }
-        .daily-greeting-close-btn:active { transform: translateY(0); }
+        .daily-greeting-close-btn:hover::before {
+            transform: translateX(200%);
+        }
+        .daily-greeting-close-btn:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 4px 12px rgba(var(--accent-color-rgb),0.25);
+        }
+
         .dg-header-band-bg {
             position: absolute; inset: 0;
             background-size: cover; background-position: center;
@@ -1396,12 +1538,12 @@ gap: 10px;
         }
         .dg-header-band-overlay {
             position: absolute; inset: 0;
-            background: linear-gradient(135deg, var(--accent-color) 0%, rgba(var(--accent-color-rgb),0.75) 100%);
+            background: linear-gradient(150deg, rgba(var(--accent-color-rgb),0.96) 0%, rgba(var(--accent-color-rgb),0.82) 100%);
             z-index: 1;
             transition: opacity 0.3s;
         }
         .dg-header-band-bg.has-img + .dg-header-band-overlay {
-            opacity: 0.55;
+            opacity: 0.65;
         }
         .daily-greeting-emoji { display: none; }
         .daily-greeting-festival { display: none; }
@@ -2323,17 +2465,16 @@ gap: 10px;
 
 
 :root {
-            --welcome-bg: #f0f2f5;
-            --welcome-text-main: #2c3e50;
-            --welcome-text-sub: #7f8c8d;
-            --welcome-star: #bdc3c7;
-            --welcome-circle-outer: rgba(0, 0, 0, 0.1);
-            --welcome-loader-bg: rgba(0, 0, 0, 0.1);
+            --welcome-bg: #0a0a0f;
+            --welcome-text-main: #ffffff;
+            --welcome-text-sub: rgba(var(--accent-color-rgb), 0.9);
+            --welcome-star: #ffffff;
+            --welcome-circle-outer: rgba(255, 255, 255, 0.08);
+            --welcome-loader-bg: rgba(255, 255, 255, 0.08);
         }
 
         html[data-theme="dark"] {
-
-            --welcome-bg: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+            --welcome-bg: #050508;
             --welcome-text-main: #ffffff;
             --welcome-text-sub: var(--accent-color);
             --welcome-star: #ffffff;
@@ -2341,12 +2482,16 @@ gap: 10px;
             --welcome-loader-bg: rgba(255, 255, 255, 0.1);
         }
 
+        html[data-theme="light"] {
+            --welcome-bg: #0d0d18;
+            --welcome-text-main: #ffffff;
+            --welcome-text-sub: rgba(var(--accent-color-rgb), 0.9);
+        }
+
         .welcome-animation {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: var(--welcome-bg);
             display: flex;
             flex-direction: column;
@@ -2354,24 +2499,48 @@ gap: 10px;
             justify-content: center;
             z-index: 9999;
             overflow: hidden;
-            transition: all 1s cubic-bezier(0.7, 0, 0.3, 1);
+            transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
         .welcome-animation.hidden {
             opacity: 0;
-            transform: scale(1.08);
-            filter: blur(24px);
+            transform: scale(1.1);
+            filter: blur(30px);
             pointer-events: none;
         }
+
         .welcome-bg-gradient {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 30% 40%, rgba(var(--accent-color-rgb), 0.18) 0%, transparent 60%),
-                        radial-gradient(ellipse at 70% 60%, rgba(var(--accent-color-rgb), 0.12) 0%, transparent 55%);
-            animation: bgPulse 6s ease-in-out infinite;
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 70% 55% at 15% 25%, rgba(var(--accent-color-rgb), 0.28) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 70% at 85% 75%, rgba(var(--accent-color-rgb), 0.18) 0%, transparent 50%),
+                radial-gradient(ellipse 90% 40% at 50% 100%, rgba(var(--accent-color-rgb), 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse 60% 60% at 50% 50%, rgba(var(--accent-color-rgb), 0.04) 0%, transparent 100%);
+            animation: bgPulse 8s ease-in-out infinite;
         }
         @keyframes bgPulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+            0%, 100% { opacity: 0.75; transform: scale(1); }
+            33% { opacity: 1; transform: scale(1.06); }
+            66% { opacity: 0.85; transform: scale(1.03); }
+        }
+
+        .welcome-animation::before {
+            content: '';
+            position: absolute; inset: 0; z-index: 2;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.03) 4px
+            );
+            pointer-events: none;
+        }
+
+        .welcome-animation::after {
+            content: '';
+            position: absolute; inset: 0; z-index: 2;
+            background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 55%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
         }
         .welcome-particles {
             position: absolute;
@@ -2443,93 +2612,128 @@ gap: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 25px;
+            gap: 32px;
+            padding: 48px 56px 44px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow:
+                0 32px 80px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                inset 0 -1px 0 rgba(0,0,0,0.1);
+        }
+        .welcome-content-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 20%; right: 20%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            border-radius: 4px;
         }
 
 
         .logo-tech-container {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        .logo-icon-bg {
+            position: absolute;
+            width: 86px; height: 86px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.16) 0%, rgba(var(--accent-color-rgb),0.1) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow:
+                0 8px 32px rgba(var(--accent-color-rgb),0.2),
+                inset 0 1px 0 rgba(255,255,255,0.25),
+                inset 0 -1px 0 rgba(0,0,0,0.06);
+            z-index: 4;
+            animation: logoAppear 1.4s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+
         .logo-icon-main {
-            font-size: 52px;
+            font-size: 46px;
             color: var(--accent-color);
             z-index: 5;
-            filter: drop-shadow(0 0 20px rgba(var(--accent-color-rgb), 0.7));
-            animation: floatIcon 3s ease-in-out infinite, iconGlow 2s ease-in-out infinite;
+            position: relative;
+            filter: drop-shadow(0 0 24px rgba(var(--accent-color-rgb), 0.8)) drop-shadow(0 0 48px rgba(var(--accent-color-rgb), 0.4));
+            animation: floatIcon 3.5s ease-in-out infinite, iconGlow 2.5s ease-in-out infinite;
         }
         @keyframes iconGlow {
-            0%, 100% { filter: drop-shadow(0 0 15px rgba(var(--accent-color-rgb), 0.5)); }
-            50% { filter: drop-shadow(0 0 30px rgba(var(--accent-color-rgb), 0.9)); }
+            0%, 100% { filter: drop-shadow(0 0 16px rgba(var(--accent-color-rgb), 0.6)) drop-shadow(0 0 40px rgba(var(--accent-color-rgb), 0.25)); }
+            50% { filter: drop-shadow(0 0 32px rgba(var(--accent-color-rgb), 1)) drop-shadow(0 0 64px rgba(var(--accent-color-rgb), 0.5)) drop-shadow(0 0 4px rgba(255,255,255,0.6)); }
         }
+
         .logo-circle-outer {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 1.5px solid rgba(var(--accent-color-rgb), 0.25);
+            width: 100%; height: 100%;
+            border: 1px solid rgba(var(--accent-color-rgb), 0.3);
             border-radius: 50%;
-            animation: pulseRing 2.5s ease-in-out infinite;
+            animation: pulseRing 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.15), inset 0 0 20px rgba(var(--accent-color-rgb), 0.05);
         }
         .logo-circle-outer::before {
             content: '';
-            position: absolute;
-            inset: -12px;
+            position: absolute; inset: -18px;
             border-radius: 50%;
             border: 1px solid rgba(var(--accent-color-rgb), 0.1);
-            animation: pulseRing 2.5s ease-in-out infinite 0.5s;
+            animation: pulseRing 3s ease-in-out infinite 0.6s;
         }
+        .logo-circle-outer::after {
+            content: '';
+            position: absolute; inset: -36px;
+            border-radius: 50%;
+            border: 1px solid rgba(var(--accent-color-rgb), 0.05);
+            animation: pulseRing 3s ease-in-out infinite 1.2s;
+        }
+
         .logo-circle-inner {
             position: absolute;
-            width: 70%;
-            height: 70%;
-            border: 1px dashed rgba(var(--accent-color-rgb), 0.5);
+            width: 68%; height: 68%;
+            border: 1px dashed rgba(var(--accent-color-rgb), 0.45);
             border-radius: 50%;
-            animation: rotateCircle 8s linear infinite;
+            animation: rotateCircle 10s linear infinite;
         }
+
         .orbit-dot {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             border-radius: 50%;
-            animation: rotateCircle 3s linear infinite;
+            animation: rotateCircle 3.5s linear infinite;
         }
         .orbit-dot::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 50%;
-            width: 8px;
-            height: 8px;
+            top: 0; left: 50%;
+            width: 9px; height: 9px;
             background: var(--accent-color);
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 14px var(--accent-color), 0 0 4px rgba(255,255,255,0.5);
+            box-shadow: 0 0 18px var(--accent-color), 0 0 6px rgba(255,255,255,0.7);
         }
         .orbit-dot-2 {
             position: absolute;
-            width: 70%;
-            height: 70%;
+            width: 72%; height: 72%;
             border-radius: 50%;
-            animation: rotateCircle 5s linear infinite reverse;
-            top: 15%;
-            left: 15%;
+            animation: rotateCircle 5.5s linear infinite reverse;
+            top: 14%; left: 14%;
         }
         .orbit-dot-2::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(var(--accent-color-rgb), 0.7);
+            top: 0; left: 50%;
+            width: 5px; height: 5px;
+            background: rgba(var(--accent-color-rgb), 0.75);
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 8px var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
         }
 
 
@@ -2537,74 +2741,87 @@ gap: 10px;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
             min-height: 80px;
         }
 
 
         .welcome-title-glitch {
             font-family: 'Noto Serif SC', serif;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 700;
-            letter-spacing: 4px;
+            letter-spacing: 8px;
             position: relative;
-
-
+            color: #ffffff;
+            text-shadow:
+                0 0 20px rgba(var(--accent-color-rgb), 0.8),
+                0 0 60px rgba(var(--accent-color-rgb), 0.3),
+                0 4px 20px rgba(0,0,0,0.5);
             opacity: 1;
-
-
             transition: color 0.5s ease;
         }
 
 
         .welcome-title-glitch.playing {
             opacity: 0;
-            animation: cinematicFadeIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation: cinematicFadeIn 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
 
         html[data-theme="light"] .welcome-title-glitch {
-            color: #2c3e50;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: #ffffff;
+            text-shadow:
+                0 0 20px rgba(var(--accent-color-rgb), 0.9),
+                0 0 60px rgba(var(--accent-color-rgb), 0.4),
+                0 4px 20px rgba(0,0,0,0.4);
         }
 
 
         html[data-theme="dark"] .welcome-title-glitch,
         .welcome-title-glitch {
             color: #ffffff;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            text-shadow:
+                0 0 20px rgba(var(--accent-color-rgb), 0.8),
+                0 0 60px rgba(var(--accent-color-rgb), 0.3),
+                0 4px 20px rgba(0,0,0,0.5);
         }
 
 
 @keyframes cinematicFadeIn {
             0% {
                 opacity: 0;
-                transform: scale(0.95);
-                filter: blur(8px);
-                letter-spacing: 0px;
+                transform: scale(0.92);
+                filter: blur(12px);
+                letter-spacing: 2px;
+            }
+            40% {
+                filter: blur(2px);
             }
             100% {
                 opacity: 1;
                 transform: scale(1);
                 filter: blur(0);
-                letter-spacing: 6px;
+                letter-spacing: 8px;
             }
         }
 
         .title-cinematic-enter {
-            animation: cinematicIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: cinematicIn 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
 @keyframes cinematicIn {
             0% {
                 opacity: 0;
-                letter-spacing: 15px;
-                filter: blur(12px);
-                transform: scale(0.95);
+                letter-spacing: 20px;
+                filter: blur(16px);
+                transform: scale(0.9);
+            }
+            50% {
+                filter: blur(4px);
             }
             100% {
                 opacity: 1;
-                letter-spacing: 4px;
+                letter-spacing: 8px;
                 filter: blur(0);
                 transform: scale(1);
             }
@@ -2613,33 +2830,64 @@ gap: 10px;
 
         .welcome-subtitle-scramble {
             font-family: monospace;
-            font-size: 12px;
-            color: var(--welcome-text-sub);
-            letter-spacing: 2px;
-            opacity: 0.8;
+            font-size: 11px;
+            color: rgba(var(--accent-color-rgb), 0.85);
+            letter-spacing: 3px;
+            opacity: 0.9;
             text-transform: uppercase;
             min-height: 18px;
+            text-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.6);
         }
 
 
         .loader-tech {
-            width: 160px;
+            width: 200px;
             height: 2px;
-            background: var(--welcome-loader-bg);
+            background: rgba(255,255,255,0.06);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             border-radius: 2px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.4), 0 0 20px rgba(var(--accent-color-rgb),0.08);
+        }
+        .loader-tech::before {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; height: 100%;
+            background: repeating-linear-gradient(90deg,
+                transparent, transparent 8px,
+                rgba(255,255,255,0.04) 8px, rgba(255,255,255,0.04) 9px);
         }
 
         .loader-tech-bar {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 0%;
             height: 100%;
-            background: var(--accent-color);
-            box-shadow: 0 0 15px var(--accent-color);
+            background: linear-gradient(90deg,
+                rgba(var(--accent-color-rgb), 0.4),
+                var(--accent-color),
+                rgba(255,255,255,0.95),
+                var(--accent-color));
+            background-size: 200% 100%;
+            box-shadow: 0 0 24px var(--accent-color), 0 0 8px rgba(255,255,255,0.5);
             transition: width 0.2s linear;
+            animation: loaderShimmer 1.5s linear infinite;
+            border-radius: 2px;
+        }
+        .loader-tech-bar::after {
+            content: '';
+            position: absolute;
+            right: -4px; top: 50%;
+            width: 8px; height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 10px var(--accent-color), 0 0 4px white;
+            opacity: 0.95;
+        }
+        @keyframes loaderShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .meteor {
@@ -2679,19 +2927,20 @@ gap: 10px;
         }
 
         .logo-tech-container {
-            animation: logoAppear 1.2s cubic-bezier(0.22,1,0.36,1) forwards;
+            animation: logoAppear 1.4s cubic-bezier(0.16,1,0.3,1) forwards;
         }
         @keyframes logoAppear {
-            0% { opacity:0; transform:scale(0.6) translateY(20px); filter:blur(12px); }
+            0% { opacity:0; transform:scale(0.5) translateY(30px); filter:blur(20px); }
+            50% { filter:blur(4px); }
             100% { opacity:1; transform:scale(1) translateY(0); filter:blur(0); }
         }
 
         @keyframes barPulse {
-            0%,100% { box-shadow: 0 0 10px var(--accent-color); }
-            50% { box-shadow: 0 0 25px var(--accent-color), 0 0 5px rgba(255,255,255,0.4); }
+            0%,100% { box-shadow: 0 0 12px var(--accent-color), 0 0 4px rgba(255,255,255,0.2); }
+            50% { box-shadow: 0 0 30px var(--accent-color), 0 0 60px rgba(var(--accent-color-rgb),0.3), 0 0 8px rgba(255,255,255,0.6); }
         }
         .loader-tech-bar.pulsing {
-            animation: barPulse 0.8s ease-in-out infinite;
+            animation: barPulse 0.9s ease-in-out infinite, loaderShimmer 1.5s linear infinite;
         }
 
 @keyframes floatIcon {
@@ -6529,17 +6778,15 @@ html[data-theme="dark"] .tour-btn-primary {
     flex-shrink: 0;
 }
 
-.avatar-shape-circle { border-radius: 50% !important; overflow: hidden !important; }
 .avatar-shape-circle img, .avatar-shape-circle i { border-radius: 50% !important; clip-path: none !important; }
-.avatar-shape-circle .avatar { border-radius: 50% !important; overflow: hidden; }
-.avatar-shape-square { border-radius: var(--avatar-corner-radius, 8px) !important; overflow: hidden !important; }
-.avatar-shape-square img, .avatar-shape-square i { border-radius: var(--avatar-corner-radius, 8px) !important; clip-path: none !important; }
-.avatar-shape-square .avatar { border-radius: var(--avatar-corner-radius, 8px) !important; overflow: hidden; }
+.avatar-shape-square img, .avatar-shape-square i { border-radius: var(--avatar-corner-radius, 8px) !important; clip-path: inset(0 round var(--avatar-corner-radius, 8px)) !important; }
+.avatar-shape-pentagon img, .avatar-shape-pentagon i { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%) !important; border-radius: 0 !important; }
+.avatar-shape-heart img, .avatar-shape-heart i { clip-path: path('M 50 80 C 20 60 0 45 0 30 C 0 15 12 5 25 5 C 35 5 45 12 50 20 C 55 12 65 5 75 5 C 88 5 100 15 100 30 C 100 45 80 60 50 80 Z') !important; border-radius: 0 !important; }
 
-.message-avatar.shape-circle { border-radius: 50% !important; overflow: hidden !important; }
 .message-avatar.shape-circle img, .message-avatar.shape-circle i { border-radius: 50% !important; clip-path: none !important;}
-.message-avatar.shape-square { border-radius: var(--avatar-corner-radius, 8px) !important; overflow: hidden !important; }
-.message-avatar.shape-square img, .message-avatar.shape-square i { border-radius: var(--avatar-corner-radius, 8px) !important; clip-path: none !important; }
+.message-avatar.shape-square img, .message-avatar.shape-square i { border-radius: var(--avatar-corner-radius, 8px) !important; clip-path: inset(0 round var(--avatar-corner-radius, 8px)) !important; }
+.message-avatar.shape-pentagon img, .message-avatar.shape-pentagon i { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%) !important; border-radius: 0 !important; }
+.message-avatar.shape-heart img, .message-avatar.shape-heart i { clip-path: path('M 50 80 C 20 60 0 45 0 30 C 0 15 12 5 25 5 C 35 5 45 12 50 20 C 55 12 65 5 75 5 C 88 5 100 15 100 30 C 100 45 80 60 50 80 Z') !important; border-radius: 0 !important; }
 .avatar {
     width: 100% !important;
     height: 100% !important;
@@ -7841,18 +8088,18 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 }
 .fl-tab {
     flex: 1;
-    padding: 14px 6px;
+    padding: 16px 10px;
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     font-family: var(--font-family);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     transition: all 0.25s ease;
     position: relative;
 }
@@ -7984,275 +8231,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
     border-radius: 12px !important;
     letter-spacing: 1px;
     box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.25);
-}
-
-/* ===== Horizontal Tarot Layout ===== */
-.tarot-row {
-    display: flex;
-    gap: 8px;
-    overflow-x: visible;
-    padding: 4px 2px 8px;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-}
-.tarot-row .fortune-card.tarot-style {
-    flex: 1 1 0;
-    min-width: 100px;
-    max-width: 160px;
-    scroll-snap-align: start;
-    margin-bottom: 0 !important;
-}
-/* Compact card styles for 3-card spread */
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-header {
-    padding: 12px 0 6px;
-    font-size: 10px;
-    letter-spacing: 1px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-card-name {
-    font-size: 15px;
-    margin-bottom: 3px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-position-badge {
-    font-size: 10px;
-    padding: 2px 8px;
-    margin-bottom: 10px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-keyword {
-    font-size: 11px;
-    margin-bottom: 6px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-details {
-    padding: 0 12px 16px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-details p {
-    font-size: 11px !important;
-    line-height: 1.5 !important;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-divider {
-    margin-bottom: 8px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style i.fas {
-    font-size: 20px !important;
-}
-/* For single card, center it */
-.tarot-row.single-card {
-    justify-content: center;
-}
-.tarot-row.single-card .fortune-card.tarot-style {
-    flex: 0 0 80%;
-    max-width: 280px;
-}
-
-/* ===== Minor Arcana Fortune Supplement ===== */
-.minor-fortune-section {
-    margin-top: 14px;
-    padding: 14px 16px;
-    background: var(--primary-bg);
-    border-radius: 14px;
-    border: 1px solid var(--border-color);
-}
-.minor-fortune-title {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.minor-fortune-cards {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-.minor-card-chip {
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 10px 14px;
-    background: var(--secondary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    min-width: 80px;
-    transition: box-shadow 0.2s;
-}
-.minor-card-chip:hover {
-    box-shadow: 0 3px 10px rgba(var(--accent-color-rgb), 0.15);
-}
-.minor-card-chip-suit {
-    font-size: 16px;
-}
-.minor-card-chip-name {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-primary);
-    text-align: center;
-}
-.minor-card-chip-keyword {
-    font-size: 10px;
-    color: var(--accent-color);
-    text-align: center;
-}
-.minor-card-chip-badge {
-    font-size: 9px;
-    padding: 1px 7px;
-    border-radius: 20px;
-    background: rgba(var(--accent-color-rgb), 0.1);
-    color: var(--accent-color);
-}
-.minor-card-chip-badge.rev {
-    background: rgba(229,115,115,0.1);
-    color: #e07b6a;
-}
-.minor-fortune-insight {
-    margin-top: 12px;
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    font-style: italic;
-}
-.tarot-spread-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 14px 10px;
-    border: 1.5px solid var(--border-color);
-    border-radius: 14px;
-    background: var(--secondary-bg);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: var(--font-family);
-    position: relative;
-    overflow: hidden;
-}
-.tarot-spread-btn .leno-btn-num {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1;
-}
-.tarot-spread-btn .leno-btn-label {
-    font-size: 11px;
-    opacity: 0.6;
-}
-.tarot-spread-btn.active {
-    background: var(--accent-color);
-    color: #fff;
-    border-color: var(--accent-color);
-    box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.35);
-    transform: translateY(-2px);
-}
-.tarot-spread-btn.active .leno-btn-label {
-    opacity: 0.85;
-}
-.tarot-spread-btn:hover:not(.active) {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-    transform: translateY(-2px);
-}
-
-/* ===== Fortune Card Entrance Animation ===== */
-@keyframes cardReveal {
-    from { opacity: 0; transform: translateY(16px) scale(0.96); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.fortune-card.tarot-style {
-    animation: cardReveal 0.45s cubic-bezier(0.25, 0.8, 0.25, 1) both;
-}
-.fortune-card.tarot-style:nth-child(2) { animation-delay: 0.1s; }
-.fortune-card.tarot-style:nth-child(3) { animation-delay: 0.2s; }
-.fortune-card.tarot-style:nth-child(4) { animation-delay: 0.3s; }
-
-/* ===== Divination History ===== */
-.divi-history-item {
-    background: var(--primary-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 14px 16px;
-    transition: box-shadow 0.2s;
-    cursor: default;
-}
-.divi-history-item:hover {
-    box-shadow: 0 4px 14px rgba(var(--accent-color-rgb), 0.15);
-}
-.divi-history-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-.divi-history-type {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent-color);
-    background: rgba(var(--accent-color-rgb), 0.1);
-    border-radius: 20px;
-    padding: 2px 10px;
-    letter-spacing: 0.5px;
-}
-.divi-history-time {
-    font-size: 11px;
-    color: var(--text-secondary);
-    opacity: 0.7;
-}
-.divi-history-question {
-    font-size: 13px;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    font-style: italic;
-    opacity: 0.85;
-}
-.divi-history-cards {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-.divi-history-card-tag {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    background: var(--secondary-bg);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-.divi-history-card-tag.reversed {
-    color: #e07b6a;
-    border-color: rgba(224,123,106,0.3);
-}
-.divi-history-expand-btn {
-    background: none;
-    border: none;
-    font-size: 11px;
-    color: var(--accent-color);
-    cursor: pointer;
-    font-family: var(--font-family);
-    padding: 4px 0 0;
-    display: block;
-    width: 100%;
-    text-align: right;
-    opacity: 0.8;
-}
-.divi-history-detail {
-    display: none;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border-color);
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-}
-.divi-history-detail.open {
-    display: block;
 }
 
 .picker-wrapper {
@@ -8525,6 +8503,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="logo-tech-container">
                 <div class="logo-circle-outer"></div>
                 <div class="logo-circle-inner"></div>
+                <div class="logo-icon-bg"></div>
                 <div class="logo-icon-main">
                     <i class="fas fa-satellite-dish"></i>
                 </div>
@@ -8545,7 +8524,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             <div class="loader-tech">
                 <div class="loader-tech-bar" id="loader-tech-bar"></div>
             </div>
-            <div id="loader-status-text" style="font-size:10px;opacity:0.5;letter-spacing:1px;color:var(--welcome-text-sub);margin-top:4px;font-family:monospace;"></div>
+            <div id="loader-status-text" style="font-size:9px;opacity:0.45;letter-spacing:2px;color:rgba(var(--accent-color-rgb),0.8);margin-top:8px;font-family:monospace;text-transform:uppercase;text-shadow:0 0 8px rgba(var(--accent-color-rgb),0.5);"></div>
         </div>
     </div>
     <button id="immersive-exit-btn" onclick="toggleImmersiveMode(false)" title="退出沉浸模式">
@@ -9155,6 +9134,8 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <button class="modal-btn modal-btn-primary avatar-shape-btn-2" data-shape="circle" style="flex:1;font-size:12px;padding:7px 4px;min-width:60px;">● 圆形</button>
                     <button class="modal-btn modal-btn-secondary avatar-shape-btn-2" data-shape="square" style="flex:1;font-size:12px;padding:7px 4px;min-width:60px;">■ 方形</button>
+                    <button class="modal-btn modal-btn-secondary avatar-shape-btn-2" data-shape="pentagon" style="flex:1;font-size:12px;padding:7px 4px;min-width:60px;">⬠ 五边</button>
+                    <button class="modal-btn modal-btn-secondary avatar-shape-btn-2" data-shape="heart" style="flex:1;font-size:12px;padding:7px 4px;min-width:60px;">♥ 爱心</button>
                 </div>
                 <div id="avatar-corner-radius-control-2" style="margin-top:10px;display:none;">
                     <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">方形圆角:</div>
@@ -9166,10 +9147,10 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 </div>
             </div>
 
-            <div id="avatar-bubble-preview" style="margin-top:14px;background:var(--chat-bg,var(--primary-bg));border-radius:14px;padding:14px 12px;border:1px solid var(--border-color);">
-                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;opacity:0.7;text-align:center;letter-spacing:0.3px;">实时预览效果</div>
+            <div id="avatar-bubble-preview" style="margin-top:14px;background:var(--chat-bg,var(--primary-bg));border-radius:14px;padding:14px 12px;border:1px solid var(--border-color);display:none;">
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:10px;opacity:0.7;text-align:center;letter-spacing:0.3px;">预览效果</div>
                 <div class="preview-msg-row" style="display:flex;align-items:flex-end;gap:8px;margin-bottom:10px;">
-                    <div id="preview-partner-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:border-radius 0.2s ease;">
+                    <div id="preview-partner-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
                         <i class="fas fa-user" style="font-size:14px;color:var(--text-secondary);"></i>
                     </div>
                     <div style="background:var(--message-received-bg);color:var(--message-received-text);border-radius:16px 16px 16px 4px;padding:9px 13px;font-size:13px;max-width:160px;">
@@ -9180,7 +9161,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <div style="background:var(--message-sent-bg);color:var(--message-sent-text);border-radius:16px 16px 4px 16px;padding:9px 13px;font-size:13px;max-width:160px;">
                         你是我未曾拥有无法捕捉的亲昵
                     </div>
-                    <div id="preview-my-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:border-radius 0.2s ease;">
+                    <div id="preview-my-avatar" style="width:var(--in-chat-avatar-size,36px);height:var(--in-chat-avatar-size,36px);border-radius:50%;background:var(--border-color);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
                         <i class="fas fa-user" style="font-size:14px;color:var(--text-secondary);"></i>
                     </div>
                 </div>
@@ -9482,9 +9463,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <div class="settings-item" id="envelope-function">
                         <i class="fas fa-envelope"></i><span>信封投递</span>
                     </div>
-                    <div class="settings-item" id="resource-share-function">
-                        <i class="fas fa-link"></i><span>气泡 &amp; 字体资源</span>
-                    </div>
                 </div>
             </div>
 
@@ -9629,12 +9607,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <button class="fl-tab" id="fl-tab-lenormand" onclick="switchFLTab('lenormand')">
                     <i class="fas fa-moon"></i> 雷诺曼占卜
                 </button>
-                <button class="fl-tab" id="fl-tab-tarot" onclick="switchFLTab('tarot')">
-                    <i class="fas fa-star-and-crescent"></i> 塔罗占卜
-                </button>
-                <button class="fl-tab" id="fl-tab-divihistory" onclick="switchFLTab('divihistory')">
-                    <i class="fas fa-scroll"></i> 往昔
-                </button>
             </div>
             <div id="fl-panel-fortune" class="fl-panel fl-panel-active">
                 <div id="fortune-content"></div>
@@ -9667,47 +9639,9 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <button class="modal-btn modal-btn-secondary" id="close-lenormand">关闭</button>
                 </div>
             </div>
-            <div id="fl-panel-tarot" class="fl-panel">
-                <div id="tarot-divination-content">
-                    <div id="tarot-setup" style="padding:4px 0 12px;">
-                        <div class="leno-num-section">
-                            <div class="leno-section-label"><i class="fas fa-layer-group"></i> 牌阵选择</div>
-                            <div class="leno-num-btns">
-                                <button class="tarot-spread-btn active" data-spread="single"><span class="leno-btn-num">1</span><span class="leno-btn-label">单张</span></button>
-                                <button class="tarot-spread-btn" data-spread="three"><span class="leno-btn-num">3</span><span class="leno-btn-label">三张</span></button>
-                            </div>
-                            <div class="leno-num-desc" id="tarot-spread-desc">单张牌 · 直指当下</div>
-                        </div>
-                        <div class="leno-question-section">
-                            <div class="leno-section-label"><i class="fas fa-feather-alt"></i> 你的提问（可选）</div>
-                            <textarea id="tarot-question" placeholder="将内心的迷惑轻轻诉说..." class="leno-question-input"></textarea>
-                        </div>
-
-                        <button class="modal-btn modal-btn-primary leno-draw-btn" onclick="startTarotDraw()"><i class="fas fa-hand-sparkles"></i> 开始塔罗占卜</button>
-                    </div>
-                    <div id="tarot-result" style="display:none;"></div>
-                </div>
-                <div class="modal-buttons" style="margin-top:12px;">
-                    <button class="modal-btn modal-btn-secondary" id="tarot-reset-btn" onclick="resetTarotDivination()" style="display:none;">重新占卜</button>
-                    <button class="modal-btn modal-btn-secondary" id="close-tarot-divination">关闭</button>
-                </div>
-            </div>
-            <div id="fl-panel-divihistory" class="fl-panel">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-                    <div style="font-size:13px;color:var(--text-secondary);font-style:italic;">每一次占卜，皆是与命运的对话</div>
-                    <button id="clear-divi-history-btn" onclick="clearDiviHistory()" style="background:none;border:1px solid var(--border-color);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--text-secondary);cursor:pointer;font-family:var(--font-family);">清空记录</button>
-                </div>
-                <div id="divi-history-list" style="display:flex;flex-direction:column;gap:12px;min-height:120px;"></div>
-                <div id="divi-history-empty" style="text-align:center;padding:40px 20px;color:var(--text-secondary);font-size:13px;display:none;">
-                    <i class="fas fa-moon" style="font-size:32px;opacity:0.3;display:block;margin-bottom:12px;"></i>
-                    尚无占卜记录<br><span style="font-size:11px;opacity:0.6;">完成一次占卜后，结果将自动收录于此</span>
-                </div>
-                <div class="modal-buttons" style="margin-top:16px;">
-                    <button class="modal-btn modal-btn-secondary" id="close-divihistory">关闭</button>
-                </div>
-            </div>
         </div>
     </div>
+    <div id="fortune-modal" style="display:none;"></div>
 
     <div id="lenormand-modal" style="display:none;"></div>
 
@@ -11363,7 +11297,6 @@ const loadData = async () => {
         if (savedMyStickers) myStickerLibrary = savedMyStickers;
         if (savedCustomThemes) customThemes = savedCustomThemes;
         if (savedThemeSchemes) themeSchemes = savedThemeSchemes;
-        // Load customEmojis
         try { const ce = await localforage.getItem(getStorageKey('customEmojis')); if (ce && Array.isArray(ce)) customEmojis = ce; } catch(e) {}
         window._customReplies = customReplies;
         window._disabledDefaultReplies = disabledDefaultReplies;
@@ -11744,7 +11677,7 @@ function manageAutoSendTimer() {
             showNotification('背景图片已移除', 'success');
         };
 
-        function renderMessages(preserveScroll = false) {
+function renderMessages(preserveScroll = false) {
             const container = DOMElements.chatContainer;
             const totalMessages = messages.length;
 
@@ -11755,10 +11688,16 @@ function manageAutoSendTimer() {
 
             const oldScrollHeight = container.scrollHeight;
             
+            const existingNodes = new Map();
+            container.querySelectorAll('.message-wrapper, .system-message').forEach(node => {
+                if (node.dataset.id) {
+                    existingNodes.set(node.dataset.id, node);
+                }
+            });
+            
             container.innerHTML = '';
 
             const fragment = new DocumentFragment();
-            // 撑底占位，使消息始终显示在聊天区域底部
             const spacer = document.createElement('div');
             spacer.style.flex = '1';
             fragment.appendChild(spacer);
@@ -11781,15 +11720,6 @@ function manageAutoSendTimer() {
                     lastSender = null; 
                 }
 
-                if (msg.type === 'system') {
-                    const systemMsgDiv = document.createElement('div');
-                    systemMsgDiv.className = 'system-message';
-                    systemMsgDiv.innerHTML = msg.text;
-                    fragment.appendChild(systemMsgDiv);
-                    lastSender = 'system';
-                    return;
-                }
-
                 let showTimestamp = true;
                 if (settings.timeFormat === 'off') {
                     showTimestamp = false;
@@ -11797,12 +11727,67 @@ function manageAutoSendTimer() {
                     const nextMsg = msgsToRender[index + 1];
                     const currentTs = new Date(msg.timestamp).getTime();
                     const nextTs = new Date(nextMsg.timestamp).getTime();
-                    
-                    if (nextMsg.sender === msg.sender && 
-                        nextMsg.type !== 'system' && 
-                        (nextTs - currentTs < 60000)) {
+                    if (nextMsg.sender === msg.sender && nextMsg.type !== 'system' && (nextTs - currentTs < 60000)) {
                         showTimestamp = false;
                     }
+                }
+
+                const groupMember = (msg.sender !== 'user' && typeof getGroupMemberForMessage === 'function') ? getGroupMemberForMessage(msg.id) : null;
+                const currentSenderStr = groupMember ? ('group_' + groupMember.name) : msg.sender;
+
+                let existingNode = existingNodes.get(String(msg.id));
+                if (existingNode) {
+                    if (msg.type !== 'system') {
+                        const msgDiv = existingNode.querySelector('.message');
+                        if (msgDiv) msgDiv.className = `message message-${msg.sender === 'user' ? 'sent': 'received'} ${settings.bubbleStyle}`;
+
+                        const readReceipt = existingNode.querySelector('.read-receipt');
+                        if (readReceipt && msg.sender === 'user') {
+                            if (msg.status === 'read') {
+                                readReceipt.classList.add('read');
+                                readReceipt.innerHTML = '<i class="fas fa-check-double"></i>';
+                            } else {
+                                readReceipt.classList.remove('read');
+                                readReceipt.innerHTML = '<i class="fas fa-check"></i>';
+                            }
+                        }
+
+                        const favBtn = existingNode.querySelector('.favorite-action-btn');
+                        if (favBtn) {
+                            if (msg.favorited) {
+                                favBtn.classList.add('favorited');
+                                favBtn.innerHTML = '<i class="fas fa-star"></i>';
+                            } else {
+                                favBtn.classList.remove('favorited');
+                                favBtn.innerHTML = '<i class="far fa-star"></i>';
+                            }
+                        }
+
+                        const avatarDiv = existingNode.querySelector('.message-avatar');
+                        if (avatarDiv) {
+                            const isSameSenderGroup = groupMember && lastSender === 'group_' + (groupMember ? groupMember.name : '');
+                            const isSameSenderNormal = !groupMember && msg.sender === lastSender;
+                            if (isSameSenderGroup || isSameSenderNormal) {
+                                avatarDiv.classList.add('hidden');
+                            } else {
+                                avatarDiv.classList.remove('hidden');
+                            }
+                        }
+                    }
+                    
+                    fragment.appendChild(existingNode); 
+                    lastSender = currentSenderStr;
+                    return; 
+                }
+
+                if (msg.type === 'system') {
+                    const systemMsgDiv = document.createElement('div');
+                    systemMsgDiv.className = 'system-message';
+                    systemMsgDiv.dataset.id = msg.id; 
+                    systemMsgDiv.innerHTML = msg.text;
+                    fragment.appendChild(systemMsgDiv);
+                    lastSender = 'system';
+                    return;
                 }
 
                 const wrapper = document.createElement('div');
@@ -11811,8 +11796,6 @@ function manageAutoSendTimer() {
                 
                 const avatarDiv = document.createElement('div');
                 avatarDiv.className = 'message-avatar';
-
-                const groupMember = (msg.sender !== 'user' && typeof getGroupMemberForMessage === 'function') ? getGroupMemberForMessage(msg.id) : null;
 
                 if (settings.inChatAvatarEnabled) {
                     const isSameSenderGroup = groupMember && lastSender === 'group_' + (groupMember ? groupMember.name : '');
@@ -11870,20 +11853,16 @@ function manageAutoSendTimer() {
                 messageDiv.innerHTML = messageHTML;
 
                 let actionsHTML = '';
-                
                 if (settings.replyEnabled) actionsHTML += `<button class="meta-action-btn reply-btn" title="回复"><i class="fas fa-reply"></i></button>`;
-                
                 const starIcon = msg.favorited ? 'fas fa-star' : 'far fa-star'; 
                 actionsHTML += `<button class="meta-action-btn favorite-action-btn ${msg.favorited ? 'favorited' : ''}" title="${msg.favorited ? '取消收藏' : '收藏'}"><i class="${starIcon}"></i></button>`;
-                
                 actionsHTML += `<button class="meta-action-btn note-btn" title="注释"><i class="fas fa-sticky-note"></i></button>`;
-actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i class="fas fa-trash-alt"></i></button>`;
+                actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i class="fas fa-trash-alt"></i></button>`;
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'message-meta-actions';
                 actionsDiv.innerHTML = actionsHTML;
 
                 let metaHTML = '';
-                
                 if (showTimestamp) {
                     const ts = new Date(msg.timestamp);
                     let timeStr;
@@ -11911,14 +11890,9 @@ actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i cla
                     if (!showTimestamp && !metaHTML.includes('timestamp')) {
                          metaDiv.style.height = 'auto'; 
                          metaDiv.style.marginTop = '2px';
-                         if (settings.inChatAvatarPosition !== 'top') {
-                             avatarDiv.style.marginBottom = '18px';
-                         }
+                         if (settings.inChatAvatarPosition !== 'top') avatarDiv.style.marginBottom = '18px';
                     } else {
-                         
-                         if (settings.inChatAvatarPosition !== 'top') {
-                             avatarDiv.style.marginBottom = '26px';
-                         }
+                         if (settings.inChatAvatarPosition !== 'top') avatarDiv.style.marginBottom = '26px';
                     }
                     metaDiv.innerHTML = metaHTML;
                     contentWrapper.append(actionsDiv, messageDiv, metaDiv);
@@ -11928,7 +11902,7 @@ actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i cla
                 wrapper.appendChild(contentWrapper);
                 fragment.appendChild(wrapper);
                 
-                lastSender = groupMember ? ('group_' + groupMember.name) : msg.sender;
+                lastSender = currentSenderStr;
             });
 
             container.appendChild(fragment);
@@ -11942,8 +11916,7 @@ actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i cla
                     container.scrollTop = container.scrollHeight;
                 });
             }
-        }        
-
+        }
         const addMessage = (message) => {
             if (!(message.timestamp instanceof Date)) message.timestamp = new Date(message.timestamp);
             messages.push(message);
@@ -12145,7 +12118,6 @@ if (!isBatchMode && type === 'normal') {
         })();
 
         function simulateReply() {
-            // 显示正在输入指示器
             function showTypingIndicator() {
                 if (!settings.typingIndicatorEnabled) return;
                 const tiWrapper = document.getElementById('typing-indicator-wrapper');
@@ -12810,7 +12782,6 @@ function renderFortuneCardInteractive(data) {
 
     const card = CONSTANTS.TAROT_CARDS[data.cardIndex];
     const isUpright = data.isUpright;
-    const todayKey = data.date || new Date().toDateString();
 
     content.innerHTML = `
         <div style="text-align:center; margin-bottom:10px; color:var(--text-secondary); font-size:12px;">
@@ -12821,7 +12792,7 @@ function renderFortuneCardInteractive(data) {
             <div class="tarot-card-inner">
                 <div class="tarot-face tarot-front">
                     <div class="tarot-pattern"><i class="fas fa-star-and-crescent"></i></div>
-
+                    <div style="margin-top:10px; font-size:12px; letter-spacing:2px;">THE FATE</div>
                 </div>
 
                 <div class="tarot-face tarot-back">
@@ -12844,7 +12815,6 @@ function renderFortuneCardInteractive(data) {
             <div class="fortune-tip" style="font-size:12px; border-top:1px dashed var(--border-color); padding-top:8px;">
                 💡 指引：${isUpright ? "顺势而为，保持当下的能量。" : "换个角度思考，也许是转机。"}
             </div>
-            ${renderMinorFortune(todayKey)}
         </div>
     `;
 
@@ -12918,7 +12888,7 @@ function updateLenoNumDesc(n) {
     const desc = document.getElementById('leno-num-desc');
     if (!desc) return;
     if (n === 1) desc.textContent = '单张牌 · 直达答案';
-    else if (n === 3) desc.textContent = '三张牌 · 洞察全局';
+    else if (n === 3) desc.textContent = '三张牌 · 过去 · 现在 · 未来';
 }
 
 function switchFLTab(tab) {
@@ -12979,11 +12949,11 @@ function startLenormandDraw() {
         const n0 = drawn[0].name, n1 = drawn[1].name, n2 = drawn.length >= 3 ? drawn[2].name : '';
         
         const templates3 = [
-            `「${n0}」的能量如同${m0}的底色，与「${n1}」相互呼应；「${n2}」则带来${m2}的质感。三张牌的能量流动，共同编织出一段关于${keywords}的故事。`,
-            `星盘之上，「${n0}」、「${n1}」、「${n2}」三张牌依次展开——各自携带的能量在此汇聚，悄悄低语。${keywords}，是此刻需要关注的核心能量。`,
-            `「${n0}」与「${n1}」、「${n2}」共同呈现：${m0}的力量与${m2}的方向在这里交织，等待你迈出那一步。愿三张牌的能量，成为你此刻的指引。`,
-            `三张牌共同呈现了一段旅程：「${n0}」、「${n1}」、「${n2}」依次展开，${keywords}的主题贯穿其中，指引着前行的方向。`,
-            `宇宙借${energies}的能量，向你传递信息：${m0}的力量与${m2}的可能性已悄然开启，请相信这段旅程有其深意。`
+            `「${n0}」带来的过去，如同${m0}的底色；「${n1}」描绘当下正在发生的一切；「${n2}」则指向${m2}的未来轮廓。三张牌的能量流动，共同编织出一段关于${keywords}的故事。`,
+            `星盘之上，「${n0}」、「${n1}」、「${n2}」三张牌依次展开——过去的印记、当下的选择、未来的可能，皆在这三枚符号里悄悄低语。${keywords}，是此刻需要关注的核心能量。`,
+            `从「${n0}」到「${n2}」，时间在牌阵中流动。${m0}的过去造就了你现在的模样，而${m2}的方向，正等待你迈出那一步。愿此刻的「${n1}」，成为连接两端的桥梁。`,
+            `三张牌共同呈现了一段旅程：以「${n0}」为起点，经历「${n1}」的当下时刻，抵达「${n2}」所指引的远方。${keywords}的主题贯穿其中，指引着前行的方向。`,
+            `宇宙借${energies}的能量，向你传递信息：曾经${m0}，如今正经历转变，而前方${m2}的可能性已悄然开启。请相信这段旅程有其深意。`
         ];
         const templates2 = [
             `「${n0}」与「${n1}」的能量相遇，${keywords}的主题在此交汇。${m0}的力量遇见了新的可能，共同描绘出当下局势的面貌。`,
@@ -13016,362 +12986,7 @@ function startLenormandDraw() {
     document.getElementById('lenormand-setup').style.display = 'none';
     document.getElementById('lenormand-result').style.display = '';
     document.getElementById('lenormand-reset-btn').style.display = '';
-
-    // Save to history
-    const lCards = drawn.map(c => ({ name: c.name, keyword: c.keyword, position: '', isReversed: false, meaning: c.meaning }));
-    saveDiviHistory({ type: `雷诺曼${lenormandCount === 1 ? '单张' : '三张'}`, question, cards: lCards });
 }
-
-// ============ 塔罗占卜 (78张全套) ============
-const ALL_78_TAROT_CARDS = [
-    // 大阿卡纳 (22张)
-    { name: "愚人", num: "0", type: "major", eng: "The Fool", icon: "fa-hiking", keyword: "流浪", upright: "新的开始、冒险、天真无畏、自由精神、无限可能", reversed: "鲁莽、逃避、不负责任、缺乏方向感" },
-    { name: "魔术师", num: "I", type: "major", eng: "The Magician", icon: "fa-hat-wizard", keyword: "创造", upright: "创造力、技能、意志力、化腐朽为神奇、行动力", reversed: "欺骗、操纵、能力未发挥、意图不纯" },
-    { name: "女祭司", num: "II", type: "major", eng: "The High Priestess", icon: "fa-book-open", keyword: "智慧", upright: "直觉、潜意识、神秘、内在智慧、静待时机", reversed: "秘密、压抑直觉、信息隐藏、不理性" },
-    { name: "皇后", num: "III", type: "major", eng: "The Empress", icon: "fa-seedling", keyword: "丰收", upright: "丰饶、母性、自然、感官享受、创造力", reversed: "依赖、创意阻塞、过度保护、忽视自我" },
-    { name: "皇帝", num: "IV", type: "major", eng: "The Emperor", icon: "fa-crown", keyword: "支配", upright: "权威、结构、控制、稳定、父亲形象、领导力", reversed: "专横、刚愎自用、权力滥用、缺乏弹性" },
-    { name: "教皇", num: "V", type: "major", eng: "The Hierophant", icon: "fa-church", keyword: "援助", upright: "传统、信仰、教导、精神指引、制度", reversed: "叛逆传统、个人信仰、突破规范" },
-    { name: "恋人", num: "VI", type: "major", eng: "The Lovers", icon: "fa-heart", keyword: "结合", upright: "爱、和谐、关系、价值观的选择、灵魂连接", reversed: "失衡、误判、价值观冲突、分离" },
-    { name: "战车", num: "VII", type: "major", eng: "The Chariot", icon: "fa-horse-head", keyword: "胜利", upright: "意志力、胜利、决心、自我控制、前进", reversed: "失控、缺乏方向、挫败、固执" },
-    { name: "力量", num: "VIII", type: "major", eng: "Strength", icon: "fa-fist-raised", keyword: "意志", upright: "勇气、耐心、控制、内在力量、温柔的坚定", reversed: "怀疑自我、软弱、压抑内在力量" },
-    { name: "隐士", num: "IX", type: "major", eng: "The Hermit", icon: "fa-lightbulb", keyword: "探索", upright: "内省、孤独、寻求真理、内在指引、智慧", reversed: "孤立、拒绝帮助、过度孤独" },
-    { name: "命运之轮", num: "X", type: "major", eng: "Wheel of Fortune", icon: "fa-dharmachakra", keyword: "轮回", upright: "循环、命运、转折点、运气、因果", reversed: "逆境、抗拒改变、恶性循环" },
-    { name: "正义", num: "XI", type: "major", eng: "Justice", icon: "fa-balance-scale", keyword: "均衡", upright: "公正、真理、因果、法律、诚实", reversed: "不公正、逃避责任、不诚实" },
-    { name: "倒吊人", num: "XII", type: "major", eng: "The Hanged Man", icon: "fa-user-injured", keyword: "奉献", upright: "牺牲、新的视角、等待、放下、顿悟", reversed: "拖延、无谓牺牲、停滞不前" },
-    { name: "死神", num: "XIII", type: "major", eng: "Death", icon: "fa-skull", keyword: "结束", upright: "结束、转变、重生、放手、蜕变", reversed: "抗拒改变、无法放手、腐朽" },
-    { name: "节制", num: "XIV", type: "major", eng: "Temperance", icon: "fa-glass-whiskey", keyword: "净化", upright: "平衡、适度、耐心、调和、中庸之道", reversed: "失衡、过度、缺乏耐心" },
-    { name: "恶魔", num: "XV", type: "major", eng: "The Devil", icon: "fa-link", keyword: "诱惑", upright: "束缚、物质主义、欲望、诱惑、阴暗面", reversed: "解脱束缚、重获自由、自我觉醒" },
-    { name: "高塔", num: "XVI", type: "major", eng: "The Tower", icon: "fa-gopuram", keyword: "毁灭", upright: "突变、混乱、启示、破坏、真相大白", reversed: "延迟变化、避免灾难、内在崩溃" },
-    { name: "星星", num: "XVII", type: "major", eng: "The Star", icon: "fa-star", keyword: "希望", upright: "希望、灵感、平静、治愈、信念", reversed: "绝望、失去信仰、悲观" },
-    { name: "月亮", num: "XVIII", type: "major", eng: "The Moon", icon: "fa-moon", keyword: "不安", upright: "幻觉、恐惧、焦虑、潜意识、不确定性", reversed: "恐惧消散、真相浮现、走出迷惘" },
-    { name: "太阳", num: "XIX", type: "major", eng: "The Sun", icon: "fa-sun", keyword: "生命", upright: "快乐、成功、活力、清晰、正能量", reversed: "悲观、自我怀疑、短暂挫折" },
-    { name: "审判", num: "XX", type: "major", eng: "Judgement", icon: "fa-bullhorn", keyword: "复活", upright: "复活、觉醒、号召、决定、自我评价", reversed: "自我怀疑、拒绝接受审判、过去纠缠" },
-    { name: "世界", num: "XXI", type: "major", eng: "The World", icon: "fa-globe-americas", keyword: "达成", upright: "完成、整合、成就、圆满、世界在脚下", reversed: "未完成、拖延、缺乏完结" },
-    // 小阿卡纳 权杖 (14张)
-    { name: "权杖一", num: "Ace", type: "wands", eng: "Ace of Wands", icon: "fa-fire", keyword: "灵感", upright: "新的灵感、创意火花、激情开始、行动的欲望", reversed: "创意受阻、缺乏动力、计划搁浅" },
-    { name: "权杖二", num: "2", type: "wands", eng: "Two of Wands", icon: "fa-compass", keyword: "规划", upright: "规划、展望未来、个人力量、决策时刻", reversed: "恐惧未知、缺乏计划、自我设限" },
-    { name: "权杖三", num: "3", type: "wands", eng: "Three of Wands", icon: "fa-binoculars", keyword: "扩展", upright: "扩展、远见、探索、等待成果、贸易", reversed: "障碍、延迟、预期未达" },
-    { name: "权杖四", num: "4", type: "wands", eng: "Four of Wands", icon: "fa-home", keyword: "庆典", upright: "庆典、稳定基础、家庭幸福、里程碑", reversed: "不稳定、家庭矛盾、延迟庆祝" },
-    { name: "权杖五", num: "5", type: "wands", eng: "Five of Wands", icon: "fa-people-arrows", keyword: "竞争", upright: "竞争、冲突、挑战、意见分歧、斗争", reversed: "内部冲突、避免对抗、达成协议" },
-    { name: "权杖六", num: "6", type: "wands", eng: "Six of Wands", icon: "fa-trophy", keyword: "凯旋", upright: "胜利、认可、成功、公众认可、自信", reversed: "私下的成功、不稳定的成功、傲慢" },
-    { name: "权杖七", num: "7", type: "wands", eng: "Seven of Wands", icon: "fa-shield-alt", keyword: "坚守", upright: "防御、坚守立场、挑战、坚持信念", reversed: "放弃、被压倒、自我怀疑" },
-    { name: "权杖八", num: "8", type: "wands", eng: "Eight of Wands", icon: "fa-meteor", keyword: "速度", upright: "迅速行动、进展加速、旅行、消息传递", reversed: "延误、等待、障碍、计划受阻" },
-    { name: "权杖九", num: "9", type: "wands", eng: "Nine of Wands", icon: "fa-user-shield", keyword: "坚韧", upright: "坚韧、弹性、最后的挑战、边界、谨慎", reversed: "偏执、顽固、不愿妥协、防卫过度" },
-    { name: "权杖十", num: "10", type: "wands", eng: "Ten of Wands", icon: "fa-weight-hanging", keyword: "重担", upright: "责任过重、负担、压力、努力奋斗、接近终点", reversed: "放下重担、委派任务、精简" },
-    { name: "权杖侍者", num: "Page", type: "wands", eng: "Page of Wands", icon: "fa-feather-alt", keyword: "热情", upright: "热情、探索、新消息、好奇心、创意潜力", reversed: "轻率、三分钟热度、缺乏方向" },
-    { name: "权杖骑士", num: "Knight", type: "wands", eng: "Knight of Wands", icon: "fa-horse", keyword: "冒险", upright: "冒险、充沛能量、勇敢行动、自信进取", reversed: "鲁莽、分散注意力、缺乏耐心" },
-    { name: "权杖皇后", num: "Queen", type: "wands", eng: "Queen of Wands", icon: "fa-female", keyword: "魅力", upright: "魅力、自信、热情、独立、领袖气质", reversed: "自私、嫉妒、内向退缩" },
-    { name: "权杖国王", num: "King", type: "wands", eng: "King of Wands", icon: "fa-male", keyword: "领袖", upright: "领袖力、愿景、创业家精神、激励他人", reversed: "专横、冲动、高压控制" },
-    // 小阿卡纳 圣杯 (14张)
-    { name: "圣杯一", num: "Ace", type: "cups", eng: "Ace of Cups", icon: "fa-glass-cheers", keyword: "爱涌现", upright: "新的爱、情感开始、灵性连接、直觉、丰盛", reversed: "情感封闭、爱的阻塞、内心空虚" },
-    { name: "圣杯二", num: "2", type: "cups", eng: "Two of Cups", icon: "fa-heart", keyword: "联结", upright: "联结、伙伴关系、相互吸引、和谐关系", reversed: "失衡关系、误解、分离" },
-    { name: "圣杯三", num: "3", type: "cups", eng: "Three of Cups", icon: "fa-users", keyword: "庆祝", upright: "庆祝、友情、社群、喜悦、创意合作", reversed: "过度放纵、孤立、朋友冲突" },
-    { name: "圣杯四", num: "4", type: "cups", eng: "Four of Cups", icon: "fa-eye-slash", keyword: "冥想", upright: "冥想、无聊、再评估、内省、错过机会", reversed: "新机会、重新参与、走出冷漠" },
-    { name: "圣杯五", num: "5", type: "cups", eng: "Five of Cups", icon: "fa-sad-cry", keyword: "失落", upright: "失落、悲伤、后悔、专注于负面、遗憾", reversed: "从失去中恢复、接受、前进" },
-    { name: "圣杯六", num: "6", type: "cups", eng: "Six of Cups", icon: "fa-child", keyword: "怀旧", upright: "怀旧、过去记忆、天真、礼物、童年", reversed: "困在过去、不切实际、成长" },
-    { name: "圣杯七", num: "7", type: "cups", eng: "Seven of Cups", icon: "fa-cloud", keyword: "幻想", upright: "幻想、选择过多、白日梦、愿望投射", reversed: "聚焦、从幻想回归现实、决断" },
-    { name: "圣杯八", num: "8", type: "cups", eng: "Eight of Cups", icon: "fa-walking", keyword: "离去", upright: "离开、追寻更深意义、放下过去、旅程", reversed: "逃避、放弃、低落不前" },
-    { name: "圣杯九", num: "9", type: "cups", eng: "Nine of Cups", icon: "fa-smile-beam", keyword: "满足", upright: "满足感、愿望成真、幸福、感激、丰盛", reversed: "不满足、物质主义、过分自满" },
-    { name: "圣杯十", num: "10", type: "cups", eng: "Ten of Cups", icon: "fa-rainbow", keyword: "圆满", upright: "情感圆满、家庭幸福、内心平和、真爱", reversed: "家庭矛盾、不和谐、幸福幻灭" },
-    { name: "圣杯侍者", num: "Page", type: "cups", eng: "Page of Cups", icon: "fa-fish", keyword: "直觉", upright: "创意、直觉信息、情感探索、艺术、梦境", reversed: "情绪化、逃避现实、创意受阻" },
-    { name: "圣杯骑士", num: "Knight", type: "cups", eng: "Knight of Cups", icon: "fa-dove", keyword: "浪漫", upright: "浪漫、魅力、艺术、追求理想、情感冒险", reversed: "多愁善感、幻想、无法实现的诺言" },
-    { name: "圣杯皇后", num: "Queen", type: "cups", eng: "Queen of Cups", icon: "fa-water", keyword: "慈悲", upright: "同理心、慈悲、直觉、情感成熟、关怀", reversed: "情绪化、不安全感、依赖" },
-    { name: "圣杯国王", num: "King", type: "cups", eng: "King of Cups", icon: "fa-anchor", keyword: "情感智慧", upright: "情感平衡、智慧、外交、慷慨、情感成熟", reversed: "情绪操控、冷漠、情绪不稳定" },
-    // 小阿卡纳 宝剑 (14张)
-    { name: "宝剑一", num: "Ace", type: "swords", eng: "Ace of Swords", icon: "fa-bolt", keyword: "真相", upright: "清晰、真相、突破、新思想、正义", reversed: "混乱、谎言、思维混乱" },
-    { name: "宝剑二", num: "2", type: "swords", eng: "Two of Swords", icon: "fa-ban", keyword: "僵局", upright: "僵局、难以决断、封闭心门、逃避真相", reversed: "信息显现、做出决定、困境解除" },
-    { name: "宝剑三", num: "3", type: "swords", eng: "Three of Swords", icon: "fa-heart-broken", keyword: "心碎", upright: "心痛、悲伤、失去、分离、痛苦", reversed: "从悲伤恢复、宽恕、疗愈" },
-    { name: "宝剑四", num: "4", type: "swords", eng: "Four of Swords", icon: "fa-bed", keyword: "休养", upright: "休息、恢复、静默冥想、暂时撤退", reversed: "重返活动、再次激活、不耐烦" },
-    { name: "宝剑五", num: "5", type: "swords", eng: "Five of Swords", icon: "fa-skull-crossbones", keyword: "冲突", upright: "冲突、失败、空洞的胜利、不诚实", reversed: "和解、超越冲突、走向和平" },
-    { name: "宝剑六", num: "6", type: "swords", eng: "Six of Swords", icon: "fa-ship", keyword: "过渡", upright: "过渡期、逃离困境、平静旅程、向前迈进", reversed: "抗拒改变、无处可逃、困难过渡" },
-    { name: "宝剑七", num: "7", type: "swords", eng: "Seven of Swords", icon: "fa-user-secret", keyword: "策略", upright: "策略、欺骗、逃跑、单独行动、不诚实", reversed: "真相揭露、良心发现、归还所得" },
-    { name: "宝剑八", num: "8", type: "swords", eng: "Eight of Swords", icon: "fa-handcuffs", keyword: "束缚", upright: "受困、限制、负面思维、无助感、自我束缚", reversed: "重获自由、新的视角、接受帮助" },
-    { name: "宝剑九", num: "9", type: "swords", eng: "Nine of Swords", icon: "fa-nightmare", keyword: "焦虑", upright: "焦虑、噩梦、担忧、内心痛苦、罪恶感", reversed: "从绝望中走出、寻求帮助、希望" },
-    { name: "宝剑十", num: "10", type: "swords", eng: "Ten of Swords", icon: "fa-times-circle", keyword: "终结", upright: "终结、失败、被背叛、最低谷后的希望", reversed: "从失败中恢复、抗拒接受、新开始" },
-    { name: "宝剑侍者", num: "Page", type: "swords", eng: "Page of Swords", icon: "fa-eye", keyword: "洞察", upright: "好奇心、洞察力、机敏、新想法、警觉", reversed: "散漫、粗心大意、言语伤人" },
-    { name: "宝剑骑士", num: "Knight", type: "swords", eng: "Knight of Swords", icon: "fa-wind", keyword: "冲劲", upright: "行动力、冲劲、直接、野心、智慧战斗", reversed: "鲁莽、仓促、过于好斗" },
-    { name: "宝剑皇后", num: "Queen", type: "swords", eng: "Queen of Swords", icon: "fa-feather", keyword: "独立", upright: "独立、清晰思考、直接、聪明、设立界限", reversed: "刻薄、过于批判、痛苦" },
-    { name: "宝剑国王", num: "King", type: "swords", eng: "King of Swords", icon: "fa-gavel", keyword: "理性", upright: "理性权威、思维清晰、道德标准、客观决策", reversed: "操控、专横、滥用权力" },
-    // 小阿卡纳 星币 (14张)
-    { name: "星币一", num: "Ace", type: "pentacles", eng: "Ace of Pentacles", icon: "fa-coins", keyword: "机遇", upright: "新的物质机会、丰盛、富裕开始、安全感", reversed: "错失良机、财务不稳、固执" },
-    { name: "星币二", num: "2", type: "pentacles", eng: "Two of Pentacles", icon: "fa-yin-yang", keyword: "平衡", upright: "多任务处理、适应性、时间管理、平衡", reversed: "失去平衡、混乱、过度承诺" },
-    { name: "星币三", num: "3", type: "pentacles", eng: "Three of Pentacles", icon: "fa-drafting-compass", keyword: "协作", upright: "团队合作、技能提升、协作、学习", reversed: "缺乏团队精神、品质不达标、孤立" },
-    { name: "星币四", num: "4", type: "pentacles", eng: "Four of Pentacles", icon: "fa-lock", keyword: "守护", upright: "安全感、节俭、守护财富、控制欲", reversed: "过度节俭、贪婪、财务损失" },
-    { name: "星币五", num: "5", type: "pentacles", eng: "Five of Pentacles", icon: "fa-snowflake", keyword: "艰难", upright: "艰难时期、物质损失、孤立、健康问题", reversed: "从艰难中恢复、寻求帮助、好转" },
-    { name: "星币六", num: "6", type: "pentacles", eng: "Six of Pentacles", icon: "fa-hand-holding-usd", keyword: "给予", upright: "慷慨、给予与接受、平衡施受、慈善", reversed: "债务、吝啬、权力不平衡" },
-    { name: "星币七", num: "7", type: "pentacles", eng: "Seven of Pentacles", icon: "fa-seedling", keyword: "耕耘", upright: "长期投资、耐心、成果评估、持续努力", reversed: "缺乏远见、焦虑、无效努力" },
-    { name: "星币八", num: "8", type: "pentacles", eng: "Eight of Pentacles", icon: "fa-hammer", keyword: "精进", upright: "工匠精神、技能提升、投入工作、专注", reversed: "完美主义、缺乏专注、质量下降" },
-    { name: "星币九", num: "9", type: "pentacles", eng: "Nine of Pentacles", icon: "fa-spa", keyword: "优雅", upright: "丰盛、优雅、自给自足、物质享受", reversed: "过度劳累、物质主义、虚假繁荣" },
-    { name: "星币十", num: "10", type: "pentacles", eng: "Ten of Pentacles", icon: "fa-building", keyword: "圆满", upright: "家族传承、长期稳定、财富圆满、遗产", reversed: "家族冲突、财务不稳、传统破裂" },
-    { name: "星币侍者", num: "Page", type: "pentacles", eng: "Page of Pentacles", icon: "fa-book", keyword: "学习", upright: "学习、实际技能、计划、谨慎踏实", reversed: "缺乏进展、不切实际、懒惰" },
-    { name: "星币骑士", num: "Knight", type: "pentacles", eng: "Knight of Pentacles", icon: "fa-tractor", keyword: "务实", upright: "勤勉、可靠、务实、方法论、责任", reversed: "停滞、无聊、过于保守" },
-    { name: "星币皇后", num: "Queen", type: "pentacles", eng: "Queen of Pentacles", icon: "fa-leaf", keyword: "滋养", upright: "务实、养育、富足、关爱家庭、接地气", reversed: "工作与生活失衡、嫉妒、过度物质" },
-    { name: "星币国王", num: "King", type: "pentacles", eng: "King of Pentacles", icon: "fa-chess-king", keyword: "繁荣", upright: "物质成功、财务安全、商业头脑、可靠", reversed: "固执、物质主义、冒险财务" }
-];
-
-const TAROT_TYPE_NAMES = { major: '大阿卡纳', wands: '权杖', cups: '圣杯', swords: '宝剑', pentacles: '星币' };
-
-// Minor arcana suit icons and domain labels
-const MINOR_SUIT_INFO = {
-    wands:     { icon: '🔥', domain: '事业 & 行动', color: '#e07b3a' },
-    cups:      { icon: '💧', domain: '感情 & 内心', color: '#5b9bd5' },
-    swords:    { icon: '💨', domain: '思维 & 挑战', color: '#7b97b5' },
-    pentacles: { icon: '🌿', domain: '财富 & 现实', color: '#7aab72' },
-};
-
-function getMinorFortuneCards(seed) {
-    // Pick one card per suit deterministically per day (seed = date string)
-    const suits = ['wands', 'cups', 'swords', 'pentacles'];
-    const result = [];
-    suits.forEach((suit, si) => {
-        const pool = ALL_78_TAROT_CARDS.filter(c => c.type === suit);
-        // Use a simple hash of seed + suit index for daily determinism
-        let h = 0;
-        for (let i = 0; i < seed.length; i++) h = ((h << 5) - h + seed.charCodeAt(i) + si * 31) | 0;
-        const idx = Math.abs(h) % pool.length;
-        const card = pool[idx];
-        // Upright/reversed based on second hash
-        let h2 = h ^ (si * 0x9e3779b9);
-        const isReversed = ((h2 >>> 0) % 2) === 1;
-        result.push({ card, suit, isReversed });
-    });
-    return result;
-}
-
-function renderMinorFortune(dateKey) {
-    const cards = getMinorFortuneCards(dateKey);
-    const suitInsights = {
-        wands: {
-            upright: ['行动力充足，是推进计划的好时机', '充满热情与创造力，勇于迈出第一步', '积极进取，今日能量旺盛'],
-            reversed: ['节奏放慢，不必强行推动', '能量分散，先整理再行动', '适当休整，减少消耗']
-        },
-        cups: {
-            upright: ['情感流动顺畅，易与人产生共鸣', '内心平静，直觉敏锐', '感情运佳，适合表达心意'],
-            reversed: ['情绪需要整理，给自己多一些耐心', '内心有些波动，保持觉察', '感情上宜静观，少做冲动决定']
-        },
-        swords: {
-            upright: ['思维清晰，适合做出重要决策', '直面困难，问题将迎刃而解', '沟通顺畅，表达自我的好时机'],
-            reversed: ['思绪纷乱，先沉淀再思考', '避免争论，保持冷静', '小心误解，确认信息再行动']
-        },
-        pentacles: {
-            upright: ['物质运顺遂，财务与实务进展稳健', '脚踏实地，努力将获得回报', '今日宜处理现实事务'],
-            reversed: ['财务需谨慎，延后非必要支出', '现实层面有些阻滞，耐心应对', '避免急于求成，稳扎稳打']
-        }
-    };
-
-    const chips = cards.map(({ card, suit, isReversed }) => {
-        const info = MINOR_SUIT_INFO[suit];
-        const meaning = isReversed ? card.reversed : card.upright;
-        return `
-        <div class="minor-card-chip" title="${card.name} · ${isReversed ? '逆位' : '正位'}：${meaning}">
-            <span class="minor-card-chip-suit">${info.icon}</span>
-            <span class="minor-card-chip-name">${card.name}</span>
-            <span class="minor-card-chip-keyword" style="color:${info.color};">${card.keyword}</span>
-            <span class="minor-card-chip-badge ${isReversed ? 'rev' : ''}">${isReversed ? '逆位' : '正位'}</span>
-        </div>`;
-    }).join('');
-
-    const domainInsights = cards.map(({ suit, isReversed }) => {
-        const info = MINOR_SUIT_INFO[suit];
-        const pool = suitInsights[suit][isReversed ? 'reversed' : 'upright'];
-        // deterministic pick
-        let h = 0;
-        const key = suit + isReversed;
-        for (let i = 0; i < key.length; i++) h = ((h << 5) - h + key.charCodeAt(i)) | 0;
-        const text = pool[Math.abs(h) % pool.length];
-        return `<div style="font-size:12px;margin-bottom:5px;"><span style="color:${info.color};font-weight:600;">${info.icon} ${info.domain}：</span>${text}</div>`;
-    }).join('');
-
-    return `
-    <div class="minor-fortune-section">
-        <div class="minor-fortune-title"><i class="fas fa-layer-group"></i> 今日小牌指引</div>
-        <div class="minor-fortune-cards">${chips}</div>
-        <div class="minor-fortune-insight">${domainInsights}</div>
-    </div>`;
-}
-let currentTarotSpread = 'single';
-
-function setTarotSpread(spread) {
-    currentTarotSpread = spread;
-    document.querySelectorAll('.tarot-spread-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.spread === spread);
-    });
-    const desc = document.getElementById('tarot-spread-desc');
-    if (spread === 'single') {
-        if (desc) desc.textContent = '单张牌 · 直指当下';
-    } else if (spread === 'three') {
-        if (desc) desc.textContent = '三张牌 · 洞察全局';
-    }
-}
-
-function resetTarotDivination() {
-    const setup = document.getElementById('tarot-setup');
-    const result = document.getElementById('tarot-result');
-    const resetBtn = document.getElementById('tarot-reset-btn');
-    const qInput = document.getElementById('tarot-question');
-    if (setup) setup.style.display = '';
-    if (result) result.style.display = 'none';
-    if (resetBtn) resetBtn.style.display = 'none';
-    if (qInput) qInput.value = '';
-    currentTarotSpread = 'single';
-    document.querySelectorAll('.tarot-spread-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.spread === 'single');
-    });
-    const desc = document.getElementById('tarot-spread-desc');
-    if (desc) desc.textContent = '单张牌 · 直指当下';
-}
-
-function startTarotDraw() {
-    const shuffled = [...ALL_78_TAROT_CARDS].sort(() => Math.random() - 0.5);
-    const question = (document.getElementById('tarot-question') || {}).value || '';
-    const questionTrimmed = question.trim();
-    const drawnCards = [];
-
-    function cardHTML(card, position, labelOverride) {
-        const isReversed = Math.random() > 0.5;
-        const meaning = isReversed ? card.reversed : card.upright;
-        const posLabel = labelOverride || position;
-        const typeLabel = TAROT_TYPE_NAMES[card.type] || '';
-        drawnCards.push({ name: card.name, keyword: card.keyword, position: posLabel, isReversed, meaning });
-        return `
-        <div class="fortune-card tarot-style" style="margin-bottom:14px;">
-            <div class="tarot-header">
-                <div style="font-size:10px;color:var(--text-secondary);margin-bottom:4px;">${typeLabel} ${card.num}</div>
-                <div style="font-size:26px;margin:4px 0;"><i class="fas ${card.icon}" style="color:var(--accent-color);${isReversed?'transform:rotate(180deg);display:inline-block;':''}"></i></div>
-                <div class="tarot-card-name">${card.name}</div>
-                <div class="tarot-position-badge ${isReversed ? 'reversed' : 'upright'}" style="margin:6px auto;">${isReversed ? '逆位' : '正位'}</div>
-            </div>
-            <div class="tarot-keyword">「${card.keyword}」</div>
-            <div class="tarot-details">
-                <div class="tarot-divider"></div>
-                <p style="font-size:13px;line-height:1.7;color:var(--text-primary);">${meaning}</p>
-            </div>
-        </div>`;
-    }
-
-    let resultHTML = '';
-    const qDisplay = questionTrimmed ? `<div class="lenormand-question-show">「${questionTrimmed}」</div>` : '';
-    let spreadLabel = '';
-
-    if (currentTarotSpread === 'single') {
-        spreadLabel = '单张塔罗';
-        const card = shuffled[0];
-        resultHTML = `${qDisplay}
-        <div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:12px;"><i class="fas fa-star-and-crescent"></i> 塔罗为你揭示 · 一切皆有答案</div>
-        <div class="tarot-row single-card">${cardHTML(card, '当下')}</div>`;
-    } else if (currentTarotSpread === 'three') {
-        spreadLabel = '三张塔罗';
-        const [card1, card2, card3] = shuffled.slice(0, 3);
-        resultHTML = `${qDisplay}
-        <div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:12px;"><i class="fas fa-star-and-crescent"></i> 三张牌为你揭示 · 洞见能量流动</div>
-        <div class="tarot-row">${cardHTML(card1, 'Ⅰ')}${cardHTML(card2, 'Ⅱ')}${cardHTML(card3, 'Ⅲ')}</div>`;
-    }
-
-    const resultEl = document.getElementById('tarot-result');
-    const setupEl = document.getElementById('tarot-setup');
-    const resetBtn = document.getElementById('tarot-reset-btn');
-    if (resultEl) { resultEl.innerHTML = resultHTML; resultEl.style.display = ''; }
-    if (setupEl) setupEl.style.display = 'none';
-    if (resetBtn) resetBtn.style.display = '';
-
-    // Save to history
-    saveDiviHistory({ type: spreadLabel, question: questionTrimmed, cards: drawnCards });
-}
-
-// Tarot spread button event delegation
-document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.tarot-spread-btn');
-    if (!btn) return;
-    setTarotSpread(btn.dataset.spread);
-});
-document.addEventListener('click', function(e) {
-    if (e.target.id === 'close-tarot-divination') {
-        const modal = document.getElementById('fortune-lenormand-modal');
-        if (modal) hideModal(modal);
-    }
-});
-// ============ End 塔罗占卜 ============
-
-// ============ 占卜历史记录 ============
-const DIVI_HISTORY_KEY = 'diviHistory_v1';
-const DIVI_HISTORY_MAX = 50;
-
-function getDiviHistory() {
-    try { return JSON.parse(localStorage.getItem(DIVI_HISTORY_KEY) || '[]'); } catch(e) { return []; }
-}
-
-function saveDiviHistory(entry) {
-    const history = getDiviHistory();
-    entry.id = Date.now();
-    entry.time = new Date().toLocaleString('zh-CN', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
-    history.unshift(entry);
-    if (history.length > DIVI_HISTORY_MAX) history.splice(DIVI_HISTORY_MAX);
-    localStorage.setItem(DIVI_HISTORY_KEY, JSON.stringify(history));
-}
-
-function clearDiviHistory() {
-    if (!confirm('确定要清空所有占卜记录吗？')) return;
-    localStorage.removeItem(DIVI_HISTORY_KEY);
-    renderDiviHistory();
-}
-
-function renderDiviHistory() {
-    const list = document.getElementById('divi-history-list');
-    const empty = document.getElementById('divi-history-empty');
-    if (!list) return;
-    const history = getDiviHistory();
-    if (!history.length) {
-        list.innerHTML = '';
-        if (empty) empty.style.display = '';
-        return;
-    }
-    if (empty) empty.style.display = 'none';
-    list.innerHTML = history.map(entry => {
-        const cardTags = (entry.cards || []).map(c =>
-            `<span class="divi-history-card-tag ${c.isReversed ? 'reversed' : ''}">
-                ${c.isReversed ? '<i class="fas fa-arrow-down" style="font-size:9px;"></i>' : '<i class="fas fa-arrow-up" style="font-size:9px;"></i>'}
-                ${c.name}${c.position ? ' · ' + c.position : ''}
-            </span>`
-        ).join('');
-        const detailLines = (entry.cards || []).map(c =>
-            `<div style="margin-bottom:6px;"><b>${c.name}${c.position ? ' （'+c.position+'）' : ''}${c.isReversed ? ' 逆位' : ' 正位'}</b><br>${c.keyword} — ${c.meaning}</div>`
-        ).join('');
-        return `
-        <div class="divi-history-item">
-            <div class="divi-history-meta">
-                <span class="divi-history-type">${entry.type || '占卜'}</span>
-                <span class="divi-history-time">${entry.time || ''}</span>
-            </div>
-            ${entry.question ? `<div class="divi-history-question">「${entry.question}」</div>` : ''}
-            <div class="divi-history-cards">${cardTags}</div>
-            ${detailLines ? `<button class="divi-history-expand-btn" onclick="toggleDiviDetail(this)">查看解读 ▾</button>
-            <div class="divi-history-detail">${detailLines}</div>` : ''}
-        </div>`;
-    }).join('');
-}
-
-function toggleDiviDetail(btn) {
-    const detail = btn.nextElementSibling;
-    if (!detail) return;
-    const open = detail.classList.toggle('open');
-    btn.textContent = open ? '收起 ▴' : '查看解读 ▾';
-}
-
-// Hook into switchFLTab to render history when tab is opened
-const _origSwitchFLTab = switchFLTab;
-window.switchFLTab = function(tab) {
-    _origSwitchFLTab(tab);
-    if (tab === 'divihistory') renderDiviHistory();
-};
-
-// Close button for history tab
-document.addEventListener('click', function(e) {
-    if (e.target.id === 'close-divihistory') {
-        const modal = document.getElementById('fortune-lenormand-modal');
-        if (modal) hideModal(modal);
-    }
-});
-// ============ End 占卜历史记录 ============
 
 function toggleBatchFavoriteMode() {
             isBatchFavoriteMode = !isBatchFavoriteMode;
@@ -14427,7 +14042,6 @@ window.showAppearancePanel = function(panel) {
         'bubble-css': ['bubble', 'css']
     };
     document.getElementById('appearance-nav-grid').style.display = 'none';
-    var unBtn = document.getElementById('update-notice-btn');
     if (unBtn) unBtn.style.display = 'none';
     document.getElementById('appearance-panel-container').style.display = 'block';
     document.getElementById('appearance-panel-title').textContent = APPEARANCE_PANEL_TITLES[panel] || panel;
@@ -15026,15 +14640,27 @@ function doPick() {
         }
     }
 
-    function makeStickerItem(src, onClick) {
+function makeStickerItem(src, onClick, onDelete) {
         const item = document.createElement('div');
         item.className = 'sticker-grid-item';
-        item.innerHTML = `<img src="${src}" loading="lazy">`;
+        item.innerHTML = `
+            <img src="${src}" loading="lazy">
+            ${onDelete ? `<div class="sticker-delete-btn"><i class="fas fa-times"></i></div>` : ''}
+        `;
         item.onclick = (e) => { e.stopPropagation(); onClick(); };
+        
+        if (onDelete) {
+            const delBtn = item.querySelector('.sticker-delete-btn');
+            delBtn.onclick = (e) => {
+                e.stopPropagation(); 
+                if (confirm('确定要从我的表情库中删除这张图片吗？')) {
+                    onDelete();
+                }
+            };
+        }
         return item;
     }
-
-    function renderMyStickerLibrary() {
+function renderMyStickerLibrary() {
         contentArea.innerHTML = '';
         if (!myStickerLibrary || myStickerLibrary.length === 0) {
             contentArea.innerHTML = `
@@ -15048,19 +14674,26 @@ function doPick() {
         }
         const grid = document.createElement('div');
         grid.className = 'sticker-grid-view';
-        myStickerLibrary.forEach(src => {
-            const item = makeStickerItem(src, () => {
-                addMessage({ id: Date.now(), sender: 'user', text: '', timestamp: new Date(), image: src, status: 'sent', type: 'normal' });
-                playSound('send');
-                picker.classList.remove('active');
-                const delayRange = settings.replyDelayMax - settings.replyDelayMin;
-                setTimeout(simulateReply, settings.replyDelayMin + Math.random() * delayRange);
-            });
+        myStickerLibrary.forEach((src, index) => {
+            const item = makeStickerItem(
+                src, 
+                () => {
+                    addMessage({ id: Date.now(), sender: 'user', text: '', timestamp: new Date(), image: src, status: 'sent', type: 'normal' });
+                    playSound('send');
+                    picker.classList.remove('active');
+                    const delayRange = settings.replyDelayMax - settings.replyDelayMin;
+                    setTimeout(simulateReply, settings.replyDelayMin + Math.random() * delayRange);
+                },
+                () => {
+                    myStickerLibrary.splice(index, 1); 
+                    throttledSaveData(); 
+                    renderMyStickerLibrary(); 
+                }
+            );
             grid.appendChild(item);
         });
         contentArea.appendChild(grid);
     }
-
     function renderPartnerStickerLibrary() {
         contentArea.innerHTML = '';
         if (!stickerLibrary || stickerLibrary.length === 0) {
@@ -15206,7 +14839,6 @@ function showEmojiTab() {
         };
         area.appendChild(item);
     });
-    // Also show custom emojis in the picker
     customEmojis.forEach(emoji => {
         const item = document.createElement('div');
         item.className = 'picker-item';
@@ -16147,7 +15779,29 @@ document.getElementById('chat-settings').addEventListener('click', () => {
 
             if (!settings.inChatAvatarPosition) settings.inChatAvatarPosition = 'center';
 
-            // updateAvatarPreview is defined below (handles both size and shape updates)
+            function updateAvatarPreview() {
+                if (!avatarPreview) return;
+                const previewPartner = document.getElementById('preview-partner-avatar');
+                const previewMe = document.getElementById('preview-my-avatar');
+                const sz = `${settings.inChatAvatarSize}px`;
+                if (previewPartner) {
+                    previewPartner.style.width = sz;
+                    previewPartner.style.height = sz;
+                    const partnerImg = DOMElements.partner.avatar.querySelector('img');
+                    if (partnerImg && partnerImg.src) {
+                        previewPartner.innerHTML = `<img src="${partnerImg.src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    }
+                }
+                if (previewMe) {
+                    previewMe.style.width = sz;
+                    previewMe.style.height = sz;
+                    const myImg = DOMElements.me.avatar.querySelector('img');
+                    if (myImg && myImg.src) {
+                        previewMe.innerHTML = `<img src="${myImg.src}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    }
+                }
+                updateBubblePreview();
+            }
 
             function updateBubblePreview() {
                 const receivedBubble = document.getElementById('preview-bubble-received');
@@ -16254,38 +15908,6 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                 }
             });
 
-            // Avatar shape buttons
-            function updateAvatarPreview(shape, cornerRadius) {
-                const previewPartner = document.getElementById('preview-partner-avatar');
-                const previewMy = document.getElementById('preview-my-avatar');
-                if (!previewPartner || !previewMy) return;
-                // If called with no args (original use), just update sizes and images
-                const sz = `${settings.inChatAvatarSize || 36}px`;
-                previewPartner.style.width = sz;
-                previewPartner.style.height = sz;
-                previewMy.style.width = sz;
-                previewMy.style.height = sz;
-                // Get actual avatar images
-                const partnerImg = DOMElements.partner && DOMElements.partner.avatar ? DOMElements.partner.avatar.querySelector('img') : null;
-                const myImg = DOMElements.me && DOMElements.me.avatar ? DOMElements.me.avatar.querySelector('img') : null;
-                const currentShape = shape || settings.myAvatarShape || 'circle';
-                
-                function applyToPreviewEl(el, img, shp, cr) {
-                    if (img && img.src) {
-                        el.innerHTML = `<img src="${img.src}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                    if (shp === 'circle') {
-                        el.style.borderRadius = '50%';
-                    } else if (shp === 'square') {
-                        el.style.borderRadius = (cr || 8) + 'px';
-                    }
-                }
-                const cr = cornerRadius !== undefined ? cornerRadius : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--avatar-corner-radius') || '8') || 8;
-                applyToPreviewEl(previewPartner, partnerImg, currentShape, cr);
-                applyToPreviewEl(previewMy, myImg, currentShape, cr);
-                if (typeof updateBubblePreview === 'function') updateBubblePreview();
-            }
-
             function updateAvatarShapeBtns() {
                 const shape = settings.myAvatarShape || 'circle';
                 document.querySelectorAll('.avatar-shape-btn-2').forEach(b => {
@@ -16294,7 +15916,6 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                 });
                 const radiusCtrl = document.getElementById('avatar-corner-radius-control-2');
                 if (radiusCtrl) radiusCtrl.style.display = shape === 'square' ? '' : 'none';
-                updateAvatarPreview(shape);
             }
             document.querySelectorAll('.avatar-shape-btn-2').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -16304,7 +15925,6 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                     applyAvatarShapeToDOM && applyAvatarShapeToDOM('my', shape);
                     applyAvatarShapeToDOM && applyAvatarShapeToDOM('partner', shape);
                     updateAvatarShapeBtns();
-                    updateAvatarPreview(shape);
                     renderMessages(true);
                     throttledSaveData();
                 });
@@ -16318,7 +15938,6 @@ document.getElementById('chat-settings').addEventListener('click', () => {
                     const r = cornerSlider.value;
                     if (cornerVal) cornerVal.textContent = r + 'px';
                     document.documentElement.style.setProperty('--avatar-corner-radius', r + 'px');
-                    updateAvatarPreview(settings.myAvatarShape || 'circle', parseInt(r));
                     renderMessages(true);
                 });
                 cornerSlider.addEventListener('change', () => {
@@ -16580,13 +16199,6 @@ autoSendSlider.addEventListener('change', () => {
             document.getElementById('env-main-close-btn').style.display = 'flex';
             renderEnvelopeLists();
             showModal(document.getElementById('envelope-modal'));
-        });
-    }
-    const resourceEntryBtn = document.getElementById('resource-share-function');
-    if (resourceEntryBtn) {
-        resourceEntryBtn.addEventListener('click', () => {
-            hideModal(DOMElements.advancedModal.modal);
-            window.open('https://aielin17.github.io/-/', '_blank');
         });
     }
 document.getElementById('send-envelope').addEventListener('click', handleSendEnvelope);
@@ -17508,13 +17120,11 @@ function renderReplyLibrary() {
         return;
     }
 
-    // Handle emoji rendering separately (includes custom emojis)
     if (renderType === 'emoji') {
         if (itemsToRender.length === 0 && customEmojis.length === 0) {
             list.innerHTML = renderEmptyState("列表空空如也");
             return;
         }
-        // Render default emojis
         itemsToRender.forEach(item => {
             const isDisabled = disabledDefaultReplies.includes(item);
             const div = document.createElement('div');
@@ -17523,7 +17133,6 @@ function renderReplyLibrary() {
             div.onclick = () => { toggleEmoji(item); };
             list.appendChild(div);
         });
-        // Render custom emojis with delete button
         if (customEmojis.length > 0) {
             const sep = document.createElement('div');
             sep.style.cssText = 'grid-column:1/-1;font-size:11px;color:var(--text-secondary);padding:4px 2px 2px;border-top:1px dashed var(--border-color);margin-top:4px;';
@@ -17834,17 +17443,15 @@ function initReplyLibraryListeners() {
 if (input && input.trim()) {
                 const val = input.trim();
                 let isDuplicate = false;
-                const normalizeStr = s => s.trim().toLowerCase().replace(/\s+/g, ' ');
-                const valNorm = normalizeStr(val);
 
-                if (currentSubTab === 'custom' && (customReplies.some(r => normalizeStr(r) === valNorm) || CONSTANTS.REPLY_MESSAGES.some(r => normalizeStr(r) === valNorm))) isDuplicate = true;
-                else if (currentSubTab === 'pokes' && customPokes.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
-                else if (currentSubTab === 'statuses' && customStatuses.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
-                else if (currentSubTab === 'mottos' && customMottos.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
-                else if (currentSubTab === 'intros' && customIntros.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
+                if (currentSubTab === 'custom' && customReplies.includes(val)) isDuplicate = true;
+                else if (currentSubTab === 'pokes' && customPokes.includes(val)) isDuplicate = true;
+                else if (currentSubTab === 'statuses' && customStatuses.includes(val)) isDuplicate = true;
+                else if (currentSubTab === 'mottos' && customMottos.includes(val)) isDuplicate = true;
+                else if (currentSubTab === 'intros' && customIntros.includes(val)) isDuplicate = true;
 
                 if (isDuplicate) {
-                    showNotification('该内容已存在（包含系统预设中）', 'warning');
+                    showNotification('该内容已存在哦', 'warning');
                     return;
                 }
 
@@ -18087,7 +17694,7 @@ const updatePreview = () => {
         }
 
 function applyAvatarShapeToDOM(type, shape) {
-            const SHAPES = ['circle','square'];
+            const SHAPES = ['circle','square','pentagon','heart'];
             const avatarContainer = type === 'my' ? DOMElements.me.avatarContainer : DOMElements.partner.avatarContainer;
             if (!avatarContainer) return;
             SHAPES.forEach(s => avatarContainer.classList.remove('avatar-shape-' + s));
@@ -19484,6 +19091,7 @@ function setupTutorialListeners() {
             <div class="dg-header-band-bg" id="dg-header-band-bg"></div>
             <div class="dg-header-band-overlay" id="dg-header-band-overlay"></div>
             <div class="dg-header-band-shimmer"></div>
+            <div class="dg-header-label-tag">今日公告</div>
             <input type="file" id="dg-header-img-input" accept="image/*" style="display:none">
             <div class="dg-header-top">
                 <div class="dg-emoji-circle" id="dg-emoji">
@@ -19495,6 +19103,12 @@ function setupTutorialListeners() {
                 </div>
             </div>
             <div class="dg-date-stamp" id="dg-date-stamp">— 今日公告已送达 —</div>
+            <!-- Wave separator -->
+            <div style="position:absolute;bottom:-1px;left:0;right:0;height:22px;overflow:hidden;z-index:5;pointer-events:none;">
+                <svg viewBox="0 0 400 22" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:100%;display:block;">
+                    <path d="M0,0 C80,22 160,0 240,14 C320,28 360,8 400,0 L400,22 L0,22 Z" fill="var(--secondary-bg)" opacity="1"/>
+                </svg>
+            </div>
         </div>
         <div class="dg-body">
             <div class="dg-section-label" id="dg-section-label-partner">梦角今日状态</div>
