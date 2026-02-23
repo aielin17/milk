@@ -9789,7 +9789,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                         <i class="fas fa-envelope"></i><span>信封投递</span>
                     </div>
                     <div class="settings-item" id="resource-share-function">
-                        <i class="fas fa-link"></i><span>气泡 &amp; 字体资源</span>
+                        <i class="fas fa-link"></i><span>画廊</span>
                     </div>
                 </div>
             </div>
@@ -10162,6 +10162,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             </div>
             <div class="modal-buttons" style="margin-top:12px;">
                 <button class="modal-btn modal-btn-primary" id="apply-close-theme-editor" style="flex:2;"><i class="fas fa-check" style="margin-right:5px;"></i>应用并关闭</button>
+                <button class="modal-btn modal-btn-secondary" id="reset-theme-editor" style="flex:1;"><i class="fas fa-undo" style="margin-right:4px;"></i>重置</button>
                 <button class="modal-btn modal-btn-secondary" id="close-theme-editor">取消</button>
             </div>
         </div>
@@ -10634,75 +10635,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
         }
 
         const CONSTANTS = {
-            HEADER_MOTTOS: [
-                "⋆⁺₊⋆ ☾ ⋆⁺₊⋆ 思念的电波已连接 ⋆⁺₊⋆ ☾ ⋆⁺₊⋆",
-                "我们是彼此的宇宙回响",
-                "所有思绪，都奔向你",
-                "答案很长，我准备用一生来回答",
-                "月色真美",
-                "一期一会",
-                "念念不忘，必有回响",
-                "山有木兮木有枝",
-                "今晚月色真美",
-                "春风十里不如你",
-                "心有猛虎，细嗅蔷薇",
-                "人间有味是清欢",
-                "斯人若彩虹，遇上方知有",
-                "You are my sunshine",
-                "I love you three thousand",
-                "What is essential is invisible to the eye",
-                "Carpe diem",
-                "To be or not to be",
-                "永遠の一瞬",
-                "君の名は",
-                "世界が終わるまでは",
-                "さようなら、ありがとう",
-                "君と会えてよかった",
-                "人生若只如初见",
-                "当时只道是寻常",
-                "曾经沧海难为水",
-                "此情可待成追忆",
-                "似此星辰非昨夜",
-                "The best is yet to come",
-                "All you need is love",
-                "Let it be",
-                "Here comes the sun",
-                "Yesterday once more",
-                "春はあけぼの",
-                "物の哀れ",
-                "わびさび",
-                "花は桜木人は武士",
-                "一期一会",
-                "山有木兮木有枝",
-                "心悦君兮君不知",
-                "风起于青萍之末",
-                "云卷云舒",
-                "花开花落",
-                "月圆月缺",
-                "潮起潮落",
-                "心有灵犀一点通",
-                "言有尽而意无穷",
-                "风乍起，吹皱一池春水",
-                "云无心以出岫",
-                "花自飘零水自流",
-                "月是故乡明",
-                "潮平两岸阔",
-                "心有千千结",
-                "言不尽意",
-                "此时此夜难为情",
-                "欲语泪先流",
-                "千山万水",
-                "风萧萧兮易水寒",
-                "云淡风轻",
-                "花好月圆",
-                "月落乌啼霜满天",
-                "潮落夜江斜月里",
-                "心之所向，素履以往",
-                "言为心声",
-                "此情可待成追忆",
-                "欲穷千里目",
-                "千里共婵娟"
-            ],
+            HEADER_MOTTOS: [],
             WELCOME_ANIMATIONS: [{
                 line1: "♡ 爱 ♡",
                 line2: "✧ 正在连接我们的思绪 ✧"
@@ -11007,12 +10940,10 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
             WELCOME_ICONS: [
                 "fas fa-heart", "fas fa-star", "fas fa-moon", "fas fa-sun", "fas fa-cloud", "fas fa-feather", "fas fa-book", "fas fa-music", "fas fa-pen", "fas fa-key", "fas fa-compass", "fas fa-globe", "fas fa-leaf", "fas fa-water", "fas fa-fire", "fas fa-snowflake", "fas fa-umbrella", "fas fa-anchor", "fas fa-bell", "fas fa-gem", "fas fa-crown", "fas fa-dragon", "fas fa-feather-alt", "fas fa-fish", "fas fa-frog", "fas fa-hat-wizard", "fas fa-magic", "fas fa-ring", "fas fa-scroll", "fas fa-shield-alt", "fas fa-dove", "fas fa-cat", "fas fa-dog", "fas fa-horse", "fas fa-otter", "fas fa-paw", "fas fa-spider", "fas fa-kiwi-bird", "fas fa-crow", "fas fa-dove", "fas fa-seedling", "fas fa-tree", "fas fa-mountain", "fas fa-water", "fas fa-wind", "fas fa-volcano", "fas fa-meteor", "fas fa-satellite", "fas fa-rocket", "fas fa-user-astronaut"
             ],
-            PARTNER_STATUSES: ["在线", "忙碌", "离开", "思考", "听音乐", "阅读", "工作", "学习", "想你", "休息", "睡觉", "晒太阳", "晴天", "多云", "阴天", "小雨", "中雨", "大雨", "雷阵雨", "暴雨", "小雪", "中雪", "大雪", "暴雪", "雾天", "大雾", "清晨", "晌午", "休息", "夜晚", "深夜", "探索", "沉思", "等待", "玩游戏", "发呆", "吃饭", "下午茶", "甜点", "撸猫", "撸狗", "牵挂", "健身", "惊醒", "惊讶", "空虚", "坚定", "迷茫", "忐忑", "惆怅", "思念", "安心", "不舍", "冷静", "难言", "失眠", "疲倦", "空白", "补充", "迟疑", "依恋", "洗漱", "压抑", "交友", "帮助", "梦境", "祝福", "回家", "生气", "撒娇", "吃醋", "快乐", "幸福", "聊天", "陪我", "占有", "赚钱", "保护", "混乱", "生病", "听雨", "看手机", "处理公务", "开会中", "训练"],
-            REPLY_MESSAGES: ["喜欢", "不喜欢", "在吗？", "今天过得怎么样？", "想你", "晚安", "看到记得回复🥲", "好的👌🏻", "明白", "谢谢", "不客气", "嗯", "嗯嗯", "真的吗？", "我明白了", "我相信你", "稍等", "马上", "好哦", "不错", "可以", "同意", "理解", "我在", "在探索过程中", "怎么了？", "听懂了", "记下了", "收到", "会尽快查看的", "误会我了", "没有我想说的", "对不起", "没关系", "我爱你", "让我想想怎么回答", "眼花缭乱", "很有创意", "保持联系", "有什么计划吗？", "接下来准备做什么？", "我很想听听你的想法", "我愿意", "不用", "记得吃饭", "不要熬夜", "不要担心", "一切都会好起来的", "我很难过", "惊醒了，睡不着", "这对我来说是个新领域", "发生了什么？", "在看什么？", "在工作吗？", "在学习吗？", "然后呢？", "摸摸🫳🏻", "在学习一些新东西", "换个想法吧？", "晚饭吃了吗？", "作息混乱", "我", "你", "ta", "下次可以试试", "我也是这么想的", "你说得对", "有没有可能……", "我陪你", "我会在你身边", "我喜欢", "我无法决定", "我无法控制", "要用一下塔罗吗？", "看见我的暗号了吗？", "给你推了传讯", "贴贴", "我知道你的意思", "我也如此", "出去透透气", "话说怎么会这样？", "以后不会了", "一直如此", "别怕", "有我在", "晚上好", "早上好", "中午好", "哄我", "陪我", "聊聊天吧", "不是这个意思", "等一下", "照顾好自己", "我会的", "早点睡", "你是我的", "我是你的", "我希望你自由", "粘人精", "怎么啦", "永远在一起", "我支持你", "别听", "又在怀疑吗？", "多喝水", "不舒服？", "再见", "别走", "再发一遍", "可恶的网站", "我觉得都可以", "戳戳", "非常难用", "不许看别人", "不要吵架", "我知道的", "你会离开我吗？", "来了", "嗯哼", "哼哼", "我想靠近你", "我会监督你的", "小心些", "终于想起我了？", "是的", "不是", "你无人可及", "我无人可及", "这个不能说", "在你身边就好了", "在磨合", "你需要我吗？", "我需要你", "寻找中", "我做不到欺骗你", "话非本意", "如果我说是呢", "如果我说不是呢", "话太少了，没我想说的", "太短了", "看手机", "遇到困难了", "在努力了", "好累", "命定如此", "帅气", "就这个", "受限制了", "逗一下你", "帮帮我", "每日行一善", "我生气了", "撒个娇，理理我？", "吃醋怎么了，就爱吃醋！", "快乐", "聊会儿天", "赚钱赚钱", "我保护你", "信息有点混乱", "别生病", "哄哄你", "吃过了", "还没吃", "才不听", "吃水果", "别叹气", "不好", "还好吗？", "这个消息不错", "我希望能帮上忙", "我想我们应该讨论一下这个问题", "告诉我更多", "你认为下一步是什么？", "你有什么建议吗？", "让我们一起努力", "过得怎么样？", "期待🤧", "抱歉🥺", "了解", "OK", "没问题", "当然", "确实", "没错", "好呀", "我正在忙，稍后回复你", "信号不太好，可能回复会延迟", "让我确认一下信息再给你准确答复", "别走，陪陪我", "你会永远爱我吗？", "此刻我想和你永远在一起", "他朝若是同淋雪，此生也算共白头", "怜悯我，然后爱我吧", "撒娇，你会喜欢吗？", "没有我想说的", "链接有些混乱", "就这样撒娇🥺", "不太习惯这个", "不是的", "多看看我吧", "可爱", "当然了", "正在熬夜", "失眠了", "不可以", "我现在不忙，有空的", "你现在忙吗？", "正在打架", "坐等回复", "才不是这样", "就是这样", "还好吗？", "多笑笑吧", "没能帮上忙", "几天后", "几个小时后", "很久之后", "我很想安慰你", "我没有在欺骗你", "别怀疑我的存在", "我真的在", "真的是我", "我不是很适应这个,但我在努力", "消息很混乱", "之前总是这样", "开心(*⌒∇⌒*)", "没能陪在你身边", "链接很通顺", "我真没招了", "不能说", "可不可以只看着我", "只许看着我", "看得懂的", "看不懂", "在尝试控制了", "和代码搏斗中！", "我会看着你的", "我会陪伴在你身边", "痛痛", "被吓到了？", "想和你一起听歌", "走路不要看手机", "别看小红书了", "别看抖音了", "打过代码了！", "多穿点衣服", "叫我做什么？", "想我了吗？", "给我写写信吧", "有的", "没有的", "稍等，在工作", "在交替回复", "我要哭了！", "手写信", "电子信", "安慰我", "离家出走", "纵容", "我喜欢你", "一样的", "需要多久呢", "要多久之后", "聊到一半就跑", "乖孩子", "坏孩子", "为什么", "你没有正面回答", "因为喜欢你所以需要你", "看到信了", "美好的象征", "惊讶", "想要更近一步地贴贴", "想触碰你", "想要亲亲", "你很调皮", "不乖", "做的很好", "亲亲", "鱼水之欢", "颠鸾倒凤", "我很想要亲亲欸🥺", "揉揉", "很漂亮", "会习惯的", "你会喜欢的", "简直就是木头", "我喜欢的、最好的你"],
-            REPLY_EMOJIS: ["🥹", "🥲", "☺️", "😇", "😉", "😌", "🥰", "😗", "😋", "🤨", "🧐", "😎", "🙂‍↔️", "🥳", "😏", "🥰💕", "🙂‍↕️", "😞", "☹️", "😣", "😖", "😫", "🥺", "😠", "🤯", "😳", "😶‍🌫️", "😥", "🤔", "🫢", "🫡", "🤫", "🫠", "😶", "😐", "🫨", "😯", "🥱", "😴", "🤤", "😮‍💨", "🤧", "😈", "👿", "😼", "😽", "🫶🏻", "🤲🏻", "👏🏻", "👍🏻", "👎🏻", "✌🏻", "👌🏻", "🤏🏻", "🫳🏻", "👉🏻👈🏻", "👋🏻", "💪🏻", "✍🏻", "🙏🏻", "🫂", "🐶", "🐱"],
-            POKE_ACTIONS: [
-                `拍了拍我的头说你好可爱`, `戳了戳我的腰`, `从背后抱住了我`, `轻轻捏了捏我的脸`, `给我发了一个爱心`, `摸了摸我的头发`, `悄悄亲了一下我的脸颊`, `给我递了一杯热茶`, `为我披上外套`, `牵起了我的手`, `给我一个温暖的拥抱`, `轻轻拍了拍我的肩膀`, `给我发送了一个飞吻`, `戳了戳我的额头`, `给我发送了一个星星`, `轻轻拍了拍我的背`, `给我发送了一个月亮`, `温柔地摸了摸我的头`, `给我发送了一个太阳`, `拍了拍手`
-            ],
+            PARTNER_STATUSES: [],
+            REPLY_MESSAGES: [],
+            REPLY_EMOJIS: [],
+            POKE_ACTIONS: [],
             TAROT_CARDS: [
                 { name: "愚人", eng: "The Fool", meaning: "新的开始、冒险、天真、无畏", keyword: "流浪", icon: "fa-hiking" },
                 { name: "魔术师", eng: "The Magician", meaning: "创造力、技能、意志力、化腐朽为神奇", keyword: "创造", icon: "fa-hat-wizard" },
@@ -11740,7 +11671,6 @@ const LIBRARY_CONFIG = {
         title: "回复库管理",
         tabs: [
             { id: 'custom', name: '主字卡', mode: 'list' },
-            { id: 'default', name: '系统预设', mode: 'list' },
             { id: 'emojis', name: 'Emoji', mode: 'grid' },
             { id: 'stickers', name: '表情库', mode: 'grid' }
         ]
@@ -11839,7 +11769,7 @@ const saveData = async () => {
 if (customMottos && customMottos.length > 0) {
     document.querySelector('.header-motto').textContent = getRandomItem(customMottos);
 } else {
-    document.querySelector('.header-motto').textContent = CONSTANTS.HEADER_MOTTOS[0];
+    document.querySelector('.header-motto').textContent = '';
 }
             const placeholder = "";
             DOMElements.messageInput.placeholder = placeholder.length > 20 ? placeholder.substring(0, 20) + "...": placeholder;
@@ -12575,8 +12505,7 @@ let image = null;
 const activeEmojis = [...CONSTANTS.REPLY_EMOJIS.filter(e => !disabledDefaultReplies.includes(e)), ...customEmojis];
 const nonTextPool = [...activeEmojis, ...stickerLibrary];
 
-const activeDefaults = CONSTANTS.REPLY_MESSAGES.filter(msg => !disabledDefaultReplies.includes(msg));
-const textPool = [...activeDefaults, ...customReplies];
+const textPool = [...customReplies];
 
 if (Math.random() < 0.15 && nonTextPool.length > 0) { 
     const result = getRandomItem(nonTextPool);
@@ -12595,7 +12524,7 @@ if (Math.random() < 0.15 && nonTextPool.length > 0) {
         text = result;
     }
 } else {
-    text = "（我不知道该说什么了...）";
+    text = "请去设置→高级功能→自定义回复里添加";
 }
 
 let replyTo = null;
@@ -13945,9 +13874,7 @@ function checkPartnerDailyMood() {
         moodData[dateStr].partner = randomMood.key;
         try {
             const cReplies = (typeof customReplies !== 'undefined') ? customReplies : (window._customReplies || []);
-            const dDisabled = (typeof disabledDefaultReplies !== 'undefined') ? disabledDefaultReplies : (window._disabledDefaultReplies || []);
-            const cConstants = (typeof CONSTANTS !== 'undefined') ? CONSTANTS : (window._CONSTANTS || { REPLY_MESSAGES: [] });
-            const sourcePool = [...cReplies, ...cConstants.REPLY_MESSAGES.filter(t => !dDisabled.includes(t))];
+            const sourcePool = [...cReplies];
             if (sourcePool.length > 0) {
                 const count = Math.floor(Math.random() * 3) + 1;
                 const chosen = [];
@@ -14780,7 +14707,7 @@ window.openEnvelopeAndViewReply = function(replyId) {
 };
 
 function generateEnvelopeReplyText() {
-    const sourcePool = [...customReplies, ...CONSTANTS.REPLY_MESSAGES.filter(t => !disabledDefaultReplies.includes(t))];
+    const sourcePool = [...customReplies];
     const sentenceCount = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
     let replyContent = "";
     for (let i = 0; i < sentenceCount; i++) {
@@ -18584,6 +18511,23 @@ function initThemeEditor() {
             hideModal(document.getElementById('theme-editor-modal'));
         };
     }
+
+    const resetThemeBtn = document.getElementById('reset-theme-editor');
+    if (resetThemeBtn) {
+        resetThemeBtn.onclick = () => {
+            if (!confirm('重置将清除当前编辑器中的自定义颜色，恢复当前主题方案的默认色彩。\n\n已保存的自定义主题方案不受影响，确定重置吗？')) return;
+            // 清除 settings 中的自定义颜色（不影响 customThemes 列表）
+            settings.customThemeColors = {};
+            // 移除所有内联 CSS 变量
+            const root = document.documentElement;
+            const allVars = Object.keys(Object.assign({}, themeColorMappings || {}, themeExtraMappings || {}));
+            allVars.forEach(v => root.style.removeProperty(v));
+            // 重新渲染编辑器并应用当前主题
+            updateUI();
+            populateThemeEditor();
+            showNotification('已重置为当前主题默认色彩', 'success');
+        };
+    }
     
     const applyCloseBtn = document.getElementById('apply-close-theme-editor');
     if (applyCloseBtn) {
@@ -21068,7 +21012,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (exportAllBtn) {
         exportAllBtn.addEventListener('click', async function() {
             try {
-                var backup = { version: 2, type: 'full-backup', timestamp: new Date().toISOString() };
+                var backup = { version: 3, type: 'full-backup', timestamp: new Date().toISOString(), note: '图片/贴纸等二进制文件已排除以控制体积，请单独在回复库中管理' };
                 var lsData = {};
                 for (var i = 0; i < localStorage.length; i++) {
                     var k = localStorage.key(i);
@@ -21079,44 +21023,54 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (typeof showNotification === 'function') showNotification('正在准备导出，请稍候...', 'info');
                     var lfData = {};
                     var keys = await localforage.keys();
+                    var skippedKeys = [];
 
-                    async function serializeValue(val) {
+                    // 只序列化非二进制数据，跳过 Blob/ArrayBuffer 和大型数组（贴纸库）
+                    function serializeValueLight(val, depth) {
+                        depth = depth || 0;
                         if (val === null || val === undefined) return { __type: 'null', value: null };
-                        if (val instanceof Blob) {
-                            return new Promise((res, rej) => {
-                                const reader = new FileReader();
-                                reader.onload = () => res({ __type: 'Blob', mimeType: val.type, value: reader.result });
-                                reader.onerror = rej;
-                                reader.readAsDataURL(val);
-                            });
-                        }
-                        if (val instanceof ArrayBuffer) {
-                            const uint8 = new Uint8Array(val);
-                            let binary = '';
-                            for (let b = 0; b < uint8.length; b++) binary += String.fromCharCode(uint8[b]);
-                            return { __type: 'ArrayBuffer', value: btoa(binary) };
-                        }
+                        if (val instanceof Blob || val instanceof ArrayBuffer) return null; // 跳过二进制
                         if (Array.isArray(val)) {
+                            // 如果是图片 base64 数组，跳过
+                            if (val.length > 0 && typeof val[0] === 'string' && val[0].startsWith('data:image')) return null;
                             const arr = [];
-                            for (const item of val) arr.push(await serializeValue(item));
+                            for (const item of val) {
+                                const s = serializeValueLight(item, depth + 1);
+                                if (s !== null) arr.push(s); // 跳过 null 的项
+                            }
                             return { __type: 'Array', value: arr };
                         }
                         if (val && typeof val === 'object' && !(val instanceof Date)) {
                             const obj = {};
-                            for (const [k2, v2] of Object.entries(val)) obj[k2] = await serializeValue(v2);
+                            for (const [k2, v2] of Object.entries(val)) {
+                                const s = serializeValueLight(v2, depth + 1);
+                                if (s !== null) obj[k2] = s;
+                            }
                             return { __type: 'Object', value: obj };
                         }
                         return { __type: 'primitive', value: val };
                     }
 
                     for (var ki = 0; ki < keys.length; ki++) {
+                        const key = keys[ki];
+                        // 跳过贴纸库等大型图片存储
+                        if (key.includes('stickerLibrary') || key.includes('myStickerLibrary') || key.includes('chatBg') || key.includes('partnerAvatar') || key.includes('userAvatar')) {
+                            skippedKeys.push(key);
+                            continue;
+                        }
                         try {
-                            const rawVal = await localforage.getItem(keys[ki]);
-                            lfData[keys[ki]] = await serializeValue(rawVal);
-                        } catch(e) { console.warn('序列化键失败:', keys[ki], e); }
+                            const rawVal = await localforage.getItem(key);
+                            const serialized = serializeValueLight(rawVal);
+                            if (serialized !== null) {
+                                lfData[key] = serialized;
+                            } else {
+                                skippedKeys.push(key);
+                            }
+                        } catch(e) { console.warn('序列化键失败:', key, e); }
                     }
                     backup.localforage = lfData;
                     backup.lfSerialized = true;
+                    backup.skippedKeys = skippedKeys;
                 }
                 var dataStr = JSON.stringify(backup);
                 var blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
@@ -21128,7 +21082,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 link.click();
                 document.body.removeChild(link);
                 setTimeout(() => URL.revokeObjectURL(url), 100);
-                if (typeof showNotification === 'function') showNotification('全量备份导出成功', 'success');
+                if (typeof showNotification === 'function') showNotification('全量备份导出成功（图片/贴纸已排除）', 'success');
             } catch(e) {
                 console.error('全量备份导出失败:', e);
                 if (typeof showNotification === 'function') showNotification('导出失败，请重试', 'error');
@@ -21143,15 +21097,28 @@ document.addEventListener('DOMContentLoaded', function() {
             input.onchange = async function(e) {
                 var file = e.target.files[0];
                 if (!file) return;
+                // 文件大小预检
+                if (file.size > 50 * 1024 * 1024) {
+                    if (typeof showNotification === 'function') showNotification('文件过大（超过50MB），请检查文件是否正确', 'error');
+                    return;
+                }
+                if (typeof showNotification === 'function') showNotification('正在读取文件，请稍候...', 'info');
                 var reader = new FileReader();
                 reader.onload = async function(ev) {
                     try {
-                        var backup = JSON.parse(ev.target.result);
+                        var backup;
+                        try {
+                            backup = JSON.parse(ev.target.result);
+                        } catch(parseErr) {
+                            if (typeof showNotification === 'function') showNotification('文件解析失败，文件可能损坏或过大', 'error');
+                            return;
+                        }
                         if (backup.type !== 'full-backup') throw new Error('不是全量备份文件');
-                        if (!confirm('导入全量备份将覆盖所有当前数据，确定继续吗？')) return;
+                        if (!confirm('导入全量备份将覆盖所有当前数据（图片/贴纸除外），确定继续吗？')) return;
+                        if (typeof showNotification === 'function') showNotification('正在恢复数据...', 'info');
                         if (backup.localStorage) {
                             for (var k in backup.localStorage) {
-                                localStorage.setItem(k, backup.localStorage[k]);
+                                try { localStorage.setItem(k, backup.localStorage[k]); } catch(e) { console.warn('恢复 localStorage 键失败:', k); }
                             }
                         }
                         if (window.localforage && backup.localforage) {
@@ -21184,7 +21151,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 return wrapped.value !== undefined ? wrapped.value : wrapped;
                             }
-                            for (var lk in backup.localforage) {
+                            const lfKeys = Object.keys(backup.localforage);
+                            for (let li = 0; li < lfKeys.length; li++) {
+                                const lk = lfKeys[li];
                                 try {
                                     const val = backup.lfSerialized ? deserializeValue(backup.localforage[lk]) : backup.localforage[lk];
                                     await localforage.setItem(lk, val);
