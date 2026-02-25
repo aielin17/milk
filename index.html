@@ -7108,6 +7108,7 @@ html[data-theme="light"] #custom-bubble-css {
         min-height: 45px; 
         font-size: 10px;
     }
+}
 .mood-detail-dot {
         display: flex;
         justify-content: center;
@@ -8301,55 +8302,42 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 .tarot-row {
     display: flex;
     gap: 8px;
-    overflow-x: visible;
-    padding: 4px 2px 8px;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-}
-.tarot-row .fortune-card.tarot-style {
-    flex: 1 1 0;
-    min-width: 100px;
-    max-width: 160px;
-    scroll-snap-align: start;
-    margin-bottom: 0 !important;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-header {
-    padding: 12px 0 6px;
-    font-size: 10px;
-    letter-spacing: 1px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-card-name {
-    font-size: 15px;
-    margin-bottom: 3px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-position-badge {
-    font-size: 10px;
-    padding: 2px 8px;
-    margin-bottom: 10px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-keyword {
-    font-size: 11px;
-    margin-bottom: 6px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-details {
-    padding: 0 12px 16px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-details p {
-    font-size: 11px !important;
-    line-height: 1.5 !important;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style .tarot-divider {
-    margin-bottom: 8px;
-}
-.tarot-row:not(.single-card) .fortune-card.tarot-style i.fas {
-    font-size: 20px !important;
-}
-.tarot-row.single-card {
     justify-content: center;
+    padding: 4px 0 8px;
+    width: 100%;
 }
-.tarot-row.single-card .fortune-card.tarot-style {
-    flex: 0 0 80%;
-    max-width: 280px;
+.tarot-row > div {
+    flex: 1; 
+    min-width: 0;
+}
+.tarot-responsive {
+    width: 100% !important;
+    aspect-ratio: 13 / 22; 
+    height: auto !important;
+}
+.tarot-row.single-card > div {
+    flex: 0 0 55%;
+    max-width: 180px;
+}
+
+.tarot-row:not(.single-card) .tarot-face.tarot-back {
+    padding: 8px 6px !important;
+}
+.tarot-row:not(.single-card) .tarot-card-name {
+    font-size: 13px !important;
+}
+.tarot-row:not(.single-card) .tarot-face.tarot-back .tarot-position-badge {
+    font-size: 9px !important;
+    padding: 2px 6px !important;
+    margin: 2px auto !important;
+}
+.tarot-row:not(.single-card) .tarot-face.tarot-back div[style*="font-weight: bold;"] {
+    font-size: 10px !important;
+    margin: 4px 0 2px !important;
+}
+.tarot-row:not(.single-card) .tarot-face.tarot-back div[style*="text-align: left;"] {
+    font-size: 9.5px !important;
+    line-height: 1.4 !important;
 }
 
 .minor-fortune-section {
@@ -9299,7 +9287,18 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 <div class="modal-title" id="appearance-modal-title">
     <i class="fas fa-palette"></i><span>外观设置</span>
 </div>
-
+<div id="gallery-banner-entry" style="margin-bottom: 15px; padding: 12px 16px; background: linear-gradient(135deg, rgba(var(--accent-color-rgb), 0.1), rgba(var(--accent-color-rgb), 0.02)); border: 1px solid rgba(var(--accent-color-rgb), 0.2); border-radius: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);">
+    <div style="display:flex; align-items:center; gap: 12px;">
+        <div style="width: 36px; height: 36px; background: var(--accent-color); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 10px rgba(var(--accent-color-rgb), 0.3);">
+            <i class="fas fa-images" style="font-size: 16px;"></i>
+        </div>
+        <div>
+            <div style="font-size: 14px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px;">传讯专属画廊</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">获取气泡等素材</div>
+        </div>
+    </div>
+    <i class="fas fa-chevron-right" style="color: var(--accent-color); opacity: 0.7;"></i>
+</div>
 <div id="appearance-nav-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:4px 0 12px;">
     <div class="settings-card" onclick="showAppearancePanel('theme')" style="cursor:pointer;">
         <i class="fas fa-paint-roller"></i><span>主题配色</span>
@@ -9788,9 +9787,6 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                     <div class="settings-item" id="envelope-function">
                         <i class="fas fa-envelope"></i><span>信封投递</span>
                     </div>
-                    <div class="settings-item" id="resource-share-function">
-                        <i class="fas fa-link"></i><span>画廊</span>
-                    </div>
                 </div>
             </div>
 
@@ -10193,12 +10189,12 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 <div class="reply-tabs" id="cr-sub-tabs">
                 </div>
     
-                <div class="reply-toolbar" id="cr-toolbar">
-                    <input type="text" class="reply-search" id="reply-search-input" placeholder="搜索...">
-                    <button class="reply-tool-btn" id="import-replies-btn" title="导入"><i class="fas fa-file-import"></i></button>
-                    <button class="reply-tool-btn" id="export-replies-btn" title="导出"><i class="fas fa-file-export"></i></button>
-                </div>
-    
+<div class="reply-toolbar" id="cr-toolbar">
+    <input type="text" class="reply-search" id="reply-search-input" placeholder="搜索...">
+    <button class="reply-tool-btn" id="dedup-replies-btn" title="一键去重"><i class="fas fa-broom"></i></button>
+    <button class="reply-tool-btn" id="import-replies-btn" title="导入"><i class="fas fa-file-import"></i></button>
+    <button class="reply-tool-btn" id="export-replies-btn" title="导出"><i class="fas fa-file-export"></i></button>
+</div>    
                 <div class="content-list-area" id="custom-replies-list">
                 </div>
 
@@ -10207,7 +10203,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
 
                         <div style="background:linear-gradient(135deg,rgba(var(--accent-color-rgb),0.12),rgba(var(--accent-color-rgb),0.05));border-radius:14px;padding:14px 16px;border:1px solid rgba(var(--accent-color-rgb),0.2);">
                             <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-color);font-weight:700;margin-bottom:10px;"><i class="fas fa-image" style="margin-right:6px;"></i>卡片内背景图</div>
-                            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">设置公告卡片内部的背景图（将以毛玻璃效果显示在卡片内容背后）</div>
+                            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;">设置公告的背景图</div>
                             <div style="display:flex;gap:8px;">
                                 <button onclick="document.getElementById('dg-overlay-bg-input').click()" style="flex:1;padding:9px;border:1.5px dashed rgba(var(--accent-color-rgb),0.4);border-radius:10px;background:transparent;color:var(--text-secondary);cursor:pointer;font-size:12px;font-family:var(--font-family);">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -10603,7 +10599,28 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 console.error('Error removing item:', e);
             }
         }
+        
+function normalizeStringStrict(s) {
+    if (typeof s !== 'string') return '';
+    return s.trim().toLowerCase().replace(/\s+/g, ' ');
+}
 
+function deduplicateContentArray(arr, baseSystemArray = []) {
+    const seen = new Set(baseSystemArray.map(normalizeStringStrict));
+    const result = [];
+    let removedCount = 0;
+    
+    for (const item of arr) {
+        const norm = normalizeStringStrict(item);
+        if (norm !== '' && !seen.has(norm)) {
+            seen.add(norm);
+            result.push(item);
+        } else {
+            removedCount++;
+        }
+    }
+    return { result, removedCount };
+}
         function cropImageToSquare(file, maxSize = 640) { 
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -10948,7 +10965,7 @@ body.show-partner-name .message-wrapper.received .message-sender-name {
                 { name: "愚人", eng: "The Fool", meaning: "新的开始、冒险、天真、无畏", keyword: "流浪", icon: "fa-hiking" },
                 { name: "魔术师", eng: "The Magician", meaning: "创造力、技能、意志力、化腐朽为神奇", keyword: "创造", icon: "fa-hat-wizard" },
                 { name: "女祭司", eng: "The High Priestess", meaning: "直觉、潜意识、神秘、智慧", keyword: "智慧", icon: "fa-book-open" },
-                { name: "皇后", eng: "The Empress", meaning: "丰饶、母性、自然、感官享受", keyword: "丰收", icon: "fa-seedling" },
+                { name: "女帝", eng: "The Empress", meaning: "丰饶、母性、自然、感官享受", keyword: "丰收", icon: "fa-seedling" },
                 { name: "皇帝", eng: "The Emperor", meaning: "权威、结构、控制、父亲形象", keyword: "支配", icon: "fa-crown" },
                 { name: "教皇", eng: "The Hierophant", meaning: "传统、信仰、教导、精神指引", keyword: "援助", icon: "fa-church" },
                 { name: "恋人", eng: "The Lovers", meaning: "爱、和谐、关系、价值观的选择", keyword: "结合", icon: "fa-heart" },
@@ -13041,61 +13058,70 @@ function renderStatsContent() {
 
 
 async function generateFortune() {
-    const todayKey = new Date().toDateString();
-    const storageKey = `${APP_PREFIX}daily_fortune`;
+    const today = new Date();
+    const todayKey = today.toDateString();
+    
+    const start = new Date(today.getFullYear(), 0, 1);
+    const diff = today - start + (start.getTimezoneOffset() - today.getTimezoneOffset()) * 60000;
+    const weekNum = Math.floor(diff / (1000 * 60 * 60 * 24) / 7);
+    const weekKey = today.getFullYear() + '-W' + weekNum;
+
+    const storageKey = `${APP_PREFIX}weekly_fortune`;
     let fortuneData = null;
 
     try {
         const savedData = await localforage.getItem(storageKey);
-        if (savedData && savedData.date === todayKey) {
+        if (savedData && savedData.week === weekKey) {
             fortuneData = savedData;
         }
     } catch (e) { console.warn("读取运势失败", e); }
 
+    const majorCards = ALL_78_TAROT_CARDS.filter(c => c.type === 'major');
+
     if (!fortuneData) {
-        const cards = CONSTANTS.TAROT_CARDS;
-        const randomIndex = Math.floor(Math.random() * cards.length);
+        const randomIndex = Math.floor(Math.random() * majorCards.length);
         const isUpright = Math.random() > 0.5;
 
         fortuneData = {
-            date: todayKey,
+            week: weekKey,
             cardIndex: randomIndex,
             isUpright: isUpright
         };
         await localforage.setItem(storageKey, fortuneData);
     }
 
-    renderFortuneCardInteractive(fortuneData);
+    renderFortuneCardInteractive(fortuneData, majorCards, todayKey);
 }
-
-function renderFortuneCardInteractive(data) {
+function renderFortuneCardInteractive(data, majorCards, todayKey) {
     const content = document.getElementById('fortune-content');
-    
     if (!content) return showNotification('组件加载失败，请刷新页面', 'error');
 
-    const card = CONSTANTS.TAROT_CARDS[data.cardIndex];
+    const card = majorCards[data.cardIndex];
     const isUpright = data.isUpright;
-    const todayKey = data.date || new Date().toDateString();
+
+    let starCount = isUpright ? (Math.floor(Math.random() * 2) + 4) : (Math.floor(Math.random() * 2) + 3); 
+    let starsHtml = Array(5).fill(0).map((_, i) => 
+        `<i class="fas fa-star" style="color: ${i < starCount ? 'var(--accent-color)' : 'var(--border-color)'}; font-size: 12px; margin: 0 2px;"></i>`
+    ).join('');
 
     content.innerHTML = `
-        <div style="text-align:center; margin-bottom:10px; color:var(--text-secondary); font-size:12px;">
-            <i class="fas fa-hand-pointer"></i> 点击卡牌揭晓今日指引
+        <div style="text-align:center; margin-bottom:15px; color:var(--text-secondary); font-size:12px; letter-spacing: 1px;">
+            <i class="fas fa-sparkles" style="color:var(--accent-color);"></i> 凭直觉点击翻开你的每周主牌
         </div>
         
-        <div class="tarot-container-3d" onclick="this.classList.toggle('flipped'); document.getElementById('fortune-text-area').classList.add('visible');">
+        <div class="tarot-container-3d" onclick="this.classList.toggle('flipped'); document.getElementById('fortune-text-area').style.display = 'block'; setTimeout(() => document.getElementById('fortune-text-area').classList.add('visible'), 50);">
             <div class="tarot-card-inner">
                 <div class="tarot-face tarot-front">
                     <div class="tarot-pattern"><i class="fas fa-star-and-crescent"></i></div>
-
                 </div>
 
-                <div class="tarot-face tarot-back">
+                <div class="tarot-face tarot-back" style="background: linear-gradient(135deg, var(--secondary-bg), rgba(var(--accent-color-rgb), 0.05)); border: 2px solid rgba(var(--accent-color-rgb), 0.3);">
                     <div class="tarot-visual ${isUpright ? '' : 'reversed'}" style="height:100px;">
-                        <i class="fas ${card.icon} tarot-icon-vector" style="font-size:48px;"></i>
+                        <i class="fas ${card.icon} tarot-icon-vector" style="font-size:52px; color: var(--accent-color);"></i>
                     </div>
                     <div>
-                        <div class="tarot-card-name" style="font-size:18px;">${card.name}</div>
-                        <div class="tarot-position-badge ${isUpright ? 'upright' : 'reversed'}" style="margin:5px 0;">
+                        <div class="tarot-card-name" style="font-size:20px; font-weight: 700;">${card.name}</div>
+                        <div class="tarot-position-badge ${isUpright ? 'upright' : 'reversed'}" style="margin:5px 0; background: var(--primary-bg);">
                             ${isUpright ? "正位" : "逆位"}
                         </div>
                     </div>
@@ -13103,19 +13129,32 @@ function renderFortuneCardInteractive(data) {
             </div>
         </div>
 
-        <div id="fortune-text-area" class="fortune-result-area">
-            <div class="tarot-keyword" style="font-size:16px; margin-bottom:8px;">「${card.keyword}」</div>
-            <div class="fortune-desc" style="font-size:14px; margin-bottom:10px;">${card.meaning}</div>
-            <div class="fortune-tip" style="font-size:12px; border-top:1px dashed var(--border-color); padding-top:8px;">
-                💡 指引：${isUpright ? "顺势而为，保持当下的能量。" : "换个角度思考，也许是转机。"}
+        <div id="fortune-text-area" class="fortune-result-area" style="display: none; background: var(--primary-bg); border-radius: 16px; padding: 20px; margin-top: 10px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <div style="text-align: center; margin-bottom: 12px;">
+                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase;">本周能量指数</div>
+                <div>${starsHtml}</div>
             </div>
-            ${renderMinorFortune(todayKey)}
+            
+            <div class="tarot-keyword" style="font-size:16px; margin-bottom:12px; text-align:center; position:relative;">
+                <span style="background: var(--primary-bg); padding: 0 10px; position:relative; z-index:2; color: var(--accent-color);">「 ${card.keyword} 」</span>
+                <div style="position:absolute; top:50%; left:0; right:0; height:1px; background:var(--border-color); z-index:1;"></div>
+            </div>
+            
+            <div class="fortune-desc" style="font-size:14px; margin-bottom:15px; text-align: justify; text-align-last: center; line-height: 1.8;">${card.upright || card.meaning}</div>
+            
+            <div class="fortune-tip" style="font-size:12px; background: rgba(var(--accent-color-rgb), 0.08); padding: 10px 12px; border-radius: 8px; color: var(--text-primary);">
+                <i class="fas fa-lightbulb" style="color:var(--accent-color); margin-right:5px;"></i>
+                <b>命运低语：</b>${isUpright ? "顺势而为，宇宙正为你敞开大门，保持当下的能量。" : "换个角度思考，也许是转机，放慢脚步倾听内心的声音。"}
+            </div>
+            
+            <div style="margin-top: 15px;">
+                ${renderMinorFortune(todayKey)}
+            </div>
         </div>
     `;
 
     showModal(document.getElementById('fortune-lenormand-modal'));
 }
-
 let lenormandSystem = 36;
 let lenormandCount = 1;
 
@@ -13287,87 +13326,85 @@ function startLenormandDraw() {
 }
 
 const ALL_78_TAROT_CARDS = [
-    { name: "愚人", num: "0", type: "major", eng: "The Fool", icon: "fa-hiking", keyword: "流浪", upright: "新的开始、冒险、天真无畏、自由精神、无限可能", reversed: "鲁莽、逃避、不负责任、缺乏方向感" },
-    { name: "魔术师", num: "I", type: "major", eng: "The Magician", icon: "fa-hat-wizard", keyword: "创造", upright: "创造力、技能、意志力、化腐朽为神奇、行动力", reversed: "欺骗、操纵、能力未发挥、意图不纯" },
-    { name: "女祭司", num: "II", type: "major", eng: "The High Priestess", icon: "fa-book-open", keyword: "智慧", upright: "直觉、潜意识、神秘、内在智慧、静待时机", reversed: "秘密、压抑直觉、信息隐藏、不理性" },
-    { name: "皇后", num: "III", type: "major", eng: "The Empress", icon: "fa-seedling", keyword: "丰收", upright: "丰饶、母性、自然、感官享受、创造力", reversed: "依赖、创意阻塞、过度保护、忽视自我" },
-    { name: "皇帝", num: "IV", type: "major", eng: "The Emperor", icon: "fa-crown", keyword: "支配", upright: "权威、结构、控制、稳定、父亲形象、领导力", reversed: "专横、刚愎自用、权力滥用、缺乏弹性" },
-    { name: "教皇", num: "V", type: "major", eng: "The Hierophant", icon: "fa-church", keyword: "援助", upright: "传统、信仰、教导、精神指引、制度", reversed: "叛逆传统、个人信仰、突破规范" },
-    { name: "恋人", num: "VI", type: "major", eng: "The Lovers", icon: "fa-heart", keyword: "结合", upright: "爱、和谐、关系、价值观的选择、灵魂连接", reversed: "失衡、误判、价值观冲突、分离" },
-    { name: "战车", num: "VII", type: "major", eng: "The Chariot", icon: "fa-horse-head", keyword: "胜利", upright: "意志力、胜利、决心、自我控制、前进", reversed: "失控、缺乏方向、挫败、固执" },
-    { name: "力量", num: "VIII", type: "major", eng: "Strength", icon: "fa-fist-raised", keyword: "意志", upright: "勇气、耐心、控制、内在力量、温柔的坚定", reversed: "怀疑自我、软弱、压抑内在力量" },
-    { name: "隐士", num: "IX", type: "major", eng: "The Hermit", icon: "fa-lightbulb", keyword: "探索", upright: "内省、孤独、寻求真理、内在指引、智慧", reversed: "孤立、拒绝帮助、过度孤独" },
-    { name: "命运之轮", num: "X", type: "major", eng: "Wheel of Fortune", icon: "fa-dharmachakra", keyword: "轮回", upright: "循环、命运、转折点、运气、因果", reversed: "逆境、抗拒改变、恶性循环" },
-    { name: "正义", num: "XI", type: "major", eng: "Justice", icon: "fa-balance-scale", keyword: "均衡", upright: "公正、真理、因果、法律、诚实", reversed: "不公正、逃避责任、不诚实" },
-    { name: "倒吊人", num: "XII", type: "major", eng: "The Hanged Man", icon: "fa-user-injured", keyword: "奉献", upright: "牺牲、新的视角、等待、放下、顿悟", reversed: "拖延、无谓牺牲、停滞不前" },
-    { name: "死神", num: "XIII", type: "major", eng: "Death", icon: "fa-skull", keyword: "结束", upright: "结束、转变、重生、放手、蜕变", reversed: "抗拒改变、无法放手、腐朽" },
-    { name: "节制", num: "XIV", type: "major", eng: "Temperance", icon: "fa-glass-whiskey", keyword: "净化", upright: "平衡、适度、耐心、调和、中庸之道", reversed: "失衡、过度、缺乏耐心" },
-    { name: "恶魔", num: "XV", type: "major", eng: "The Devil", icon: "fa-link", keyword: "诱惑", upright: "束缚、物质主义、欲望、诱惑、阴暗面", reversed: "解脱束缚、重获自由、自我觉醒" },
-    { name: "高塔", num: "XVI", type: "major", eng: "The Tower", icon: "fa-gopuram", keyword: "毁灭", upright: "突变、混乱、启示、破坏、真相大白", reversed: "延迟变化、避免灾难、内在崩溃" },
-    { name: "星星", num: "XVII", type: "major", eng: "The Star", icon: "fa-star", keyword: "希望", upright: "希望、灵感、平静、治愈、信念", reversed: "绝望、失去信仰、悲观" },
-    { name: "月亮", num: "XVIII", type: "major", eng: "The Moon", icon: "fa-moon", keyword: "不安", upright: "幻觉、恐惧、焦虑、潜意识、不确定性", reversed: "恐惧消散、真相浮现、走出迷惘" },
-    { name: "太阳", num: "XIX", type: "major", eng: "The Sun", icon: "fa-sun", keyword: "生命", upright: "快乐、成功、活力、清晰、正能量", reversed: "悲观、自我怀疑、短暂挫折" },
-    { name: "审判", num: "XX", type: "major", eng: "Judgement", icon: "fa-bullhorn", keyword: "复活", upright: "复活、觉醒、号召、决定、自我评价", reversed: "自我怀疑、拒绝接受审判、过去纠缠" },
-    { name: "世界", num: "XXI", type: "major", eng: "The World", icon: "fa-globe-americas", keyword: "达成", upright: "完成、整合、成就、圆满、世界在脚下", reversed: "未完成、拖延、缺乏完结" },
-    { name: "权杖一", num: "Ace", type: "wands", eng: "Ace of Wands", icon: "fa-fire", keyword: "灵感", upright: "新的灵感、创意火花、激情开始、行动的欲望", reversed: "创意受阻、缺乏动力、计划搁浅" },
-    { name: "权杖二", num: "2", type: "wands", eng: "Two of Wands", icon: "fa-compass", keyword: "规划", upright: "规划、展望未来、个人力量、决策时刻", reversed: "恐惧未知、缺乏计划、自我设限" },
-    { name: "权杖三", num: "3", type: "wands", eng: "Three of Wands", icon: "fa-binoculars", keyword: "扩展", upright: "扩展、远见、探索、等待成果、贸易", reversed: "障碍、延迟、预期未达" },
-    { name: "权杖四", num: "4", type: "wands", eng: "Four of Wands", icon: "fa-home", keyword: "庆典", upright: "庆典、稳定基础、家庭幸福、里程碑", reversed: "不稳定、家庭矛盾、延迟庆祝" },
-    { name: "权杖五", num: "5", type: "wands", eng: "Five of Wands", icon: "fa-people-arrows", keyword: "竞争", upright: "竞争、冲突、挑战、意见分歧、斗争", reversed: "内部冲突、避免对抗、达成协议" },
-    { name: "权杖六", num: "6", type: "wands", eng: "Six of Wands", icon: "fa-trophy", keyword: "凯旋", upright: "胜利、认可、成功、公众认可、自信", reversed: "私下的成功、不稳定的成功、傲慢" },
-    { name: "权杖七", num: "7", type: "wands", eng: "Seven of Wands", icon: "fa-shield-alt", keyword: "坚守", upright: "防御、坚守立场、挑战、坚持信念", reversed: "放弃、被压倒、自我怀疑" },
-    { name: "权杖八", num: "8", type: "wands", eng: "Eight of Wands", icon: "fa-meteor", keyword: "速度", upright: "迅速行动、进展加速、旅行、消息传递", reversed: "延误、等待、障碍、计划受阻" },
-    { name: "权杖九", num: "9", type: "wands", eng: "Nine of Wands", icon: "fa-user-shield", keyword: "坚韧", upright: "坚韧、弹性、最后的挑战、边界、谨慎", reversed: "偏执、顽固、不愿妥协、防卫过度" },
-    { name: "权杖十", num: "10", type: "wands", eng: "Ten of Wands", icon: "fa-weight-hanging", keyword: "重担", upright: "责任过重、负担、压力、努力奋斗、接近终点", reversed: "放下重担、委派任务、精简" },
-    { name: "权杖侍者", num: "Page", type: "wands", eng: "Page of Wands", icon: "fa-feather-alt", keyword: "热情", upright: "热情、探索、新消息、好奇心、创意潜力", reversed: "轻率、三分钟热度、缺乏方向" },
-    { name: "权杖骑士", num: "Knight", type: "wands", eng: "Knight of Wands", icon: "fa-horse", keyword: "冒险", upright: "冒险、充沛能量、勇敢行动、自信进取", reversed: "鲁莽、分散注意力、缺乏耐心" },
-    { name: "权杖皇后", num: "Queen", type: "wands", eng: "Queen of Wands", icon: "fa-female", keyword: "魅力", upright: "魅力、自信、热情、独立、领袖气质", reversed: "自私、嫉妒、内向退缩" },
-    { name: "权杖国王", num: "King", type: "wands", eng: "King of Wands", icon: "fa-male", keyword: "领袖", upright: "领袖力、愿景、创业家精神、激励他人", reversed: "专横、冲动、高压控制" },
-    { name: "圣杯一", num: "Ace", type: "cups", eng: "Ace of Cups", icon: "fa-glass-cheers", keyword: "爱涌现", upright: "新的爱、情感开始、灵性连接、直觉、丰盛", reversed: "情感封闭、爱的阻塞、内心空虚" },
-    { name: "圣杯二", num: "2", type: "cups", eng: "Two of Cups", icon: "fa-heart", keyword: "联结", upright: "联结、伙伴关系、相互吸引、和谐关系", reversed: "失衡关系、误解、分离" },
-    { name: "圣杯三", num: "3", type: "cups", eng: "Three of Cups", icon: "fa-users", keyword: "庆祝", upright: "庆祝、友情、社群、喜悦、创意合作", reversed: "过度放纵、孤立、朋友冲突" },
-    { name: "圣杯四", num: "4", type: "cups", eng: "Four of Cups", icon: "fa-eye-slash", keyword: "冥想", upright: "冥想、无聊、再评估、内省、错过机会", reversed: "新机会、重新参与、走出冷漠" },
-    { name: "圣杯五", num: "5", type: "cups", eng: "Five of Cups", icon: "fa-sad-cry", keyword: "失落", upright: "失落、悲伤、后悔、专注于负面、遗憾", reversed: "从失去中恢复、接受、前进" },
-    { name: "圣杯六", num: "6", type: "cups", eng: "Six of Cups", icon: "fa-child", keyword: "怀旧", upright: "怀旧、过去记忆、天真、礼物、童年", reversed: "困在过去、不切实际、成长" },
-    { name: "圣杯七", num: "7", type: "cups", eng: "Seven of Cups", icon: "fa-cloud", keyword: "幻想", upright: "幻想、选择过多、白日梦、愿望投射", reversed: "聚焦、从幻想回归现实、决断" },
-    { name: "圣杯八", num: "8", type: "cups", eng: "Eight of Cups", icon: "fa-walking", keyword: "离去", upright: "离开、追寻更深意义、放下过去、旅程", reversed: "逃避、放弃、低落不前" },
-    { name: "圣杯九", num: "9", type: "cups", eng: "Nine of Cups", icon: "fa-smile-beam", keyword: "满足", upright: "满足感、愿望成真、幸福、感激、丰盛", reversed: "不满足、物质主义、过分自满" },
-    { name: "圣杯十", num: "10", type: "cups", eng: "Ten of Cups", icon: "fa-rainbow", keyword: "圆满", upright: "情感圆满、家庭幸福、内心平和、真爱", reversed: "家庭矛盾、不和谐、幸福幻灭" },
-    { name: "圣杯侍者", num: "Page", type: "cups", eng: "Page of Cups", icon: "fa-fish", keyword: "直觉", upright: "创意、直觉信息、情感探索、艺术、梦境", reversed: "情绪化、逃避现实、创意受阻" },
-    { name: "圣杯骑士", num: "Knight", type: "cups", eng: "Knight of Cups", icon: "fa-dove", keyword: "浪漫", upright: "浪漫、魅力、艺术、追求理想、情感冒险", reversed: "多愁善感、幻想、无法实现的诺言" },
-    { name: "圣杯皇后", num: "Queen", type: "cups", eng: "Queen of Cups", icon: "fa-water", keyword: "慈悲", upright: "同理心、慈悲、直觉、情感成熟、关怀", reversed: "情绪化、不安全感、依赖" },
-    { name: "圣杯国王", num: "King", type: "cups", eng: "King of Cups", icon: "fa-anchor", keyword: "情感智慧", upright: "情感平衡、智慧、外交、慷慨、情感成熟", reversed: "情绪操控、冷漠、情绪不稳定" },
-    { name: "宝剑一", num: "Ace", type: "swords", eng: "Ace of Swords", icon: "fa-bolt", keyword: "真相", upright: "清晰、真相、突破、新思想、正义", reversed: "混乱、谎言、思维混乱" },
-    { name: "宝剑二", num: "2", type: "swords", eng: "Two of Swords", icon: "fa-ban", keyword: "僵局", upright: "僵局、难以决断、封闭心门、逃避真相", reversed: "信息显现、做出决定、困境解除" },
-    { name: "宝剑三", num: "3", type: "swords", eng: "Three of Swords", icon: "fa-heart-broken", keyword: "心碎", upright: "心痛、悲伤、失去、分离、痛苦", reversed: "从悲伤恢复、宽恕、疗愈" },
-    { name: "宝剑四", num: "4", type: "swords", eng: "Four of Swords", icon: "fa-bed", keyword: "休养", upright: "休息、恢复、静默冥想、暂时撤退", reversed: "重返活动、再次激活、不耐烦" },
-    { name: "宝剑五", num: "5", type: "swords", eng: "Five of Swords", icon: "fa-skull-crossbones", keyword: "冲突", upright: "冲突、失败、空洞的胜利、不诚实", reversed: "和解、超越冲突、走向和平" },
-    { name: "宝剑六", num: "6", type: "swords", eng: "Six of Swords", icon: "fa-ship", keyword: "过渡", upright: "过渡期、逃离困境、平静旅程、向前迈进", reversed: "抗拒改变、无处可逃、困难过渡" },
-    { name: "宝剑七", num: "7", type: "swords", eng: "Seven of Swords", icon: "fa-user-secret", keyword: "策略", upright: "策略、欺骗、逃跑、单独行动、不诚实", reversed: "真相揭露、良心发现、归还所得" },
-    { name: "宝剑八", num: "8", type: "swords", eng: "Eight of Swords", icon: "fa-handcuffs", keyword: "束缚", upright: "受困、限制、负面思维、无助感、自我束缚", reversed: "重获自由、新的视角、接受帮助" },
-    { name: "宝剑九", num: "9", type: "swords", eng: "Nine of Swords", icon: "fa-nightmare", keyword: "焦虑", upright: "焦虑、噩梦、担忧、内心痛苦、罪恶感", reversed: "从绝望中走出、寻求帮助、希望" },
-    { name: "宝剑十", num: "10", type: "swords", eng: "Ten of Swords", icon: "fa-times-circle", keyword: "终结", upright: "终结、失败、被背叛、最低谷后的希望", reversed: "从失败中恢复、抗拒接受、新开始" },
-    { name: "宝剑侍者", num: "Page", type: "swords", eng: "Page of Swords", icon: "fa-eye", keyword: "洞察", upright: "好奇心、洞察力、机敏、新想法、警觉", reversed: "散漫、粗心大意、言语伤人" },
-    { name: "宝剑骑士", num: "Knight", type: "swords", eng: "Knight of Swords", icon: "fa-wind", keyword: "冲劲", upright: "行动力、冲劲、直接、野心、智慧战斗", reversed: "鲁莽、仓促、过于好斗" },
-    { name: "宝剑皇后", num: "Queen", type: "swords", eng: "Queen of Swords", icon: "fa-feather", keyword: "独立", upright: "独立、清晰思考、直接、聪明、设立界限", reversed: "刻薄、过于批判、痛苦" },
-    { name: "宝剑国王", num: "King", type: "swords", eng: "King of Swords", icon: "fa-gavel", keyword: "理性", upright: "理性权威、思维清晰、道德标准、客观决策", reversed: "操控、专横、滥用权力" },
-    { name: "星币一", num: "Ace", type: "pentacles", eng: "Ace of Pentacles", icon: "fa-coins", keyword: "机遇", upright: "新的物质机会、丰盛、富裕开始、安全感", reversed: "错失良机、财务不稳、固执" },
-    { name: "星币二", num: "2", type: "pentacles", eng: "Two of Pentacles", icon: "fa-yin-yang", keyword: "平衡", upright: "多任务处理、适应性、时间管理、平衡", reversed: "失去平衡、混乱、过度承诺" },
-    { name: "星币三", num: "3", type: "pentacles", eng: "Three of Pentacles", icon: "fa-drafting-compass", keyword: "协作", upright: "团队合作、技能提升、协作、学习", reversed: "缺乏团队精神、品质不达标、孤立" },
-    { name: "星币四", num: "4", type: "pentacles", eng: "Four of Pentacles", icon: "fa-lock", keyword: "守护", upright: "安全感、节俭、守护财富、控制欲", reversed: "过度节俭、贪婪、财务损失" },
-    { name: "星币五", num: "5", type: "pentacles", eng: "Five of Pentacles", icon: "fa-snowflake", keyword: "艰难", upright: "艰难时期、物质损失、孤立、健康问题", reversed: "从艰难中恢复、寻求帮助、好转" },
-    { name: "星币六", num: "6", type: "pentacles", eng: "Six of Pentacles", icon: "fa-hand-holding-usd", keyword: "给予", upright: "慷慨、给予与接受、平衡施受、慈善", reversed: "债务、吝啬、权力不平衡" },
-    { name: "星币七", num: "7", type: "pentacles", eng: "Seven of Pentacles", icon: "fa-seedling", keyword: "耕耘", upright: "长期投资、耐心、成果评估、持续努力", reversed: "缺乏远见、焦虑、无效努力" },
-    { name: "星币八", num: "8", type: "pentacles", eng: "Eight of Pentacles", icon: "fa-hammer", keyword: "精进", upright: "工匠精神、技能提升、投入工作、专注", reversed: "完美主义、缺乏专注、质量下降" },
-    { name: "星币九", num: "9", type: "pentacles", eng: "Nine of Pentacles", icon: "fa-spa", keyword: "优雅", upright: "丰盛、优雅、自给自足、物质享受", reversed: "过度劳累、物质主义、虚假繁荣" },
-    { name: "星币十", num: "10", type: "pentacles", eng: "Ten of Pentacles", icon: "fa-building", keyword: "圆满", upright: "家族传承、长期稳定、财富圆满、遗产", reversed: "家族冲突、财务不稳、传统破裂" },
-    { name: "星币侍者", num: "Page", type: "pentacles", eng: "Page of Pentacles", icon: "fa-book", keyword: "学习", upright: "学习、实际技能、计划、谨慎踏实", reversed: "缺乏进展、不切实际、懒惰" },
-    { name: "星币骑士", num: "Knight", type: "pentacles", eng: "Knight of Pentacles", icon: "fa-tractor", keyword: "务实", upright: "勤勉、可靠、务实、方法论、责任", reversed: "停滞、无聊、过于保守" },
-    { name: "星币皇后", num: "Queen", type: "pentacles", eng: "Queen of Pentacles", icon: "fa-leaf", keyword: "滋养", upright: "务实、养育、富足、关爱家庭、接地气", reversed: "工作与生活失衡、嫉妒、过度物质" },
-    { name: "星币国王", num: "King", type: "pentacles", eng: "King of Pentacles", icon: "fa-chess-king", keyword: "繁荣", upright: "物质成功、财务安全、商业头脑、可靠", reversed: "固执、物质主义、冒险财务" }
-];
-
-const TAROT_TYPE_NAMES = { major: '大阿卡纳', wands: '权杖', cups: '圣杯', swords: '宝剑', pentacles: '星币' };
+    { name: "愚人", num: "0", type: "major", eng: "The Fool", keyword: "流浪", upright: "全新的开始、冒险精神、天真无邪、活在当下、无限可能、信任直觉、大胆尝试、不受约束", reversed: "愚蠢的决定、鲁莽行事、逃避责任、犹豫不决、缺乏方向感、错失良机、不切实际", img: "https://i.postimg.cc/hGv9scYL/96e54bea7c980b53d1f2904d6de1139b.jpg" },
+    { name: "魔术师", num: "I", type: "major", eng: "The Magician", keyword: "创造", upright: "创造力爆发、技能娴熟、意志力强大、化腐朽为神奇、行动力强、专注目标、资源整合、自信满满", reversed: "欺骗手段、操纵他人、能力未充分发挥、意图不纯、缺乏自信、拖延行动、滥用天赋", img: "https://i.postimg.cc/156PgF5Q/bb1a94f3f1b8beaae766b320d766ff7b.jpg" },
+    { name: "女祭司", num: "II", type: "major", eng: "The High Priestess", keyword: "智慧", upright: "直觉敏锐、潜意识觉醒、神秘力量、内在智慧、静待时机、倾听内心、保持沉默、精神觉醒", reversed: "秘密暴露、压抑直觉、信息隐藏、非理性判断、抗拒内在声音、表面化、情感封闭", img: "https://i.postimg.cc/Vs2mLg1z/522ea5704ba75a6b17a2bd1ad94c7843.jpg" },
+    { name: "女帝", num: "III", type: "major", eng: "The Empress", keyword: "丰收", upright: "丰饶富足、母性光辉、自然力量、感官享受、创造力旺盛、孕育新生、艺术灵感、爱与关怀", reversed: "过度依赖、创意阻塞、过分保护、忽视自我需求、创造力枯竭、情感空虚、放纵", img: "https://i.postimg.cc/FFwNspmX/94c11c30f386c5f3b307fb73e931e0ff.jpg" },
+    { name: "皇帝", num: "IV", type: "major", eng: "The Emperor", keyword: "支配", upright: "权威力量、结构秩序、控制能力、稳定可靠、父亲形象、领导才能、理性决策、建立规则", reversed: "专横跋扈、刚愎自用、滥用权力、缺乏弹性、控制欲过强、优柔寡断、失去威信", img: "https://i.postimg.cc/c1P04hWj/acc86a61cbac497830cc9b5e3f5eedbf.jpg" },
+    { name: "教皇", num: "V", type: "major", eng: "The Hierophant", keyword: "援助", upright: "传统价值、信仰力量、教导他人、精神指引、遵循制度、寻求导师、群体归属、仪式感", reversed: "叛逆传统、个人信仰觉醒、突破规范、独立思想、质疑权威、脱离束缚、寻找新路", img: "https://i.postimg.cc/L4G26DSb/45bd1da5e8e05458ac85deba2dcf1b4c.jpg" },
+    { name: "恋人", num: "VI", type: "major", eng: "The Lovers", keyword: "结合", upright: "真爱降临、和谐关系、价值观选择、灵魂伴侣、情感连接、吸引力强烈、重要抉择、平衡", reversed: "关系失衡、误判对方、价值观冲突、分离危机、犹豫不决、情感考验、选择困难", img: "https://i.postimg.cc/tR8pCkbv/c8e193de2db78acd8d6b0f4b94ceb9eb.jpg" },
+    { name: "战车", num: "VII", type: "major", eng: "The Chariot", keyword: "胜利", upright: "意志力坚定、胜利在望、决心强大、自我掌控、勇往直前、克服障碍、明确目标、自信", reversed: "失去控制、方向迷失、挫败感强、固执己见、内在冲突、停滞不前、缺乏自律", img: "https://i.postimg.cc/XNt47LW2/9952b0b90e242125af82412d43a3ddfc.jpg" },
+    { name: "力量", num: "VIII", type: "major", eng: "Strength", keyword: "意志", upright: "勇气可嘉、耐心等待、内在力量、温柔坚定、同理心强、情绪管理、化解冲突、自信", reversed: "自我怀疑、软弱无力、压抑内在力量、失去信心、恐惧支配、情绪失控、退缩", img: "https://i.postimg.cc/SQHkNd4G/bbf5a7098702778a0d3f96a7f8ff356e.jpg" },
+    { name: "隐士", num: "IX", type: "major", eng: "The Hermit", keyword: "探索", upright: "内省深思、孤独旅程、寻求真理、内在指引、智慧积累、自我探索、独处需要、导师", reversed: "孤立无援、拒绝帮助、过度孤独、逃避现实、与社会脱节、封闭自我、不愿成长", img: "https://i.postimg.cc/2j1CDJst/28e4666f91395d530d5e2e754edf723d.jpg" },
+    { name: "命运之轮", num: "X", type: "major", eng: "Wheel of Fortune", keyword: "轮回", upright: "命运转折、循环往复、好运降临、因果报应、机遇来临、顺势而为、变化将至、意外", reversed: "逆境来袭、抗拒改变、恶性循环、运气不佳、错失良机、无法掌控、命运捉弄", img: "https://i.postimg.cc/59XfVGhk/794c115c0d699838ca5be1775e93ad20.jpg" },
+    { name: "正义", num: "XI", type: "major", eng: "Justice", keyword: "均衡", upright: "公正裁决、真相大白、因果报应、法律事务、诚实守信、平衡判断、责任承担、公平", reversed: "不公正待遇、逃避责任、不诚实行为、法律纠纷、失衡状态、偏见歧视、后果", img: "https://i.postimg.cc/v84GsjJX/1be9b7793332da671dd8843bc13134a4.jpg" },
+    { name: "倒吊人", num: "XII", type: "major", eng: "The Hanged Man", keyword: "奉献", upright: "牺牲精神、新视角看问题、等待时机、放下执念、顿悟时刻、换位思考、暂停", reversed: "拖延症、无谓牺牲、停滞不前、抗拒改变、无法放手、固执己见、错失顿悟", img: "https://i.postimg.cc/XNrnbhRg/55b46df567a1b9a4c4e6d3e8c90f8114.jpg" },
+    { name: "死神", num: "XIII", type: "major", eng: "Death", keyword: "结束", upright: "结束与开始、转变来临、重生机会、放手过去、蜕变成长、不可抗拒的变化、新生", reversed: "抗拒改变、无法放手、腐朽停滞、恐惧新生、固执不变、拒绝结束、拖延", img: "https://i.postimg.cc/G34bCNWk/f9f117b116ed89070375ff8b2b8f2906.jpg" },
+    { name: "节制", num: "XIV", type: "major", eng: "Temperance", keyword: "净化", upright: "平衡之道、适度原则、耐心等待、调和矛盾、中庸智慧、情绪管理、调和", reversed: "失衡状态、过度放纵、缺乏耐心、极端行为、矛盾激化、无法调和、冲动", img: "https://i.postimg.cc/HWrTgKqX/f6bba5a04896b1eafd85e4b414e5e7fe.jpg" },
+    { name: "恶魔", num: "XV", type: "major", eng: "The Devil", keyword: "诱惑", upright: "束缚关系、物质主义、欲望诱惑、沉迷享乐、阴暗面显现、执着成瘾、被困", reversed: "解脱束缚、重获自由、自我觉醒、放下执念、摆脱控制、认清真相、解放", img: "https://i.postimg.cc/ZYWJSgG9/0193aa497922eb37bdef24da7e82fc5c.jpg" },
+    { name: "高塔", num: "XVI", type: "major", eng: "The Tower", keyword: "毁灭", upright: "突变降临、混乱局面、启示觉醒、破坏重建、真相大白、意外打击、崩塌", reversed: "延迟变化、避免灾难、内在崩溃、抗拒真相、恐惧改变、压抑爆发、缓慢", img: "https://i.postimg.cc/RCWvB8kW/b3aa6bb2075c9333cd2fe88ffe6b8845.jpg" },
+    { name: "星星", num: "XVII", type: "major", eng: "The Star", keyword: "希望", upright: "希望之光、灵感涌现、平静安宁、治愈能量、信念坚定、心灵指引、乐观", reversed: "绝望情绪、失去信仰、悲观消极、灵感枯竭、信心动摇、迷茫无助、失望", img: "https://i.postimg.cc/fWVMNFGy/efc1373d89e1fb57fd39ba46809a5d6e.jpg" },
+    { name: "月亮", num: "XVIII", type: "major", eng: "The Moon", keyword: "不安", upright: "幻觉迷惑、恐惧心理、焦虑情绪、潜意识浮现、不确定性、梦境启示、直觉", reversed: "恐惧消散、真相浮现、走出迷惘、看清现实、克服焦虑、方向明确、稳定", img: "https://i.postimg.cc/PfCdjcg5/f91356263746aaf0574a4074b5c75a71.jpg" },
+    { name: "太阳", num: "XIX", type: "major", eng: "The Sun", keyword: "生命", upright: "快乐洋溢、成功在望、活力充沛、清晰明朗、正能量满满、积极向上、成就", reversed: "悲观情绪、自我怀疑、短暂挫折、快乐受阻、缺乏自信、阴霾笼罩、暂时", img: "https://i.postimg.cc/NF3JqL3t/cc7920c1085e317299e6022f7c11418f.jpg" },
+    { name: "审判", num: "XX", type: "major", eng: "Judgement", keyword: "复活", upright: "复活重生、觉醒时刻、号召来临、重要决定、自我评价、因果报应、召唤", reversed: "自我怀疑、拒绝接受审判、过去纠缠、逃避责任、后悔自责、无法觉醒", img: "https://i.postimg.cc/ZnG7t01X/2af3b253975f72db648372f5f67b19c8.jpg" },
+    { name: "世界", num: "XXI", type: "major", eng: "The World", keyword: "达成", upright: "完成圆满、整合统一、成就达成、世界在脚下、旅途终点、成功实现、圆满", reversed: "未完成事项、拖延症、缺乏完结感、停滞不前、未能整合、遗憾残留", img: "https://i.postimg.cc/tJKSQ7LD/7f69519939b241e131dbd58d7bb8b648.jpg" },
+    { name: "权杖一", num: "Ace", type: "wands", eng: "Ace of Wands", keyword: "灵感", upright: "新灵感迸发、创意火花、激情开始、行动欲望、创业精神、能量涌现、新项目", reversed: "创意受阻、缺乏动力、计划搁浅、拖延行动、热情消退、不敢开始", img: "https://i.postimg.cc/8zh3GBk9/ed2ce5320ab2882ead4f42a9492923ae.jpg" },
+    { name: "权杖二", num: "2", type: "wands", eng: "Two of Wands", keyword: "规划", upright: "规划未来、展望远方、个人力量、决策时刻、探索可能、离开舒适区、勇敢", reversed: "恐惧未知、缺乏计划、自我设限、犹豫不决、停滞不前、害怕改变", img: "https://i.postimg.cc/pLD7vYVq/181ffcef5e2caec52135f3fd3bb60e60.jpg" },
+    { name: "权杖三", num: "3", type: "wands", eng: "Three of Wands", keyword: "扩展", upright: "扩展视野、远见卓识、探索精神、等待成果、贸易合作、海外机会、领导", reversed: "障碍出现、延迟到来、预期未达、合作受阻、远见不足、耐心缺失", img: "https://i.postimg.cc/XYwhWcNk/170261009cbe95510da1b5ab7c3ecdcc.jpg" },
+    { name: "权杖四", num: "4", type: "wands", eng: "Four of Wands", keyword: "庆典", upright: "庆祝时刻、稳定基础、家庭幸福、里程碑达成、和谐团聚、安居乐业、丰收", reversed: "不稳定状态、家庭矛盾、延迟庆祝、基础动摇、和谐被打破、暂缓", img: "https://i.postimg.cc/VkjTwBsq/a4480049b7630cec92c1245db9b65035.jpg" },
+    { name: "权杖五", num: "5", type: "wands", eng: "Five of Wands", keyword: "竞争", upright: "竞争激烈、冲突不断、挑战重重、意见分歧、斗争状态、能量争夺、混乱", reversed: "内部冲突、避免对抗、达成协议、和解可能、放下争执、寻求共识", img: "https://i.postimg.cc/zGnMNSDn/71341bdf2261a50098c9cf5b4763e238.jpg" },
+    { name: "权杖六", num: "6", type: "wands", eng: "Six of Wands", keyword: "凯旋", upright: "胜利凯旋、获得认可、成功喜悦、公众赞誉、自信满满、领导地位、好消息", reversed: "私下的成功、不稳定的成功、傲慢自大、失去支持、期待落空、延迟", img: "https://i.postimg.cc/0yp3vd5m/02c1bb07bb55c9c7ad18daea4ea4732a.jpg" },
+    { name: "权杖七", num: "7", type: "wands", eng: "Seven of Wands", keyword: "坚守", upright: "防御姿态、坚守立场、面对挑战、坚持信念、不畏艰难、迎难而上、勇气", reversed: "放弃抵抗、被压倒、自我怀疑、无力应对、屈服压力、退缩逃避", img: "https://i.postimg.cc/Mpy4wbZB/b2437558d88e7ad755ab686ca5c16f44.jpg" },
+    { name: "权杖八", num: "8", type: "wands", eng: "Eight of Wands", keyword: "速度", upright: "迅速行动、进展加速、旅行将至、消息传来、能量释放、快速发展、冲刺", reversed: "延误延迟、等待过程、障碍出现、计划受阻、缓慢进展、消息迟到", img: "https://i.postimg.cc/sgp8z9fv/8dedf2bca5a629d0778f1260d812868f.jpg" },
+    { name: "权杖九", num: "9", type: "wands", eng: "Nine of Wands", keyword: "坚韧", upright: "坚韧不拔、弹性恢复、最后挑战、边界意识、谨慎戒备、准备迎战、耐力", reversed: "偏执多疑、顽固不化、不愿妥协、防卫过度、精疲力竭、被迫放弃", img: "https://i.postimg.cc/13pTScRt/79248609ebe669bfdbbf0bb8a6f3baf4.jpg" },
+    { name: "权杖十", num: "10", type: "wands", eng: "Ten of Wands", keyword: "重担", upright: "责任过重、负担压力、努力奋斗、接近终点、承担过多、疲惫不堪、坚持", reversed: "放下重担、委派任务、精简生活、解脱压力、学会放手、减轻负担", img: "https://i.postimg.cc/RZr82bmq/d6e15b8d05aa8769a873f91cefa5a340.jpg" },
+    { name: "权杖侍者", num: "Page", type: "wands", eng: "Page of Wands", keyword: "热情", upright: "热情洋溢、探索精神、新消息将至、好奇心强、创意潜力、冒险尝试、活力", reversed: "轻率决定、三分钟热度、缺乏方向、消息延迟、创意受阻、热情消退", img: "https://i.postimg.cc/Mpk4grwK/3375196008b411d59a8ef6b218a706d8.jpg" },
+    { name: "权杖骑士", num: "Knight", type: "wands", eng: "Knight of Wands", keyword: "冒险", upright: "冒险精神、充沛能量、勇敢行动、自信进取、旅行出发、追求激情、冲动", reversed: "鲁莽行事、分散注意力、缺乏耐心、冲动后果、半途而废、能量耗尽", img: "https://i.postimg.cc/2SpJgXYk/47f44a5727edbaf82f76c243387bcf41.jpg" },
+    { name: "权杖女王", num: "Queen", type: "wands", eng: "Queen of Wands", keyword: "魅力", upright: "魅力四射、自信满满、热情洋溢、独立自主、领袖气质、吸引他人、阳光", reversed: "自私自利、嫉妒心强、内向退缩、缺乏自信、热情熄灭、控制欲强", img: "https://i.postimg.cc/4xCMjFGX/82d378bbafc5c9a257c91a40e5a0deaf.jpg" },
+    { name: "权杖国王", num: "King", type: "wands", eng: "King of Wands", keyword: "领袖", upright: "领袖风范、愿景远大、创业精神、激励他人、果断决策、成熟稳重、权威", reversed: "专横霸道、冲动行事、高压控制、滥用权力、决策失误、失去威信", img: "https://i.postimg.cc/MKfNPJC8/08f0f33165febd7ee79ac12ec795ad7e.jpg" },
+    { name: "圣杯一", num: "Ace", type: "cups", eng: "Ace of Cups", keyword: "爱涌现", upright: "新恋情萌芽、情感开始流动、灵性连接、直觉增强、丰盛喜悦、爱满溢", reversed: "情感封闭、爱的阻塞、内心空虚、无法付出、情感枯竭、缺乏共鸣", img: "https://i.postimg.cc/nryRbM6k/273ec8e6e58eeb6ee63a63fd4f639b1f.jpg" },
+    { name: "圣杯二", num: "2", type: "cups", eng: "Two of Cups", keyword: "联结", upright: "联结关系、伙伴关系、相互吸引、和谐互动、平等相爱、心灵相通、合作", reversed: "失衡关系、误解误会、分离倾向、单相思、情感不公、关系破裂", img: "https://i.postimg.cc/ZnG7t01P/e74f7e6d4e351965dc2b0ef1b3442d93.jpg" },
+    { name: "圣杯三", num: "3", type: "cups", eng: "Three of Cups", keyword: "庆祝", upright: "庆祝欢聚、友情深厚、社群温暖、喜悦分享、创意合作、姐妹情谊、派对", reversed: "过度放纵、孤立自己、朋友冲突、表面和谐、情感消耗、团体矛盾", img: "https://i.postimg.cc/0jTWRrL0/832c9a5200494a0c807429cc93952286.jpg" },
+    { name: "圣杯四", num: "4", type: "cups", eng: "Four of Cups", keyword: "冥想", upright: "冥想状态、无聊倦怠、重新评估、内省时刻、错过眼前机会、不满现状", reversed: "新机会出现、重新参与生活、走出冷漠、接受馈赠、打开心扉、觉醒", img: "https://i.postimg.cc/6q2jmC1M/15d1185a92f07038c32528152d7f73d0.jpg" },
+    { name: "圣杯五", num: "5", type: "cups", eng: "Five of Cups", keyword: "失落", upright: "失落感强、悲伤情绪、后悔自责、专注负面、遗憾过去、无法释怀、痛苦", reversed: "从失去中恢复、学会接受、继续前进、看到希望、宽恕他人、放下", img: "https://i.postimg.cc/rs0nP5Yg/49dffe658b336e3f72b6c8e08d34eb24.jpg" },
+    { name: "圣杯六", num: "6", type: "cups", eng: "Six of Cups", keyword: "怀旧", upright: "怀旧情绪、过去回忆、天真烂漫、收到礼物、童年记忆、重逢时刻、单纯", reversed: "困在过去、不切实际、成长受阻、无法前进、沉溺回忆、拒绝长大", img: "https://i.postimg.cc/J0D62jd3/1b73e7a42135de2e8bf75ec7d5731355.jpg" },
+    { name: "圣杯七", num: "7", type: "cups", eng: "Seven of Cups", keyword: "幻想", upright: "幻想重重、选择过多、白日做梦、愿望投射、迷失方向、不切实际、诱惑", reversed: "聚焦目标、从幻想回归现实、决断时刻、看清真相、选择明确、落地", img: "https://i.postimg.cc/brDCB1Fk/6b9cba94ba7e150fee51a0deedbdfeca.jpg" },
+    { name: "圣杯八", num: "8", type: "cups", eng: "Eight of Cups", keyword: "离去", upright: "离开现状、追寻更深意义、放下过去、踏上旅程、告别过去、探索精神", reversed: "逃避问题、放弃责任、停滞不前、不敢离开、犹豫不决、无处可去", img: "https://i.postimg.cc/KjkqHtsg/9d037a30311a7c71d8b112066e90a90a.jpg" },
+    { name: "圣杯九", num: "9", type: "cups", eng: "Nine of Cups", keyword: "满足", upright: "满足感强、愿望成真、幸福满满、感恩之心、丰盛富足、自我实现、快乐", reversed: "不满足感、物质主义、过分自满、贪婪欲望、表面光鲜、内心空虚", img: "https://i.postimg.cc/Gt875vS8/2ee0bc4068be0dc8dc916a3d602da2af.jpg" },
+    { name: "圣杯十", num: "10", type: "cups", eng: "Ten of Cups", keyword: "圆满", upright: "情感圆满、家庭幸福、内心平和、真爱永恒、和谐关系、幸福归宿、喜悦", reversed: "家庭矛盾、不和谐音、幸福幻灭、关系紧张、情感裂痕、失去和谐", img: "https://i.postimg.cc/ZnB7M6DR/28cf2538308f40a6a6bc321a45e80ba2.jpg" },
+    { name: "圣杯侍者", num: "Page", type: "cups", eng: "Page of Cups", keyword: "直觉", upright: "创意涌现、直觉信息、情感探索、艺术灵感、梦境启示、温柔敏感、消息", reversed: "情绪化严重、逃避现实、创意受阻、幼稚行为、情感混乱、不成熟", img: "https://i.postimg.cc/9MNgbL14/362ea49a1b85f4e980578e652a2e5097.jpg" },
+    { name: "圣杯骑士", num: "Knight", type: "cups", eng: "Knight of Cups", keyword: "浪漫", upright: "浪漫多情、魅力四射、艺术气质、追求理想、情感冒险、温柔体贴、邀请", reversed: "多愁善感、幻想破灭、无法兑现诺言、情感欺骗、不切实际、逃避", img: "https://i.postimg.cc/85nX4Zwj/a194c456550d36f2c798a6b2ec24a9af.jpg" },
+    { name: "圣杯女王", num: "Queen", type: "cups", eng: "Queen of Cups", keyword: "慈悲", upright: "同理心强、慈悲为怀、直觉敏锐、情感成熟、关怀他人、温柔包容、滋养", reversed: "情绪失控、不安全感强、依赖他人、情感勒索、过度敏感、脆弱", img: "https://i.postimg.cc/Sst1dgVK/80204fb42105c75a3ed665961917b0c4.jpg" },
+    { name: "圣杯国王", num: "King", type: "cups", eng: "King of Cups", keyword: "情感智慧", upright: "情感平衡、智慧圆融、外交手腕、慷慨大方、情感成熟、包容稳定、温和", reversed: "情绪操控、冷漠无情、情绪不稳定、喜怒无常、压抑情感、虚假", img: "https://i.postimg.cc/G2SgKXzd/94e1246d36f6e13dc303bd3144b2896f.jpg" },
+    { name: "宝剑一", num: "Ace", type: "swords", eng: "Ace of Swords", keyword: "真相", upright: "真相大白、思维清晰、突破困境、新思想涌现、正义伸张、理智战胜、洞察", reversed: "混乱思维、谎言欺骗、思维混乱、无法决断、真相被掩、误解重重", img: "https://i.postimg.cc/25GKbkZv/8796ef62d2135917b2585380ef1e403d.jpg" },
+    { name: "宝剑二", num: "2", type: "swords", eng: "Two of Swords", keyword: "僵局", upright: "僵持不下、难以决断、封闭心门、逃避真相、拒绝看见、内心矛盾、平衡", reversed: "信息显现、做出决定、困境解除、看清真相、打开心扉、释放压力", img: "https://i.postimg.cc/yNjbg1ZJ/46a8207ec3f77e0436bdd2d958d85153.jpg" },
+    { name: "宝剑三", num: "3", type: "swords", eng: "Three of Swords", keyword: "心碎", upright: "心碎欲绝、悲伤难抑、失去之痛、分离打击、痛苦折磨、泪水流淌、失望", reversed: "从悲伤恢复、宽恕他人、疗愈开始、接受现实、释放心痛、重新开始", img: "https://i.postimg.cc/bvgBDytZ/3f88e25f2caa455fab226c8e9b71e2b7.jpg" },
+    { name: "宝剑四", num: "4", type: "swords", eng: "Four of Swords", keyword: "休养", upright: "休息恢复、静默冥想、暂时撤退、休养生息、独处充电、等待时机、安宁", reversed: "重返活动、再次激活、不耐烦休息、提前行动、精力恢复、躁动不安", img: "https://i.postimg.cc/3w1c48vN/0b76c577cc2f356ab474fde5c653a4f8.jpg" },
+    { name: "宝剑五", num: "5", type: "swords", eng: "Five of Swords", keyword: "冲突", upright: "冲突升级、失败收场、空洞胜利、不诚实手段、争吵不断、胜之不武、损失", reversed: "和解可能、超越冲突、走向和平、放下争执、接受失败、寻求共识", img: "https://i.postimg.cc/XvLzGjCv/c7e327ad086f503b55be7b22a8ec7805.jpg" },
+    { name: "宝剑六", num: "6", type: "swords", eng: "Six of Swords", keyword: "过渡", upright: "过渡时期、逃离困境、平静旅程、向前迈进、艰难前行、希望在前、疗愈", reversed: "抗拒改变、无处可逃、困难过渡、停滞不前、反复挣扎、无法摆脱", img: "https://i.postimg.cc/fbCrtz9M/c4d36a80ec72fcc67689b64f536e6c5a.jpg" },
+    { name: "宝剑七", num: "7", type: "swords", eng: "Seven of Swords", keyword: "策略", upright: "策略计划、欺骗隐瞒、单独行动、不诚实手段、智取逃避、偷偷摸摸、机智", reversed: "真相揭露、良心发现、归还所得、承认错误、放弃欺骗、面对后果", img: "https://i.postimg.cc/jjcFwx7b/a3f6098c94ec09059bfc931d09bd6b16.jpg" },
+    { name: "宝剑八", num: "8", type: "swords", eng: "Eight of Swords", keyword: "束缚", upright: "受困束缚、限制重重、负面思维、无助感强、自我设限、无法挣脱、恐惧", reversed: "重获自由、新视角出现、接受帮助、打破枷锁、释放自我、看清真相", img: "https://i.postimg.cc/MGqLpMvT/04fcc588cd33657692a92619aea39ed7.jpg" },
+    { name: "宝剑九", num: "9", type: "swords", eng: "Nine of Swords", keyword: "焦虑", upright: "焦虑不安、噩梦连连、担忧过度、内心痛苦、罪恶感强、失眠困扰、绝望", reversed: "从绝望走出、寻求帮助、希望重现、减轻焦虑、放下负担、自我宽恕", img: "https://i.postimg.cc/cJ0zLgr4/e81e8ab062e810198907252f14b0b2f2.jpg" },
+    { name: "宝剑十", num: "10", type: "swords", eng: "Ten of Swords", keyword: "终结", upright: "终结时刻、失败打击、被背叛感、最低谷期、痛苦结束、崩溃边缘、绝望", reversed: "从失败恢复、抗拒接受、新开始萌芽、慢慢起身、教训吸取、重生", img: "https://i.postimg.cc/FKN6Hd7h/227daf3b9af1be2460550dca58bded74.jpg" },
+    { name: "宝剑侍者", num: "Page", type: "swords", eng: "Page of Swords", keyword: "洞察", upright: "好奇心强、洞察力敏锐、机警灵活、新想法涌现、警觉性高、学习迅速、消息", reversed: "散漫无序、粗心大意、言语伤人、八卦传播、缺乏重点、沟通不畅", img: "https://i.postimg.cc/yNsG8gk4/f3bac9ab5a52947e4b66a4ac632d70ef.jpg" },
+    { name: "宝剑骑士", num: "Knight", type: "swords", eng: "Knight of Swords", keyword: "冲劲", upright: "行动力强、冲劲十足、直接果断、野心勃勃、智慧战斗、快速前进、勇气", reversed: "鲁莽行事、仓促决定、过于好斗、言语尖刻、不顾后果、急躁冲动", img: "https://i.postimg.cc/1zsd3n42/522975dc24a7604bd9446badf86a42d1.jpg" },
+    { name: "宝剑女王", num: "Queen", type: "swords", eng: "Queen of Swords", keyword: "独立", upright: "独立自主、清晰思考、直接坦率、聪明睿智、设立界限、理性决策、诚实", reversed: "刻薄无情、过于批判、痛苦过往、冷漠疏离、心胸狭隘、报复心强", img: "https://i.postimg.cc/KYxW8k4V/7e8f572137114fa7dc96882b66dfc560.jpg" },
+    { name: "宝剑国王", num: "King", type: "swords", eng: "King of Swords", keyword: "理性", upright: "理性权威、思维清晰、道德标准高、客观决策、公正判断、智慧领导、经验", reversed: "操控他人、专横霸道、滥用权力、冷酷无情、判断失误、刚愎自用", img: "https://i.postimg.cc/7LwRZGbN/b0f5d9218e2e4ef9a4652df089b97b9a.jpg" },
+    { name: "星币一", num: "Ace", type: "pentacles", eng: "Ace of Pentacles", keyword: "机遇", upright: "新物质机遇、丰盛富足、财富开始、安全感增强、实用开端、踏实起步、礼物", reversed: "错失良机、财务不稳、固执己见、投资失误、缺乏规划、机会溜走", img: "https://i.postimg.cc/9MNgbL1V/94448c6a431ceb9959491624fea0e38a.jpg" },
+    { name: "星币二", num: "2", type: "pentacles", eng: "Two of Pentacles", keyword: "平衡", upright: "多任务处理、适应性强、时间管理、收支平衡、灵活应对、忙中有序、节奏", reversed: "失去平衡、混乱无序、过度承诺、财务紧张、手忙脚乱、无法兼顾", img: "https://i.postimg.cc/G2SgKXK6/757698797cf41a491b3ab99d688854dc.jpg" },
+    { name: "星币三", num: "3", type: "pentacles", eng: "Three of Pentacles", keyword: "协作", upright: "团队合作、技能提升、协作共赢、学习成长、学徒阶段、共同目标、认可", reversed: "缺乏团队精神、品质不达标、孤立工作、沟通不畅、技术不足、合作失败", img: "https://i.postimg.cc/Kzspf0fp/a452903cc09ba4daa5cab2093c51a5c3.jpg" },
+    { name: "星币四", num: "4", type: "pentacles", eng: "Four of Pentacles", keyword: "守护", upright: "安全感需求、节俭储蓄、守护财富、控制欲强、固守现状、保守稳重、积累", reversed: "过度节俭、贪婪成性、财务损失、抓得太紧、不愿分享、害怕失去", img: "https://i.postimg.cc/k45hW0NP/26b157d62962905f2dc877344c61e1b9.jpg" },
+    { name: "星币五", num: "5", type: "pentacles", eng: "Five of Pentacles", keyword: "艰难", upright: "艰难时期、物质损失、孤立无援、健康问题、贫困感强、被排斥外、担忧", reversed: "从艰难恢复、寻求帮助、好转迹象、重获支持、走出低谷、改善", img: "https://i.postimg.cc/TwPHnzVz/d4f448dd9e6eac42bd34952713f8b35a.jpg" },
+    { name: "星币六", num: "6", type: "pentacles", eng: "Six of Pentacles", keyword: "给予", upright: "慷慨给予、接受馈赠、平衡施受、慈善行为、财富流动、帮助他人、分享", reversed: "债务缠身、吝啬小气、权力不平衡、索取过度、依赖他人、不公", img: "https://i.postimg.cc/ZRqD6G82/68b1beb7020af71fa4e727c28dc610d6.jpg" },
+    { name: "星币七", num: "7", type: "pentacles", eng: "Seven of Pentacles", keyword: "耕耘", upright: "长期投资、耐心等待、成果评估、持续努力、耕耘收获、审视进度、坚持", reversed: "缺乏远见、焦虑不安、无效努力、回报不足、灰心丧气、放弃坚持", img: "https://i.postimg.cc/cHJ5fpRD/4e78f21fb36d384b237ce384885a5fb0.jpg" },
+    { name: "星币八", num: "8", type: "pentacles", eng: "Eight of Pentacles", keyword: "精进", upright: "工匠精神、技能提升、投入工作、专注细节、精益求精、学习钻研、勤奋", reversed: "完美主义、缺乏专注、质量下降、工作倦怠、敷衍了事、技能不足", img: "https://i.postimg.cc/JnhdjfNp/dde01f64fc66e6c7446edc3750f81cb0.jpg" },
+    { name: "星币九", num: "9", type: "pentacles", eng: "Nine of Pentacles", keyword: "优雅", upright: "丰盛富足、优雅从容、自给自足、物质享受、独立自信、花园丰收、宁静", reversed: "过度劳累、物质主义、虚假繁荣、孤独空虚、依赖他人、表面光鲜", img: "https://i.postimg.cc/4d3FpD65/68db2a7d50d230a020feb7f6f404efa3.jpg" },
+    { name: "星币十", num: "10", type: "pentacles", eng: "Ten of Pentacles", keyword: "圆满", upright: "家族传承、长期稳定、财富圆满、遗产继承、世代繁荣、根基深厚、归属", reversed: "家族冲突、财务不稳、传统破裂、遗产纠纷、失去根基、离散", img: "https://i.postimg.cc/tTgmFK3d/40492228d3d7b1658ef883153e8d6e3b.jpg" },
+    { name: "星币侍者", num: "Page", type: "pentacles", eng: "Page of Pentacles", keyword: "学习", upright: "学习热情、实际技能、计划制定、谨慎踏实、新工作开始、专注努力、潜力", reversed: "缺乏进展、不切实际、懒惰拖延、学习受阻、目标不明、浪费时间", img: "https://i.postimg.cc/76LQSF3S/372d86040b237875ac164802856a4432.jpg" },
+    { name: "星币骑士", num: "Knight", type: "pentacles", eng: "Knight of Pentacles", keyword: "务实", upright: "勤勉可靠、务实稳重、责任心强、按部就班、耐心坚持、工作努力、守护", reversed: "停滞不前、无聊乏味、过于保守、缺乏冒险、效率低下、固执不变", img: "https://i.postimg.cc/G2pSvWFD/f9dedf51440bafc9ddb64b8ecf45362a.jpg" },
+    { name: "星币女王", num: "Queen", type: "pentacles", eng: "Queen of Pentacles", keyword: "滋养", upright: "务实养育、富足慷慨、关爱家庭、接地气的生活、物质与情感平衡、舒适", reversed: "工作与生活失衡、嫉妒他人、过度物质、忽视情感、操劳过度、焦虑", img: "https://i.postimg.cc/xCdFLwvN/9aa38a0ab78af98aeb73d93a00b74573.jpg" },
+    { name: "星币国王", num: "King", type: "pentacles", eng: "King of Pentacles", keyword: "繁荣", upright: "物质成功、财务安全、商业头脑、可靠稳重、富足丰盛、投资有道、成就", reversed: "固执己见、物质主义、冒险财务、贪婪腐败、失去判断、投资失败", img: "https://i.postimg.cc/MG5FM6Q0/c8093dafa7eb0921bb16f32c77df51f6.jpg" }
+];const TAROT_TYPE_NAMES = { major: '大阿卡纳', wands: '权杖', cups: '圣杯', swords: '宝剑', pentacles: '星币' };
 
 const MINOR_SUIT_INFO = {
     wands:     { icon: '🔥', domain: '事业 & 行动', color: '#e07b3a' },
@@ -13376,22 +13413,28 @@ const MINOR_SUIT_INFO = {
     pentacles: { icon: '🌿', domain: '财富 & 现实', color: '#7aab72' },
 };
 
-function getMinorFortuneCards(seed) {
-    const suits = ['wands', 'cups', 'swords', 'pentacles'];
-    const result = [];
-    suits.forEach((suit, si) => {
-        const pool = ALL_78_TAROT_CARDS.filter(c => c.type === suit);
-        let h = 0;
-        for (let i = 0; i < seed.length; i++) h = ((h << 5) - h + seed.charCodeAt(i) + si * 31) | 0;
-        const idx = Math.abs(h) % pool.length;
-        const card = pool[idx];
-        let h2 = h ^ (si * 0x9e3779b9);
-        const isReversed = ((h2 >>> 0) % 2) === 1;
-        result.push({ card, suit, isReversed });
-    });
-    return result;
-}
+function getMinorFortuneCards(seedStr) {
+    const minors = ALL_78_TAROT_CARDS.filter(c => c.type !== 'major');
+    
+    let h = 0;
+    for (let i = 0; i < seedStr.length; i++) h = ((h << 5) - h + seedStr.charCodeAt(i)) | 0;
+    
+    function seededRand() {
+        h = (h * 9301 + 49297) % 233280;
+        return h / 233280;
+    }
 
+    let shuffled = [...minors].sort(() => seededRand() - 0.5);
+    let drawn = shuffled.slice(0, 3);
+
+    return drawn.map(card => {
+        return { 
+            card: card, 
+            suit: card.type, 
+            isReversed: seededRand() > 0.5 
+        };
+    });
+}
 function renderMinorFortune(dateKey) {
     const cards = getMinorFortuneCards(dateKey);
     const suitInsights = {
@@ -13480,28 +13523,40 @@ function startTarotDraw() {
     const questionTrimmed = question.trim();
     const drawnCards = [];
 
-    function cardHTML(card, position, labelOverride) {
+function cardHTML(card, position, labelOverride) {
         const isReversed = Math.random() > 0.5;
         const meaning = isReversed ? card.reversed : card.upright;
         const posLabel = labelOverride || position;
-        const typeLabel = TAROT_TYPE_NAMES[card.type] || '';
+        
         drawnCards.push({ name: card.name, keyword: card.keyword, position: posLabel, isReversed, meaning });
-        return `
-        <div class="fortune-card tarot-style" style="margin-bottom:14px;">
-            <div class="tarot-header">
-                <div style="font-size:10px;color:var(--text-secondary);margin-bottom:4px;">${typeLabel} ${card.num}</div>
-                <div style="font-size:26px;margin:4px 0;"><i class="fas ${card.icon}" style="color:var(--accent-color);${isReversed?'transform:rotate(180deg);display:inline-block;':''}"></i></div>
-                <div class="tarot-card-name">${card.name}</div>
-                <div class="tarot-position-badge ${isReversed ? 'reversed' : 'upright'}" style="margin:6px auto;">${isReversed ? '逆位' : '正位'}</div>
-            </div>
-            <div class="tarot-keyword">「${card.keyword}」</div>
-            <div class="tarot-details">
-                <div class="tarot-divider"></div>
-                <p style="font-size:13px;line-height:1.7;color:var(--text-primary);">${meaning}</p>
+
+        const frontContent = card.img 
+            ? `<img src="${card.img}" style="width: 100%; height: 100%; object-fit: cover; ${isReversed ? 'transform: rotate(180deg);' : ''}">`
+            : `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; background:var(--primary-bg); color:var(--text-secondary);">
+                 <i class="fas ${card.icon}" style="font-size:40px; margin-bottom:10px; ${isReversed ? 'transform: rotate(180deg);' : ''}"></i>
+                 <div style="font-size:14px; font-weight:bold;">${card.name}</div>
+                 <div style="font-size:10px; margin-top:5px;"></div>
+               </div>`;
+
+return `
+        <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <div class="tarot-container-3d tarot-responsive" style="margin-bottom: 10px; cursor: pointer;" onclick="this.classList.toggle('flipped');">
+                <div class="tarot-card-inner">
+                    <div class="tarot-face tarot-front" style="padding: 0; overflow: hidden; border: 2px solid var(--border-color); background: var(--secondary-bg);">
+                        ${frontContent}
+                    </div>
+
+                    <div class="tarot-face tarot-back" style="background: linear-gradient(135deg, var(--secondary-bg), rgba(var(--accent-color-rgb), 0.05)); border: 2px solid rgba(var(--accent-color-rgb), 0.3); padding: 15px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto;">
+                        <div style="font-size:10px; color:var(--text-secondary); margin-bottom:6px;">${posLabel}</div>
+                        <div class="tarot-card-name" style="font-size:16px; font-weight: 700;">${card.name}</div>
+                        <div class="tarot-position-badge ${isReversed ? 'reversed' : 'upright'}" style="margin:4px auto; font-size:10px; padding: 2px 8px; background: var(--primary-bg);">${isReversed ? '逆位' : '正位'}</div>
+                        <div style="font-weight: bold; color: var(--accent-color); font-size:12px; margin: 8px 0 4px;">「${card.keyword}」</div>
+                        <div style="font-size: 11px; text-align: left; line-height: 1.6; color: var(--text-primary); width: 100%;">${meaning}</div>
+                    </div>
+                </div>
             </div>
         </div>`;
     }
-
     let resultHTML = '';
     const qDisplay = questionTrimmed ? `<div class="lenormand-question-show">「${questionTrimmed}」</div>` : '';
     let spreadLabel = '';
@@ -13579,11 +13634,11 @@ function renderDiviHistory() {
         const cardTags = (entry.cards || []).map(c =>
             `<span class="divi-history-card-tag ${c.isReversed ? 'reversed' : ''}">
                 ${c.isReversed ? '<i class="fas fa-arrow-down" style="font-size:9px;"></i>' : '<i class="fas fa-arrow-up" style="font-size:9px;"></i>'}
-                ${c.name}${c.position ? ' · ' + c.position : ''}
+                ${c.name}
             </span>`
         ).join('');
         const detailLines = (entry.cards || []).map(c =>
-            `<div style="margin-bottom:6px;"><b>${c.name}${c.position ? ' （'+c.position+'）' : ''}${c.isReversed ? ' 逆位' : ' 正位'}</b><br>${c.keyword} — ${c.meaning}</div>`
+            `<div style="margin-bottom:6px;"><b>${c.name}${c.isReversed ? ' 逆位' : ' 正位'}</b><br>${c.keyword} — ${c.meaning}</div>`
         ).join('');
         return `
         <div class="divi-history-item">
@@ -13598,7 +13653,6 @@ function renderDiviHistory() {
         </div>`;
     }).join('');
 }
-
 function toggleDiviDetail(btn) {
     const detail = btn.nextElementSibling;
     if (!detail) return;
@@ -16836,12 +16890,14 @@ autoSendSlider.addEventListener('change', () => {
             showModal(document.getElementById('envelope-modal'));
         });
     }
-    const resourceEntryBtn = document.getElementById('resource-share-function');
-    if (resourceEntryBtn) {
-        resourceEntryBtn.addEventListener('click', () => {
-            hideModal(DOMElements.advancedModal.modal);
+    const galleryBanner = document.getElementById('gallery-banner-entry');
+    if (galleryBanner) {
+        galleryBanner.addEventListener('click', () => {
             window.open('https://aielin17.github.io/-/', '_blank');
         });
+        galleryBanner.addEventListener('mousedown', () => { galleryBanner.style.transform = 'scale(0.97)'; });
+        galleryBanner.addEventListener('mouseup', () => { galleryBanner.style.transform = 'scale(1)'; });
+        galleryBanner.addEventListener('mouseleave', () => { galleryBanner.style.transform = 'scale(1)'; });
     }
 document.getElementById('send-envelope').addEventListener('click', handleSendEnvelope);
 
@@ -17996,7 +18052,44 @@ function initReplyLibraryListeners() {
 
     const searchInput = document.getElementById('reply-search-input');
     if (searchInput) searchInput.addEventListener('input', renderReplyLibrary);
+    const dedupBtn = document.getElementById('dedup-replies-btn');
+    if (dedupBtn) {
+        dedupBtn.addEventListener('click', () => {
+            let totalRemoved = 0;
 
+            const crDedup = deduplicateContentArray(customReplies, CONSTANTS.REPLY_MESSAGES);
+            customReplies = crDedup.result;
+            totalRemoved += crDedup.removedCount;
+
+            const cpDedup = deduplicateContentArray(customPokes);
+            customPokes = cpDedup.result;
+            totalRemoved += cpDedup.removedCount;
+
+            const csDedup = deduplicateContentArray(customStatuses);
+            customStatuses = csDedup.result;
+            totalRemoved += csDedup.removedCount;
+
+            const cmDedup = deduplicateContentArray(customMottos);
+            customMottos = cmDedup.result;
+            totalRemoved += cmDedup.removedCount;
+
+            const ciDedup = deduplicateContentArray(customIntros);
+            customIntros = ciDedup.result;
+            totalRemoved += ciDedup.removedCount;
+
+            const preEmojiCount = customEmojis.length;
+            customEmojis = [...new Set(customEmojis)];
+            totalRemoved += (preEmojiCount - customEmojis.length);
+
+            if (totalRemoved > 0) {
+                throttledSaveData();
+                renderReplyLibrary();
+                showNotification(`🧹 舒适了！共为您清理了 ${totalRemoved} 条重复内容`, 'success');
+            } else {
+                showNotification('✨ 当前字卡库很干净，没有重复内容哦', 'info');
+            }
+        });
+    }
     const exportBtn = document.getElementById('export-replies-btn');
     if (exportBtn) {
         exportBtn.addEventListener('click', () => {
@@ -18036,8 +18129,8 @@ function initReplyLibraryListeners() {
                     
                     const choice = confirm('选择导入方式：\n\n点击【确定】= 覆盖（替换当前内容）\n点击【取消】= 追加（保留现有内容并合并）');
                     
-                    let count = 0;
-                    if (choice) {
+let count = 0;
+                    if (choice) { 
                         if (data.customReplies) { customReplies = data.customReplies; count++; }
                         if (data.customPokes) { customPokes = data.customPokes; count++; }
                         if (data.customStatuses) { customStatuses = data.customStatuses; count++; }
@@ -18046,27 +18139,21 @@ function initReplyLibraryListeners() {
                         if (data.stickerLibrary) { stickerLibrary = data.stickerLibrary; count++; }
                         if (data.disabledDefaultReplies) { disabledDefaultReplies = data.disabledDefaultReplies; count++; }
                         if (data.customEmojis) { customEmojis = data.customEmojis; count++; }
-                    } else {
-                        if (data.customReplies) { customReplies = [...new Set([...customReplies, ...data.customReplies])]; count++; }
-                        if (data.customPokes) { customPokes = [...new Set([...customPokes, ...data.customPokes])]; count++; }
-                        if (data.customStatuses) { customStatuses = [...new Set([...customStatuses, ...data.customStatuses])]; count++; }
-                        if (data.customMottos) { customMottos = [...new Set([...customMottos, ...data.customMottos])]; count++; }
-                        if (data.customIntros) { customIntros = [...new Set([...customIntros, ...data.customIntros])]; count++; }
-                        if (data.stickerLibrary) { stickerLibrary = [...new Set([...stickerLibrary, ...data.stickerLibrary])]; count++; }
-                        if (data.disabledDefaultReplies) { 
-                            disabledDefaultReplies = [...new Set([...disabledDefaultReplies, ...data.disabledDefaultReplies])]; 
+                    } else { 
+                        if (data.customReplies) { 
+                            customReplies = deduplicateContentArray([...customReplies, ...data.customReplies], CONSTANTS.REPLY_MESSAGES).result; 
                             count++; 
                         }
-                        if (data.customEmojis) {
-                            customEmojis = [...new Set([...customEmojis, ...data.customEmojis])];
-                            count++;
-                        }
+                        if (data.customPokes) { customPokes = deduplicateContentArray([...customPokes, ...data.customPokes]).result; count++; }
+                        if (data.customStatuses) { customStatuses = deduplicateContentArray([...customStatuses, ...data.customStatuses]).result; count++; }
+                        if (data.customMottos) { customMottos = deduplicateContentArray([...customMottos, ...data.customMottos]).result; count++; }
+                        if (data.customIntros) { customIntros = deduplicateContentArray([...customIntros, ...data.customIntros]).result; count++; }
+                        
+                        if (data.stickerLibrary) { stickerLibrary = [...new Set([...stickerLibrary, ...data.stickerLibrary])]; count++; }
+                        if (data.disabledDefaultReplies) { disabledDefaultReplies = [...new Set([...disabledDefaultReplies, ...data.disabledDefaultReplies])]; count++; }
+                        if (data.customEmojis) { customEmojis = [...new Set([...customEmojis, ...data.customEmojis])]; count++; }
                     }
-                    
-                    throttledSaveData();
-                    renderReplyLibrary();
-                    showNotification(choice ? '覆盖导入成功！' : '追加导入成功！', 'success');
-                } catch (err) {
+                    } catch (err) {
                     console.error(err);
                     showNotification('文件格式错误', 'error');
                 }
@@ -18107,17 +18194,16 @@ function initReplyLibraryListeners() {
 if (input && input.trim()) {
                 const val = input.trim();
                 let isDuplicate = false;
-                const normalizeStr = s => s.trim().toLowerCase().replace(/\s+/g, ' ');
-                const valNorm = normalizeStr(val);
+                const valNorm = normalizeStringStrict(val);
 
-                if (currentSubTab === 'custom' && (customReplies.some(r => normalizeStr(r) === valNorm) || CONSTANTS.REPLY_MESSAGES.some(r => normalizeStr(r) === valNorm))) isDuplicate = true;
-                else if (currentSubTab === 'pokes' && customPokes.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
-                else if (currentSubTab === 'statuses' && customStatuses.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
-                else if (currentSubTab === 'mottos' && customMottos.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
-                else if (currentSubTab === 'intros' && customIntros.some(r => normalizeStr(r) === valNorm)) isDuplicate = true;
+                if (currentSubTab === 'custom' && (customReplies.some(r => normalizeStringStrict(r) === valNorm) || CONSTANTS.REPLY_MESSAGES.some(r => normalizeStringStrict(r) === valNorm))) isDuplicate = true;
+                else if (currentSubTab === 'pokes' && customPokes.some(r => normalizeStringStrict(r) === valNorm)) isDuplicate = true;
+                else if (currentSubTab === 'statuses' && customStatuses.some(r => normalizeStringStrict(r) === valNorm)) isDuplicate = true;
+                else if (currentSubTab === 'mottos' && customMottos.some(r => normalizeStringStrict(r) === valNorm)) isDuplicate = true;
+                else if (currentSubTab === 'intros' && customIntros.some(r => normalizeStringStrict(r) === valNorm)) isDuplicate = true;
 
                 if (isDuplicate) {
-                    showNotification('该内容已存在（包含系统预设中）', 'warning');
+                    showNotification('该内容已存在', 'warning');
                     return;
                 }
 
@@ -18516,13 +18602,10 @@ function initThemeEditor() {
     if (resetThemeBtn) {
         resetThemeBtn.onclick = () => {
             if (!confirm('重置将清除当前编辑器中的自定义颜色，恢复当前主题方案的默认色彩。\n\n已保存的自定义主题方案不受影响，确定重置吗？')) return;
-            // 清除 settings 中的自定义颜色（不影响 customThemes 列表）
             settings.customThemeColors = {};
-            // 移除所有内联 CSS 变量
             const root = document.documentElement;
             const allVars = Object.keys(Object.assign({}, themeColorMappings || {}, themeExtraMappings || {}));
             allVars.forEach(v => root.style.removeProperty(v));
-            // 重新渲染编辑器并应用当前主题
             updateUI();
             populateThemeEditor();
             showNotification('已重置为当前主题默认色彩', 'success');
@@ -20275,7 +20358,6 @@ window.clearDgHeaderBg = function() {
 };
 
 window.onDgOverlayOpacityChange = function(val) {
-    // val: 0(最清晰) ~ 100(最暗)，转成遮罩不透明度
     var tint = parseInt(val) / 100;
     localStorage.setItem('dg_overlay_bg_tint', tint);
     var valEl = document.getElementById('dg-overlay-opacity-val');
@@ -20295,7 +20377,6 @@ window.handleDgOverlayBgUpload = function(input) {
         var prev = document.getElementById('dg-overlay-bg-preview');
         var prevImg = document.getElementById('dg-overlay-bg-preview-img');
         if (prev && prevImg) { prevImg.src = data; prev.style.display = 'block'; }
-        // Show opacity slider and sync value
         var opRow = document.getElementById('dg-overlay-opacity-row');
         if (opRow) opRow.style.display = 'block';
         var savedTint = parseFloat(localStorage.getItem('dg_overlay_bg_tint'));
@@ -20328,10 +20409,8 @@ function applyDgOverlayBg(data, tintOpacity) {
         tintOpacity = isNaN(saved) ? 0.25 : saved;
     }
     if (data) {
-        // 图片层：始终全清晰，不加透明度
         bgLayer.style.backgroundImage = 'url(' + data + ')';
         bgLayer.style.opacity = '1';
-        // 遮罩层：控制深浅（0=完全透明=图片最清晰，1=深色蒙层）
         if (tintLayer) tintLayer.style.background = 'rgba(0,0,0,' + tintOpacity + ')';
         card.classList.add('has-card-bg');
         card.style.backgroundImage = '';
@@ -20354,7 +20433,6 @@ function applyDgOverlayBg(data, tintOpacity) {
             var prev = document.getElementById('dg-overlay-bg-preview');
             var prevImg = document.getElementById('dg-overlay-bg-preview-img');
             if (prev && prevImg) { prevImg.src = savedOverlayBg; prev.style.display = 'block'; }
-            // Restore opacity slider
             var opRow = document.getElementById('dg-overlay-opacity-row');
             if (opRow) opRow.style.display = 'block';
             var savedOp = parseFloat(localStorage.getItem('dg_overlay_bg_tint'));
@@ -21009,87 +21087,103 @@ window.getGroupMemberForMessage = function(msgId) {
 document.addEventListener('DOMContentLoaded', function() {
     var exportAllBtn = document.getElementById('export-all-settings');
     var importAllBtn = document.getElementById('import-all-settings');
-    if (exportAllBtn) {
+if (exportAllBtn) {
         exportAllBtn.addEventListener('click', async function() {
             try {
-                var backup = { version: 3, type: 'full-backup', timestamp: new Date().toISOString(), note: '图片/贴纸等二进制文件已排除以控制体积，请单独在回复库中管理' };
+                if (typeof showNotification === 'function') showNotification('正在准备精简版全量备份...', 'info');
+                
+                var backup = { 
+                    version: 3, 
+                    type: 'full-backup-lite', 
+                    timestamp: new Date().toISOString(), 
+                    note: '为保证流畅，图片/表情包/头像/背景等二进制文件已剔除，仅备份文字记录与核心设置' 
+                };
+
+                const skipKeys = [
+                    'stickerLibrary', 'myStickerLibrary', 'backgroundGallery', 
+                    'chatBackground', 'partnerAvatar', 'myAvatar', 'playerCover',
+                    'dg_header_bg', 'dg_overlay_bg'
+                ];
+
+                function deepCleanLargeData(obj) {
+                    if (obj === null || obj === undefined) return obj;
+                    if (typeof obj === 'string') {
+                        if (obj.startsWith('data:image/') && obj.length > 1000) return null;
+                        return obj;
+                    }
+                    if (Array.isArray(obj)) {
+                        return obj.map(item => deepCleanLargeData(item)).filter(item => item !== null);
+                    }
+                    if (typeof obj === 'object') {
+                        const newObj = {};
+                        for (let k in obj) {
+                            if (k === 'image' || k === 'decoImg' || k === 'iconImg' || k.includes('Avatar')) {
+                                continue; 
+                            }
+                            const cleanVal = deepCleanLargeData(obj[k]);
+                            if (cleanVal !== null) newObj[k] = cleanVal;
+                        }
+                        return newObj;
+                    }
+                    return obj;
+                }
+
                 var lsData = {};
                 for (var i = 0; i < localStorage.length; i++) {
                     var k = localStorage.key(i);
-                    lsData[k] = localStorage.getItem(k);
+                    if (skipKeys.some(skip => k.includes(skip)) || k.startsWith('annHeaderBg_')) continue;
+                    
+                    try {
+                        let val = localStorage.getItem(k);
+                        try {
+                            let parsed = JSON.parse(val);
+                            val = JSON.stringify(deepCleanLargeData(parsed));
+                        } catch(e) {
+                            if (val.startsWith('data:image/') && val.length > 1000) continue;
+                        }
+                        lsData[k] = val;
+                    } catch(e) { console.warn('处理 localStorage 失败:', k); }
                 }
                 backup.localStorage = lsData;
+
                 if (window.localforage) {
-                    if (typeof showNotification === 'function') showNotification('正在准备导出，请稍候...', 'info');
                     var lfData = {};
                     var keys = await localforage.keys();
-                    var skippedKeys = [];
-
-                    // 只序列化非二进制数据，跳过 Blob/ArrayBuffer 和大型数组（贴纸库）
-                    function serializeValueLight(val, depth) {
-                        depth = depth || 0;
-                        if (val === null || val === undefined) return { __type: 'null', value: null };
-                        if (val instanceof Blob || val instanceof ArrayBuffer) return null; // 跳过二进制
-                        if (Array.isArray(val)) {
-                            // 如果是图片 base64 数组，跳过
-                            if (val.length > 0 && typeof val[0] === 'string' && val[0].startsWith('data:image')) return null;
-                            const arr = [];
-                            for (const item of val) {
-                                const s = serializeValueLight(item, depth + 1);
-                                if (s !== null) arr.push(s); // 跳过 null 的项
-                            }
-                            return { __type: 'Array', value: arr };
-                        }
-                        if (val && typeof val === 'object' && !(val instanceof Date)) {
-                            const obj = {};
-                            for (const [k2, v2] of Object.entries(val)) {
-                                const s = serializeValueLight(v2, depth + 1);
-                                if (s !== null) obj[k2] = s;
-                            }
-                            return { __type: 'Object', value: obj };
-                        }
-                        return { __type: 'primitive', value: val };
-                    }
 
                     for (var ki = 0; ki < keys.length; ki++) {
                         const key = keys[ki];
-                        // 跳过贴纸库等大型图片存储
-                        if (key.includes('stickerLibrary') || key.includes('myStickerLibrary') || key.includes('chatBg') || key.includes('partnerAvatar') || key.includes('userAvatar')) {
-                            skippedKeys.push(key);
-                            continue;
-                        }
+                        if (skipKeys.some(skip => key.includes(skip)) || key.startsWith('annHeaderBg_')) continue;
+                        
                         try {
                             const rawVal = await localforage.getItem(key);
-                            const serialized = serializeValueLight(rawVal);
-                            if (serialized !== null) {
-                                lfData[key] = serialized;
-                            } else {
-                                skippedKeys.push(key);
+                            const cleanedVal = deepCleanLargeData(rawVal);
+                            if (cleanedVal !== null && cleanedVal !== undefined) {
+                                lfData[key] = cleanedVal;
                             }
-                        } catch(e) { console.warn('序列化键失败:', key, e); }
+                        } catch(e) { console.warn('处理 localforage 失败:', key, e); }
                     }
                     backup.localforage = lfData;
-                    backup.lfSerialized = true;
-                    backup.skippedKeys = skippedKeys;
                 }
+
                 var dataStr = JSON.stringify(backup);
                 var blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
                 var url = URL.createObjectURL(blob);
                 var link = document.createElement('a');
                 link.href = url;
-                link.download = 'full-backup-' + new Date().toISOString().slice(0,10) + '.json';
+                link.download = 'chatapp-lite-backup-' + new Date().toISOString().slice(0,10) + '.json';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 setTimeout(() => URL.revokeObjectURL(url), 100);
-                if (typeof showNotification === 'function') showNotification('全量备份导出成功（图片/贴纸已排除）', 'success');
+                
+                if (typeof showNotification === 'function') showNotification('全量备份导出成功！', 'success');
             } catch(e) {
                 console.error('全量备份导出失败:', e);
                 if (typeof showNotification === 'function') showNotification('导出失败，请重试', 'error');
             }
         });
     }
-    if (importAllBtn) {
+if (importAllBtn) {
         importAllBtn.addEventListener('click', function() {
             var input = document.createElement('input');
             input.type = 'file';
@@ -21097,12 +21191,13 @@ document.addEventListener('DOMContentLoaded', function() {
             input.onchange = async function(e) {
                 var file = e.target.files[0];
                 if (!file) return;
-                // 文件大小预检
-                if (file.size > 50 * 1024 * 1024) {
-                    if (typeof showNotification === 'function') showNotification('文件过大（超过50MB），请检查文件是否正确', 'error');
+                
+                if (file.size > 100 * 1024 * 1024) {
+                    if (typeof showNotification === 'function') showNotification('文件过大，请检查是否是正确的备份文件', 'error');
                     return;
                 }
                 if (typeof showNotification === 'function') showNotification('正在读取文件，请稍候...', 'info');
+                
                 var reader = new FileReader();
                 reader.onload = async function(ev) {
                     try {
@@ -21110,60 +21205,38 @@ document.addEventListener('DOMContentLoaded', function() {
                         try {
                             backup = JSON.parse(ev.target.result);
                         } catch(parseErr) {
-                            if (typeof showNotification === 'function') showNotification('文件解析失败，文件可能损坏或过大', 'error');
+                            if (typeof showNotification === 'function') showNotification('文件解析失败，文件可能已损坏', 'error');
                             return;
                         }
-                        if (backup.type !== 'full-backup') throw new Error('不是全量备份文件');
-                        if (!confirm('导入全量备份将覆盖所有当前数据（图片/贴纸除外），确定继续吗？')) return;
+                        
+                        if (!backup.type || !backup.type.includes('backup')) throw new Error('不是有效的传讯备份文件');
+                        
+                        if (!confirm('导入全量备份将覆盖当前的聊天记录和设置。\n\n注：你设备上现有的头像、背景和表情包会被安全保留。\n\n确定继续吗？')) return;
+                        
                         if (typeof showNotification === 'function') showNotification('正在恢复数据...', 'info');
+                        
                         if (backup.localStorage) {
                             for (var k in backup.localStorage) {
-                                try { localStorage.setItem(k, backup.localStorage[k]); } catch(e) { console.warn('恢复 localStorage 键失败:', k); }
+                                try { localStorage.setItem(k, backup.localStorage[k]); } 
+                                catch(e) { console.warn('恢复 localStorage 失败:', k); }
                             }
                         }
+
                         if (window.localforage && backup.localforage) {
-                            function deserializeValue(wrapped) {
-                                if (!wrapped || typeof wrapped !== 'object') return wrapped;
-                                const t = wrapped.__type;
-                                if (t === 'null') return null;
-                                if (t === 'primitive') return wrapped.value;
-                                if (t === 'ArrayBuffer') {
-                                    const binary = atob(wrapped.value);
-                                    const buf = new ArrayBuffer(binary.length);
-                                    const view = new Uint8Array(buf);
-                                    for (let i2 = 0; i2 < binary.length; i2++) view[i2] = binary.charCodeAt(i2);
-                                    return buf;
-                                }
-                                if (t === 'Blob') {
-                                    const dataUrl = wrapped.value;
-                                    const base64 = dataUrl.split(',')[1];
-                                    const binary = atob(base64);
-                                    const buf = new ArrayBuffer(binary.length);
-                                    const view = new Uint8Array(buf);
-                                    for (let i2 = 0; i2 < binary.length; i2++) view[i2] = binary.charCodeAt(i2);
-                                    return new Blob([buf], { type: wrapped.mimeType || 'application/octet-stream' });
-                                }
-                                if (t === 'Array') return wrapped.value.map(deserializeValue);
-                                if (t === 'Object') {
-                                    const obj = {};
-                                    for (const [k2, v2] of Object.entries(wrapped.value)) obj[k2] = deserializeValue(v2);
-                                    return obj;
-                                }
-                                return wrapped.value !== undefined ? wrapped.value : wrapped;
-                            }
                             const lfKeys = Object.keys(backup.localforage);
                             for (let li = 0; li < lfKeys.length; li++) {
                                 const lk = lfKeys[li];
                                 try {
-                                    const val = backup.lfSerialized ? deserializeValue(backup.localforage[lk]) : backup.localforage[lk];
-                                    await localforage.setItem(lk, val);
-                                } catch(e) { console.warn('恢复键失败:', lk, e); }
+                                    await localforage.setItem(lk, backup.localforage[lk]);
+                                } catch(e) { console.warn('恢复 localforage 失败:', lk, e); }
                             }
                         }
-                        if (typeof showNotification === 'function') showNotification('全量备份恢复成功，即将刷新页面', 'success');
-                        setTimeout(function() { location.reload(); }, 1500);
+                        
+                        if (typeof showNotification === 'function') showNotification('数据恢复成功，即将刷新页面应用更改', 'success', 2000);
+                        setTimeout(function() { location.reload(); }, 2000);
                     } catch(e) {
-                        if (typeof showNotification === 'function') showNotification('文件格式错误：' + e.message, 'error');
+                        if (typeof showNotification === 'function') showNotification('导入失败：' + e.message, 'error');
+                        console.error('导入报错:', e);
                     }
                 };
                 reader.readAsText(file);
