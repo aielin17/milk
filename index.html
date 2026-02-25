@@ -13148,10 +13148,6 @@ function renderFortuneCardInteractive(data, majorCards, todayKey) {
                 <i class="fas fa-lightbulb" style="color:var(--accent-color); margin-right:5px;"></i>
                 <b>命运低语：</b>${isUpright ? "顺势而为，宇宙正为你敞开大门，保持当下的能量。" : "换个角度思考，也许是转机，放慢脚步倾听内心的声音。"}
             </div>
-            
-            <div style="margin-top: 15px;">
-                ${renderMinorFortune(todayKey)}
-            </div>
         </div>
     `;
 
@@ -13408,98 +13404,6 @@ const ALL_78_TAROT_CARDS = [
     { name: "星币国王", num: "King", type: "pentacles", eng: "King of Pentacles", keyword: "繁荣", upright: "物质成功、财务安全、商业头脑、可靠稳重、富足丰盛、投资有道、成就", reversed: "固执己见、物质主义、冒险财务、贪婪腐败、失去判断、投资失败", img: "https://i.postimg.cc/MG5FM6Q0/c8093dafa7eb0921bb16f32c77df51f6.jpg" }
 ];const TAROT_TYPE_NAMES = { major: '大阿卡纳', wands: '权杖', cups: '圣杯', swords: '宝剑', pentacles: '星币' };
 
-const MINOR_SUIT_INFO = {
-    wands:     { icon: '🔥', domain: '事业 & 行动', color: '#e07b3a' },
-    cups:      { icon: '💧', domain: '感情 & 内心', color: '#5b9bd5' },
-    swords:    { icon: '💨', domain: '思维 & 挑战', color: '#7b97b5' },
-    pentacles: { icon: '🌿', domain: '财富 & 现实', color: '#7aab72' },
-};
-
-function getMinorFortuneCards(seedStr) {
-    const minors = ALL_78_TAROT_CARDS.filter(c => c.type !== 'major');
-    
-    let h = 2166136261 >>> 0;
-    for (let i = 0; i < seedStr.length; i++) {
-        h = Math.imul(h ^ seedStr.charCodeAt(i), 3432918353);
-        h = h << 13 | h >>> 19;
-    }
-    
-    function mulberry32() {
-        h += 0x6D2B79F5;
-        let t = Math.imul(h ^ (h >>> 15), 1 | h);
-        t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    }
-
-    mulberry32(); 
-    mulberry32();
-
-    let shuffled = [...minors];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(mulberry32() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    
-    let drawn = shuffled.slice(0, 3);
-
-    return drawn.map(card => {
-        return { 
-            card: card, 
-            suit: card.type, 
-            isReversed: mulberry32() > 0.5
-        };
-    });
-}
-function renderMinorFortune(dateKey) {
-    const cards = getMinorFortuneCards(dateKey);
-    const suitInsights = {
-        wands: {
-            upright: ['行动力充足，是推进计划的好时机', '充满热情与创造力，勇于迈出第一步', '积极进取，今日能量旺盛'],
-            reversed: ['节奏放慢，不必强行推动', '能量分散，先整理再行动', '适当休整，减少消耗']
-        },
-        cups: {
-            upright: ['情感流动顺畅，易与人产生共鸣', '内心平静，直觉敏锐', '感情运佳，适合表达心意'],
-            reversed: ['情绪需要整理，给自己多一些耐心', '内心有些波动，保持觉察', '感情上宜静观，少做冲动决定']
-        },
-        swords: {
-            upright: ['思维清晰，适合做出重要决策', '直面困难，问题将迎刃而解', '沟通顺畅，表达自我的好时机'],
-            reversed: ['思绪纷乱，先沉淀再思考', '避免争论，保持冷静', '小心误解，确认信息再行动']
-        },
-        pentacles: {
-            upright: ['物质运顺遂，财务与实务进展稳健', '脚踏实地，努力将获得回报', '今日宜处理现实事务'],
-            reversed: ['财务需谨慎，延后非必要支出', '现实层面有些阻滞，耐心应对', '避免急于求成，稳扎稳打']
-        }
-    };
-
-    const chips = cards.map(({ card, suit, isReversed }) => {
-        const info = MINOR_SUIT_INFO[suit];
-        const meaning = isReversed ? card.reversed : card.upright;
-        return `
-        <div class="minor-card-chip" title="${card.name} · ${isReversed ? '逆位' : '正位'}：${meaning}">
-            <span class="minor-card-chip-suit">${info.icon}</span>
-            <span class="minor-card-chip-name">${card.name}</span>
-            <span class="minor-card-chip-keyword" style="color:${info.color};">${card.keyword}</span>
-            <span class="minor-card-chip-badge ${isReversed ? 'rev' : ''}">${isReversed ? '逆位' : '正位'}</span>
-        </div>`;
-    }).join('');
-
-    const domainInsights = cards.map(({ suit, isReversed }) => {
-        const info = MINOR_SUIT_INFO[suit];
-        const pool = suitInsights[suit][isReversed ? 'reversed' : 'upright'];
-        let h = 0;
-        const key = suit + isReversed;
-        for (let i = 0; i < key.length; i++) h = ((h << 5) - h + key.charCodeAt(i)) | 0;
-        const text = pool[Math.abs(h) % pool.length];
-        return `<div style="font-size:12px;margin-bottom:5px;"><span style="color:${info.color};font-weight:600;">${info.icon} ${info.domain}：</span>${text}</div>`;
-    }).join('');
-
-    return `
-    <div class="minor-fortune-section">
-        <div class="minor-fortune-title"><i class="fas fa-layer-group"></i> 今日小牌指引</div>
-        <div class="minor-fortune-cards">${chips}</div>
-        <div class="minor-fortune-insight">${domainInsights}</div>
-    </div>`;
-}
 let currentTarotSpread = 'single';
 
 function setTarotSpread(spread) {
@@ -17436,36 +17340,6 @@ const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
         renderPlaylist();
     }
 
-    function syncSystemSongs() {
-        if (confirm('更新歌单将会：\n1. 读取代码中最新的预设歌单\n2. 保留你手动添加的自定义歌曲\n\n确定要更新吗？')) {
-            try {
-                const userCustomSongs = songs.filter(s => s.isCustom === true);
-                
-                songs = [...latestSystemSongs, ...userCustomSongs];
-                
-                localforage.setItem(APP_PREFIX + 'customSongs', songs);
-                
-                currentIndex = 0;
-                loadSong(0);
-                if (isPlaying) {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    isPlaying = false;
-                    document.getElementById('icon-play').style.display = 'block';
-                    document.getElementById('icon-pause').style.display = 'none';
-                    player.classList.remove('playing');
-                }
-
-                renderPlaylist();
-                
-                showNotification('歌单已成功更新！', 'success');
-            } catch (e) {
-                console.error(e);
-                showNotification('更新失败，请检查代码格式', 'error');
-            }
-        }
-    }
-
     function openEditModal(index) {
         const song = songs[index];
         if (!song) return;
@@ -17494,13 +17368,14 @@ const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
         const header = document.createElement('div');
         header.className = 'playlist-header';
         header.innerHTML = `
-            <div class="pl-header-title">˙°ʚᕱ⑅ᕱɞ°˙</div>
-            <div class="pl-header-actions">
-                <button class="pl-icon-btn ${isSearchVisible ? 'active' : ''}" id="pl-search-toggle" title="搜索"><i class="fas fa-search"></i></button>
-                <button class="pl-icon-btn" id="pl-sync-btn" title="更新预设歌单"><i class="fas fa-sync-alt"></i></button>
-                <button class="pl-icon-btn" id="pl-add-btn" title="添加歌曲"><i class="fas fa-plus"></i></button>
-            </div>
-        `;
+    <div class="pl-header-title">˙°ʚᕱ⑅ᕱɞ°˙</div>
+    <div class="pl-header-actions">
+        <button class="pl-icon-btn" id="pl-manage-btn" title="歌单管理"><i class="fas fa-folder-open"></i></button>
+        <button class="pl-icon-btn ${isSearchVisible ? 'active' : ''}" id="pl-search-toggle" title="搜索"><i class="fas fa-search"></i></button>
+        <button class="pl-icon-btn" id="pl-add-btn" title="添加歌曲"><i class="fas fa-plus"></i></button>
+    </div>
+    <input type="file" id="pl-import-input" accept=".json" style="display:none">
+`;
         playlist.appendChild(header);
 
         const searchWrapper = document.createElement('div');
@@ -17530,12 +17405,89 @@ const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
             openAddModal();
             newSongTitle.focus();
         });
-        
-        header.querySelector('#pl-sync-btn').addEventListener('click', (e) => {
+        header.querySelector('#pl-manage-btn').addEventListener('click', (e) => {
             e.stopPropagation();
-            syncSystemSongs();
-        });
+            
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.5);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;';
+            overlay.innerHTML = `
+                <div style="background:var(--secondary-bg);border-radius:16px;padding:20px;width:280px;box-shadow:0 10px 40px rgba(0,0,0,0.3);border:1px solid var(--border-color);display:flex;flex-direction:column;gap:12px;">
+                    <div style="text-align:center;font-weight:600;margin-bottom:5px;">歌单管理</div>
+                    
+                    <button id="_pl_opt_import" style="padding:12px;border-radius:10px;border:1px solid var(--border-color);background:var(--primary-bg);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;transition:0.2s;">
+                        <div style="width:32px;height:32px;background:rgba(var(--accent-color-rgb),0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent-color);"><i class="fas fa-file-import"></i></div>
+                        导入歌单文件
+                    </button>
+                    
+                    <button id="_pl_opt_export" style="padding:12px;border-radius:10px;border:1px solid var(--border-color);background:var(--primary-bg);color:var(--text-primary);cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;transition:0.2s;">
+                        <div style="width:32px;height:32px;background:rgba(var(--accent-color-rgb),0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent-color);"><i class="fas fa-file-export"></i></div>
+                        导出当前歌单
+                    </button>
+                    
+                    <button id="_pl_opt_cancel" style="padding:10px;border:none;background:transparent;color:var(--text-secondary);cursor:pointer;font-size:13px;margin-top:5px;">取消</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
 
+            const closeOpt = () => overlay.remove();
+            overlay.addEventListener('click', (ev) => { if(ev.target === overlay) closeOpt(); });
+            document.getElementById('_pl_opt_cancel').onclick = closeOpt;
+
+            document.getElementById('_pl_opt_export').onclick = () => {
+                closeOpt();
+                if (songs.length === 0) {
+                    showNotification('歌单为空，无法导出', 'warning');
+                    return;
+                }
+                const dataStr = JSON.stringify(songs, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `music-playlist-${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showNotification('歌单导出成功', 'success');
+            };
+
+            document.getElementById('_pl_opt_import').onclick = () => {
+                closeOpt();
+                const input = header.querySelector('#pl-import-input');
+                if (input) input.click();
+            };
+        });
+        header.querySelector('#pl-import-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const importedSongs = JSON.parse(ev.target.result);
+                    if (!Array.isArray(importedSongs)) throw new Error('格式错误');
+                    
+                    if (confirm(`检测到 ${importedSongs.length} 首歌曲。\n点击【确定】覆盖当前歌单\n点击【取消】追加到当前歌单末尾`)) {
+                        songs = importedSongs;
+                        showNotification('歌单已覆盖', 'success');
+                    } else {
+                        songs = [...songs, ...importedSongs];
+                        showNotification(`已追加 ${importedSongs.length} 首歌曲`, 'success');
+                    }
+                    
+                    savePlaylist();
+                    if (songs.length > 0 && currentIndex >= songs.length) {
+                        currentIndex = 0;
+                        loadSong(0);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showNotification('导入失败：文件格式不正确', 'error');
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = ''; 
+        });
         header.querySelector('#pl-search-toggle').addEventListener('click', (e) => {
             e.stopPropagation();
             isSearchVisible = !isSearchVisible;
