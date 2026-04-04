@@ -1900,9 +1900,12 @@ const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
 
             const closeOpt = () => overlay.remove();
             overlay.addEventListener('click', (ev) => { if(ev.target === overlay) closeOpt(); });
-            document.getElementById('_pl_opt_cancel').onclick = closeOpt;
+            const plOptCancelBtn = document.getElementById('_pl_opt_cancel');
+            const plOptExportBtn = document.getElementById('_pl_opt_export');
+            const plOptImportBtn = document.getElementById('_pl_opt_import');
+            if (plOptCancelBtn) plOptCancelBtn.onclick = closeOpt;
 
-            document.getElementById('_pl_opt_export').onclick = () => {
+            if (plOptExportBtn) plOptExportBtn.onclick = () => {
                 closeOpt();
                 if (songs.length === 0) {
                     showNotification('歌单为空，无法导出', 'warning');
@@ -1920,7 +1923,7 @@ const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
                 showNotification('歌单导出成功', 'success');
             };
 
-            document.getElementById('_pl_opt_import').onclick = () => {
+            if (plOptImportBtn) plOptImportBtn.onclick = () => {
                 closeOpt();
                 const input = header.querySelector('#pl-import-input');
                 if (input) input.click();

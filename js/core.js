@@ -28,9 +28,13 @@
 
     function closeDialog() { overlay.remove(); }
     overlay.addEventListener('click', e => { if (e.target === overlay) closeDialog(); });
-    document.getElementById('_reset_cancel').onclick = closeDialog;
+    const _resetCancelBtn = document.getElementById('_reset_cancel');
+    const _resetCurrentBtn = document.getElementById('_reset_current');
+    const _resetAllBtn = document.getElementById('_reset_all');
 
-    document.getElementById('_reset_current').onclick = () => {
+    if (_resetCancelBtn) _resetCancelBtn.onclick = closeDialog;
+
+    if (_resetCurrentBtn) _resetCurrentBtn.onclick = () => {
         closeDialog();
         if (confirm('确定要清除当前会话的所有消息吗？此操作无法恢复！')) {
             messages = [];
@@ -49,7 +53,7 @@
         }
     };
 
-    document.getElementById('_reset_all').onclick = () => {
+    if (_resetAllBtn) _resetAllBtn.onclick = () => {
         closeDialog();
         if (confirm('【高危操作】确定要重置所有数据吗？此操作将清除所有本地数据且无法恢复！')) {
             window._skipBackup = true;
@@ -1706,14 +1710,16 @@ function showModal(modalElement, focusElement = null) {
 
             function closeDialog() { overlay.remove(); }
             overlay.addEventListener('click', e => { if (e.target === overlay) closeDialog(); });
-            document.getElementById('_exp_cancel').onclick = closeDialog;
+            const _expCancelBtn = document.getElementById('_exp_cancel');
+            const _expConfirmBtn = document.getElementById('_exp_confirm');
+            if (_expCancelBtn) _expCancelBtn.onclick = closeDialog;
 
-            document.getElementById('_exp_confirm').onclick = function() {
-                const inclMsgs     = document.getElementById('_exp_msgs').checked;
-                const inclSettings = document.getElementById('_exp_settings').checked;
-                const inclReplies  = document.getElementById('_exp_replies').checked;
-                const inclAnn      = document.getElementById('_exp_ann').checked;
-                const inclThemes   = document.getElementById('_exp_themes').checked;
+            if (_expConfirmBtn) _expConfirmBtn.onclick = function() {
+                const inclMsgs     = !!document.getElementById('_exp_msgs')?.checked;
+                const inclSettings = !!document.getElementById('_exp_settings')?.checked;
+                const inclReplies  = !!document.getElementById('_exp_replies')?.checked;
+                const inclAnn      = !!document.getElementById('_exp_ann')?.checked;
+                const inclThemes   = !!document.getElementById('_exp_themes')?.checked;
 
                 if (!inclMsgs && !inclSettings && !inclReplies && !inclAnn && !inclThemes) {
                     showNotification('请至少选择一项导出内容', 'error');
@@ -1858,14 +1864,16 @@ function showModal(modalElement, focusElement = null) {
 
                     function closeDialog() { overlay.remove(); }
                     overlay.addEventListener('click', ev => { if (ev.target === overlay) closeDialog(); });
-                    document.getElementById('_imp_cancel').onclick = closeDialog;
+                    const _impCancelBtn = document.getElementById('_imp_cancel');
+                    const _impConfirmBtn = document.getElementById('_imp_confirm');
+                    if (_impCancelBtn) _impCancelBtn.onclick = closeDialog;
 
-                    document.getElementById('_imp_confirm').onclick = function() {
-                        const doMsgs     = hasMessages  && document.getElementById('_imp_msgs')?.checked;
-                        const doSettings = hasSettings  && document.getElementById('_imp_settings')?.checked;
-                        const doReplies  = hasReplies   && document.getElementById('_imp_replies')?.checked;
-                        const doAnn      = hasAnn       && document.getElementById('_imp_ann')?.checked;
-                        const doThemes   = hasThemes    && document.getElementById('_imp_themes')?.checked;
+                    if (_impConfirmBtn) _impConfirmBtn.onclick = function() {
+                        const doMsgs     = hasMessages  && !!document.getElementById('_imp_msgs')?.checked;
+                        const doSettings = hasSettings  && !!document.getElementById('_imp_settings')?.checked;
+                        const doReplies  = hasReplies   && !!document.getElementById('_imp_replies')?.checked;
+                        const doAnn      = hasAnn       && !!document.getElementById('_imp_ann')?.checked;
+                        const doThemes   = hasThemes    && !!document.getElementById('_imp_themes')?.checked;
 
                         if (!doMsgs && !doSettings && !doReplies && !doAnn && !doThemes) {
                             showNotification('请至少选择一项导入内容', 'error');

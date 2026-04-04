@@ -309,9 +309,11 @@ if (exportAllBtn) {
 
             function closeBkDialog() { overlay.remove(); }
             overlay.addEventListener('click', ev => { if (ev.target === overlay) closeBkDialog(); });
-            document.getElementById('_bk_cancel').onclick = closeBkDialog;
+            const bkCancelBtn = document.getElementById('_bk_cancel');
+            const bkConfirmBtn = document.getElementById('_bk_confirm');
+            if (bkCancelBtn) bkCancelBtn.onclick = closeBkDialog;
 
-            document.getElementById('_bk_confirm').onclick = async function() {
+            if (bkConfirmBtn) bkConfirmBtn.onclick = async function() {
                 const inclMsgs    = document.getElementById('_bk_msgs').checked;
                 const inclSet     = document.getElementById('_bk_settings').checked;
                 const inclCustom  = document.getElementById('_bk_custom').checked;
@@ -327,8 +329,8 @@ if (exportAllBtn) {
                 closeBkDialog();
 
                 try {
-                    if (typeof ChatBackup !== 'undefined' && ChatBackup.exportBackupToFile) {
-                        await ChatBackup.exportBackupToFile({
+                    if (typeof ChatBackup !== 'undefined' && ChatBackup.buildBackupPayload && ChatBackup.serializeBackupV4) {
+                        const payload = await ChatBackup.buildBackupPayload({
                             inclMsgs: inclMsgs,
                             inclSet: inclSet,
                             inclCustom: inclCustom,
@@ -337,8 +339,14 @@ if (exportAllBtn) {
                             inclDg: inclDg,
                             inclStickers: inclStickers
                         });
+                        const jsonString = ChatBackup.serializeBackupV4(payload);
+                        const dateStr = new Date().toISOString().slice(0, 10);
+                        const fileName = `chatapp-backup-${dateStr}.json`;
+                        const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+                        downloadFileFallback(blob, fileName);
+                        if (typeof showNotification === 'function') showNotification('已导出 JSON 备份', 'success');
                     } else {
-                        if (typeof showNotification === 'function') showNotification('备份模块未加载，请刷新页面', 'error');
+                        if (typeof showNotification === 'function') showNotification('备份模块或函数未加载，请刷新页面', 'error');
                     }
                 } catch(e) {
                     console.error('全量备份导出失败:', e);
