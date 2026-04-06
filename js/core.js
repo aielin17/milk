@@ -72,6 +72,23 @@
     };
 }
 
+function loadMoreHistory() {
+    const historyLoader = document.getElementById('history-loader');
+    const currentOldestMsgIndex = messages.length - displayedMessageCount;
+
+    if (currentOldestMsgIndex <= 0) {
+        if (historyLoader) historyLoader.style.display = 'none';
+        return;
+    }
+    
+    if (historyLoader) historyLoader.style.display = 'flex';
+
+    setTimeout(() => {
+        displayedMessageCount += HISTORY_BATCH_SIZE;
+        renderMessages(true);
+    }, 300);
+}
+
 
         function getDefaultSettings() {
             return {
@@ -855,278 +872,313 @@ function manageAutoSendTimer() {
             }
         };
 
-        function renderMessages(preserveScroll = false) {
-            const container = DOMElements.chatContainer;
-            const totalMessages = messages.length;
+function createMessageFragment(msg, prevMsg, nextMsg, lastSenderRef) {
+    const fragment = new DocumentFragment();
+    const messageDate = new Date(msg.timestamp).toDateString();
+    const prevDate = prevMsg ? new Date(prevMsg.timestamp).toDateString() : null;
 
-            const startIndex = Math.max(0, totalMessages - displayedMessageCount);
-            const msgsToRender = messages.slice(startIndex);
+    if (messageDate !== prevDate) {
+        const dateDivider = document.createElement('div');
+        dateDivider.className = 'date-divider';
+        const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        const displayDate = (messageDate === today) ? '今天' : (messageDate === yesterday) ? '昨天' : new Date(msg.timestamp).toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        dateDivider.innerHTML = `<span>${displayDate}</span>`;
+        fragment.appendChild(dateDivider);
+        lastSenderRef.current = null;
+    }
 
-            DOMElements.emptyState.style.display = totalMessages === 0 ? 'flex': 'none';
+    if (msg.type === 'system') {
+        const systemMsgDiv = document.createElement('div');
+        systemMsgDiv.className = 'system-message';
+        systemMsgDiv.innerHTML = msg.text;
+        fragment.appendChild(systemMsgDiv);
+        lastSenderRef.current = 'system';
+        return fragment;
+    }
 
-            const oldScrollHeight = container.scrollHeight;
-            
-            const prevRenderedCount = container._lastRenderedCount || 0;
-            const newMessageCount = msgsToRender.length - prevRenderedCount;
-            
-            container.innerHTML = '';
-            container._lastRenderedCount = msgsToRender.length;
+    if (msg.type === 'call-event') {
+        const callEvDiv = document.createElement('div');
+        callEvDiv.className = 'call-event-message';
+        callEvDiv.dataset.id = msg.id;
+        const icon = msg.callIcon || 'fa-video';
+        const isRejected = icon === 'fa-phone-slash';
+        const colorClass = isRejected ? 'call-event-pill--rejected' : 'call-event-pill--ended';
+        const detail = msg.callDetail ? `<span class="call-event-detail">${msg.callDetail}</span>` : '';
+        callEvDiv.innerHTML = `<div class="call-event-pill ${colorClass}"><i class="fas ${icon} call-event-icon"></i><span class="call-event-label">${msg.text.replace(/ · .*/, '')}</span>${detail}<button class="call-event-delete" title="删除" onclick="(function(btn){const id=btn.closest('[data-id]').dataset.id;const idx=messages.findIndex(m=>String(m.id)===String(id));if(idx>-1){messages.splice(idx,1);renderMessages();throttledSaveData();}})(this)"><i class="fas fa-times"></i></button></div>`;
+        fragment.appendChild(callEvDiv);
+        lastSenderRef.current = 'system';
+        return fragment;
+    }
 
-            const fragment = new DocumentFragment();
-            const spacer = document.createElement('div');
-            spacer.style.flex = '1';
-            fragment.appendChild(spacer);
-            let currentDate = '';
-            let lastSender = null;
+    let showTimestamp = true;
+    if (settings.timeFormat === 'off') {
+        showTimestamp = false;
+    } else if (nextMsg) {
+        const currentTs = new Date(msg.timestamp).getTime();
+        const nextTs = new Date(nextMsg.timestamp).getTime();
+        if (nextMsg.sender === msg.sender && nextMsg.type !== 'system' && (nextTs - currentTs < 60000)) {
+            showTimestamp = false;
+        }
+    }
 
-            msgsToRender.forEach((msg, index) => {
-                const messageDate = new Date(msg.timestamp).toDateString();
-                if (messageDate !== currentDate) {
-                    currentDate = messageDate;
-                    const dateDivider = document.createElement('div');
-                    dateDivider.className = 'date-divider';
-                    const today = new Date().toDateString();
-                    const yesterday = new Date(Date.now() - 86400000).toDateString();
-                    const displayDate = (messageDate === today) ? '今天': (messageDate === yesterday) ? '昨天': new Date(msg.timestamp).toLocaleDateString('zh-CN', {
-                        year: 'numeric', month: 'long', day: 'numeric'
-                    });
-                    dateDivider.innerHTML = `<span>${displayDate}</span>`;
-                    fragment.appendChild(dateDivider);
-                    lastSender = null; 
-                }
+    let isLastInSenderGroup = true;
+    if (nextMsg) {
+        const currentTs = new Date(msg.timestamp).getTime();
+        const nextTs = new Date(nextMsg.timestamp).getTime();
+        if (nextMsg.sender === msg.sender && nextMsg.type !== 'system' && (nextTs - currentTs < 60000)) {
+            isLastInSenderGroup = false;
+        }
+    }
 
-                if (msg.type === 'system') {
-                    const systemMsgDiv = document.createElement('div');
-                    systemMsgDiv.className = 'system-message';
-                    systemMsgDiv.innerHTML = msg.text;
-                    fragment.appendChild(systemMsgDiv);
-                    lastSender = 'system';
-                    return;
-                }
+    const wrapper = document.createElement('div');
+    wrapper.className = `message-wrapper ${msg.sender === 'user' ? 'sent' : 'received'}`;
+    wrapper.dataset.id = msg.id;
+    wrapper.dataset.msgId = msg.id;
 
-                if (msg.type === 'call-event') {
-                    const callEvDiv = document.createElement('div');
-                    callEvDiv.className = 'call-event-message';
-                    callEvDiv.dataset.id = msg.id;
-                    const icon = msg.callIcon || 'fa-video';
-                    const isEnded = icon === 'fa-video';
-                    const isRejected = icon === 'fa-phone-slash';
-                    const colorClass = isRejected ? 'call-event-pill--rejected' : 'call-event-pill--ended';
-                    const detail = msg.callDetail ? `<span class="call-event-detail">${msg.callDetail}</span>` : '';
-                    callEvDiv.innerHTML = `<div class="call-event-pill ${colorClass}"><i class="fas ${icon} call-event-icon"></i><span class="call-event-label">${msg.text.replace(/ · .*/, '')}</span>${detail}<button class="call-event-delete" title="删除" onclick="(function(btn){const id=btn.closest('[data-id]').dataset.id;const idx=messages.findIndex(m=>String(m.id)===String(id));if(idx>-1){messages.splice(idx,1);renderMessages();throttledSaveData();}})(this)"><i class="fas fa-times"></i></button></div>`;
-                    fragment.appendChild(callEvDiv);
-                    lastSender = 'system';
-                    return;
-                }
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'message-avatar';
+    if (settings.inChatAvatarPosition === 'custom' && settings.inChatAvatarCustomOffset !== undefined) {
+        avatarDiv.style.marginTop = settings.inChatAvatarCustomOffset + 'px';
+    }
 
-                let showTimestamp = true;
-                if (settings.timeFormat === 'off') {
-                    showTimestamp = false;
-                } else if (index < msgsToRender.length - 1) {
-                    const nextMsg = msgsToRender[index + 1];
-                    const currentTs = new Date(msg.timestamp).getTime();
-                    const nextTs = new Date(nextMsg.timestamp).getTime();
-                    
-                    if (nextMsg.sender === msg.sender && 
-                        nextMsg.type !== 'system' && 
-                        (nextTs - currentTs < 60000)) {
-                        showTimestamp = false;
-                    }
-                }
+    const groupMember = (msg.sender !== 'user' && typeof getGroupMemberForMessage === 'function') ? getGroupMemberForMessage(msg.id) : null;
 
-                let isLastInSenderGroup = true;
-                if (index < msgsToRender.length - 1) {
-                    const nextMsg = msgsToRender[index + 1];
-                    const currentTs = new Date(msg.timestamp).getTime();
-                    const nextTs = new Date(nextMsg.timestamp).getTime();
-                    if (nextMsg.sender === msg.sender &&
-                        nextMsg.type !== 'system' &&
-                        (nextTs - currentTs < 60000)) {
-                        isLastInSenderGroup = false;
-                    }
-                }
-
-                const wrapper = document.createElement('div');
-                wrapper.className = `message-wrapper ${msg.sender === 'user' ? 'sent': 'received'}`;
-                wrapper.dataset.id = msg.id;
-                wrapper.dataset.msgId = msg.id;
-                if (index < msgsToRender.length - Math.max(newMessageCount, 0)) {
-                    wrapper.style.animation = 'none';
-                    wrapper.style.opacity = '1';
-                }
-                
-                const avatarDiv = document.createElement('div');
-                avatarDiv.className = 'message-avatar';
-                if (settings.inChatAvatarPosition === 'custom' && settings.inChatAvatarCustomOffset !== undefined) {
-                    avatarDiv.style.marginTop = settings.inChatAvatarCustomOffset + 'px';
-                }
-
-                const groupMember = (msg.sender !== 'user' && typeof getGroupMemberForMessage === 'function') ? getGroupMemberForMessage(msg.id) : null;
-
-                if (settings.inChatAvatarEnabled) {
-                    const isSameSenderGroup = groupMember && lastSender === 'group_' + (groupMember ? groupMember.name : '');
-                    const isSameSenderNormal = !groupMember && msg.sender === lastSender;
-                    const shouldHide = !settings.alwaysShowAvatar && (isSameSenderGroup || isSameSenderNormal);
-                    if (shouldHide) {
-                        avatarDiv.classList.add('hidden');
-                    } else if (groupMember) {
-                        const groupAvatarShape = settings.partnerAvatarShape || 'circle';
-                        ['circle','square','pentagon','heart'].forEach(s => avatarDiv.classList.remove('shape-' + s));
-                        if (groupAvatarShape !== 'none') avatarDiv.classList.add('shape-' + groupAvatarShape);
-                        if (groupMember.avatar) {
-                            avatarDiv.innerHTML = `<img src="${groupMember.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
-                        } else {
-                            const initials = (groupMember.name || '?').charAt(0).toUpperCase();
-                            avatarDiv.innerHTML = `<div style="width:100%;height:100%;background:var(--accent-color);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;">${initials}</div>`;
-                        }
-                    } else {
-                        const isUser = msg.sender === 'user';
-                        const avatarElement = isUser ? DOMElements.me.avatar : DOMElements.partner.avatar;
-                        const frameSettings = isUser ? settings.myAvatarFrame : settings.partnerAvatarFrame;
-                        const avatarShape = isUser ? (settings.myAvatarShape || 'circle') : (settings.partnerAvatarShape || 'circle');
-                        avatarDiv.innerHTML = avatarElement.innerHTML;
-                        applyAvatarFrame(avatarDiv, frameSettings);
-                        ['circle','square','pentagon','heart'].forEach(s => avatarDiv.classList.remove('shape-' + s));
-                        if (avatarShape !== 'none') avatarDiv.classList.add('shape-' + avatarShape);
-                    }
-                } else {
-                    avatarDiv.style.display = 'none';
-                }
-                wrapper.appendChild(avatarDiv);
-                
-                const contentWrapper = document.createElement('div');
-                contentWrapper.className = 'message-content-wrapper';
-
-                if (groupMember && groupChatSettings.showName) {
-                    const nameLabel = document.createElement('div');
-                    nameLabel.className = 'group-sender-name';
-                    nameLabel.textContent = groupMember.name;
-                    const isSameSenderGroupForName = lastSender === 'group_' + groupMember.name;
-                    if (!isSameSenderGroupForName) contentWrapper.appendChild(nameLabel);
-                } else if (!groupMember && msg.sender !== 'user' && msg.sender !== null &&
-                           (settings.showPartnerNameInChat || showPartnerNameInChat)) {
-                    const isSameSenderForName = lastSender === msg.sender;
-                    if (!isSameSenderForName) {
-                        const nameLabel = document.createElement('div');
-                        nameLabel.className = 'group-sender-name';
-                        nameLabel.textContent = settings.partnerName || msg.sender || '对方';
-                        contentWrapper.appendChild(nameLabel);
-                    }
-                }
-                
-                let messageHTML = '';
-                if (msg.replyTo) {
-                    const repliedText = msg.replyTo.text || (msg.replyTo.image ? '🖼 图片' : '[消息]');
-                    const repliedSender = msg.replyTo.sender === 'user' ? (settings.myName || '我') : (settings.partnerName || '对方');
-                    messageHTML += `<div class="reply-indicator" data-reply-id="${msg.replyTo.id || ''}" style="cursor:pointer;" onclick="scrollToQuotedMessage(this)"><span class="reply-indicator-sender">${repliedSender}</span><span class="reply-indicator-text">${repliedText}</span></div>`;
-                }
-
-                const isImageOnly = !msg.text && !!msg.image;
-                let content = msg.text ? `<div>${msg.text.replace(/\n/g, '<br>')}</div>`: '';
-                if (msg.image) content += `<img src="${msg.image}" class="message-image${isImageOnly ? ' message-image-only' : ''}" alt="图片" style="max-width:${isImageOnly ? '100px' : '100px'}; border-radius: 12px;${!isImageOnly ? ' margin-top: 6px;' : ''} cursor: pointer;" onclick="viewImage('${msg.image}')">`;
-                messageHTML += content;
-
-                const messageDiv = document.createElement('div');
-                if (isImageOnly) {
-                    messageDiv.className = `message message-${msg.sender === 'user' ? 'sent': 'received'} message-image-bubble-none`;
-                } else {
-                    messageDiv.className = `message message-${msg.sender === 'user' ? 'sent': 'received'} ${settings.bubbleStyle}`;
-                }
-                messageDiv.innerHTML = messageHTML;
-
-                let actionsHTML = '';
-                
-                if (settings.replyEnabled) actionsHTML += `<button class="meta-action-btn reply-btn" title="回复"><i class="fas fa-reply"></i></button>`;
-                
-                const starIcon = msg.favorited ? 'fas fa-star' : 'far fa-star'; 
-                actionsHTML += `<button class="meta-action-btn favorite-action-btn ${msg.favorited ? 'favorited' : ''}" title="${msg.favorited ? '取消收藏' : '收藏'}"><i class="${starIcon}"></i></button>`;
-                
-
-actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i class="fas fa-trash-alt"></i></button>`;
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'message-meta-actions';
-                actionsDiv.innerHTML = actionsHTML;
-
-                let metaHTML = '';
-                
-                if (showTimestamp) {
-                    const ts = new Date(msg.timestamp);
-                    let timeStr;
-                    const fmt = settings.timeFormat || 'HH:mm';
-                    if (fmt === 'HH:mm:ss') {
-                        timeStr = ts.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-                    } else if (fmt === 'h:mm AM/PM') {
-                        timeStr = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-                    } else if (fmt === 'h:mm:ss AM/PM') {
-                        timeStr = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
-                    } else {
-                        timeStr = ts.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
-                    }
-                    metaHTML += `<div class="timestamp">${timeStr}</div>`;
-                }
-
-                if (msg.sender === 'user' && settings.readReceiptsEnabled && isLastInSenderGroup) {
-                    const rrStyle = settings.readReceiptStyle || 'icon';
-                    if (rrStyle === 'text') {
-                        if (msg.status === 'read') {
-                            metaHTML += `<div class="read-receipt read" style="font-size:9px;letter-spacing:0.3px;font-weight:500;">已读</div>`;
-                        } else {
-                            metaHTML += `<div class="read-receipt" style="font-size:9px;letter-spacing:0.3px;opacity:0.5;">未读</div>`;
-                        }
-                    } else {
-                        const statusIcon = msg.status === 'read' ? 'fa-check-double': 'fa-check';
-                        metaHTML += `<div class="read-receipt ${msg.status === 'read' ? 'read': ''}"><i class="fas ${statusIcon}"></i></div>`;
-                    }
-                }
-
-                if (metaHTML !== '') {
-                    const metaDiv = document.createElement('div');
-                    metaDiv.className = 'message-meta';
-                    if (!showTimestamp && !metaHTML.includes('timestamp')) {
-                         metaDiv.style.height = 'auto'; 
-                         metaDiv.style.marginTop = '2px';
-                         if (settings.inChatAvatarPosition !== 'top') {
-                             avatarDiv.style.marginBottom = '18px';
-                         }
-                    } else {
-                         
-                         if (settings.inChatAvatarPosition !== 'top') {
-                             avatarDiv.style.marginBottom = '26px';
-                         }
-                    }
-                    metaDiv.innerHTML = metaHTML;
-                    contentWrapper.append(actionsDiv, messageDiv, metaDiv);
-                } else {
-                    contentWrapper.append(actionsDiv, messageDiv);
-                }
-                wrapper.appendChild(contentWrapper);
-                fragment.appendChild(wrapper);
-                
-                lastSender = groupMember ? ('group_' + groupMember.name) : msg.sender;
-            });
-
-            container.appendChild(fragment);
-
-            if (preserveScroll) {
-                const newScrollHeight = container.scrollHeight;
-                const delta = newScrollHeight - oldScrollHeight;
-                container.scrollTop = Math.max(0, container.scrollTop + delta);
+    if (settings.inChatAvatarEnabled) {
+        const isSameSenderGroup = groupMember && lastSenderRef.current === 'group_' + (groupMember ? groupMember.name : '');
+        const isSameSenderNormal = !groupMember && msg.sender === lastSenderRef.current;
+        const shouldHide = !settings.alwaysShowAvatar && (isSameSenderGroup || isSameSenderNormal);
+        if (shouldHide) {
+            avatarDiv.classList.add('hidden');
+        } else if (groupMember) {
+            const groupAvatarShape = settings.partnerAvatarShape || 'circle';
+            ['circle', 'square', 'pentagon', 'heart'].forEach(s => avatarDiv.classList.remove('shape-' + s));
+            if (groupAvatarShape !== 'none') avatarDiv.classList.add('shape-' + groupAvatarShape);
+            if (groupMember.avatar) {
+                avatarDiv.innerHTML = `<img src="${groupMember.avatar}" style="width:100%;height:100%;object-fit:cover;">`;
             } else {
-                requestAnimationFrame(() => {
-                    container.scrollTop = container.scrollHeight;
-                });
+                const initials = (groupMember.name || '?').charAt(0).toUpperCase();
+                avatarDiv.innerHTML = `<div style="width:100%;height:100%;background:var(--accent-color);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;">${initials}</div>`;
             }
-        }        
+        } else {
+            const isUser = msg.sender === 'user';
+            const avatarElement = isUser ? DOMElements.me.avatar : DOMElements.partner.avatar;
+            const frameSettings = isUser ? settings.myAvatarFrame : settings.partnerAvatarFrame;
+            const avatarShape = isUser ? (settings.myAvatarShape || 'circle') : (settings.partnerAvatarShape || 'circle');
+            avatarDiv.innerHTML = avatarElement.innerHTML;
+            applyAvatarFrame(avatarDiv, frameSettings);
+            ['circle', 'square', 'pentagon', 'heart'].forEach(s => avatarDiv.classList.remove('shape-' + s));
+            if (avatarShape !== 'none') avatarDiv.classList.add('shape-' + avatarShape);
+        }
+    } else {
+        avatarDiv.style.display = 'none';
+    }
+    wrapper.appendChild(avatarDiv);
 
-        const addMessage = (message) => {
-            if (!(message.timestamp instanceof Date)) message.timestamp = new Date(message.timestamp);
-            messages.push(message);
-            displayedMessageCount++;
-            const container = DOMElements.chatContainer;
-            container.style.opacity = '1';
-            renderMessages(false);
-            throttledSaveData();
-        };
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = 'message-content-wrapper';
+
+    if (groupMember && groupChatSettings.showName) {
+        const nameLabel = document.createElement('div');
+        nameLabel.className = 'group-sender-name';
+        nameLabel.textContent = groupMember.name;
+        const isSameSenderGroupForName = lastSenderRef.current === 'group_' + groupMember.name;
+        if (!isSameSenderGroupForName) contentWrapper.appendChild(nameLabel);
+    } else if (!groupMember && msg.sender !== 'user' && msg.sender !== null && (settings.showPartnerNameInChat || showPartnerNameInChat)) {
+        const isSameSenderForName = lastSenderRef.current === msg.sender;
+        if (!isSameSenderForName) {
+            const nameLabel = document.createElement('div');
+            nameLabel.className = 'group-sender-name';
+            nameLabel.textContent = settings.partnerName || msg.sender || '对方';
+            contentWrapper.appendChild(nameLabel);
+        }
+    }
+
+    let messageHTML = '';
+    if (msg.replyTo) {
+        const repliedText = msg.replyTo.text || (msg.replyTo.image ? '🖼 图片' : '[消息]');
+        const repliedSender = msg.replyTo.sender === 'user' ? (settings.myName || '我') : (settings.partnerName || '对方');
+        messageHTML += `<div class="reply-indicator" data-reply-id="${msg.replyTo.id || ''}" style="cursor:pointer;" onclick="scrollToQuotedMessage(this)"><span class="reply-indicator-sender">${repliedSender}</span><span class="reply-indicator-text">${repliedText}</span></div>`;
+    }
+
+    const isImageOnly = !msg.text && !!msg.image;
+    let content = msg.text ? `<div>${msg.text.replace(/\n/g, '<br>')}</div>` : '';
+    if (msg.image) content += `<img src="${msg.image}" class="message-image${isImageOnly ? ' message-image-only' : ''}" alt="图片" style="max-width:${isImageOnly ? '100px' : '100px'}; border-radius: 12px;${!isImageOnly ? ' margin-top: 6px;' : ''} cursor: pointer;" onclick="viewImage('${msg.image}')">`;
+    messageHTML += content;
+
+    const messageDiv = document.createElement('div');
+    if (isImageOnly) {
+        messageDiv.className = `message message-${msg.sender === 'user' ? 'sent' : 'received'} message-image-bubble-none`;
+    } else {
+        messageDiv.className = `message message-${msg.sender === 'user' ? 'sent' : 'received'} ${settings.bubbleStyle}`;
+    }
+    messageDiv.innerHTML = messageHTML;
+
+    let actionsHTML = '';
+    if (settings.replyEnabled) actionsHTML += `<button class="meta-action-btn reply-btn" title="回复"><i class="fas fa-reply"></i></button>`;
+    const starIcon = msg.favorited ? 'fas fa-star' : 'far fa-star';
+    actionsHTML += `<button class="meta-action-btn favorite-action-btn ${msg.favorited ? 'favorited' : ''}" title="${msg.favorited ? '取消收藏' : '收藏'}"><i class="${starIcon}"></i></button>`;
+    actionsHTML += `<button class="meta-action-btn delete-btn" title="删除"><i class="fas fa-trash-alt"></i></button>`;
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'message-meta-actions';
+    actionsDiv.innerHTML = actionsHTML;
+
+    let metaHTML = '';
+    if (showTimestamp) {
+        const ts = new Date(msg.timestamp);
+        let timeStr;
+        const fmt = settings.timeFormat || 'HH:mm';
+        if (fmt === 'HH:mm:ss') {
+            timeStr = ts.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+        } else if (fmt === 'h:mm AM/PM') {
+            timeStr = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+        } else if (fmt === 'h:mm:ss AM/PM') {
+            timeStr = ts.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+        } else {
+            timeStr = ts.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+        }
+        metaHTML += `<div class="timestamp">${timeStr}</div>`;
+    }
+
+    if (msg.sender === 'user' && settings.readReceiptsEnabled && isLastInSenderGroup) {
+        const rrStyle = settings.readReceiptStyle || 'icon';
+        if (rrStyle === 'text') {
+            if (msg.status === 'read') {
+                metaHTML += `<div class="read-receipt read" style="font-size:9px;letter-spacing:0.3px;font-weight:500;">已读</div>`;
+            } else {
+                metaHTML += `<div class="read-receipt" style="font-size:9px;letter-spacing:0.3px;opacity:0.5;">未读</div>`;
+            }
+        } else {
+            const statusIcon = msg.status === 'read' ? 'fa-check-double' : 'fa-check';
+            metaHTML += `<div class="read-receipt ${msg.status === 'read' ? 'read' : ''}"><i class="fas ${statusIcon}"></i></div>`;
+        }
+    }
+
+    if (metaHTML !== '') {
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'message-meta';
+        if (!showTimestamp && !metaHTML.includes('timestamp')) {
+            metaDiv.style.height = 'auto';
+            metaDiv.style.marginTop = '2px';
+            if (settings.inChatAvatarPosition !== 'top') {
+                avatarDiv.style.marginBottom = '18px';
+            }
+        } else {
+            if (settings.inChatAvatarPosition !== 'top') {
+                avatarDiv.style.marginBottom = '26px';
+            }
+        }
+        metaDiv.innerHTML = metaHTML;
+        contentWrapper.append(actionsDiv, messageDiv, metaDiv);
+    } else {
+        contentWrapper.append(actionsDiv, messageDiv);
+    }
+    wrapper.appendChild(contentWrapper);
+    fragment.appendChild(wrapper);
+
+    lastSenderRef.current = groupMember ? ('group_' + groupMember.name) : msg.sender;
+    return fragment;
+}
+
+function renderMessages(preserveScroll = false) {
+    const container = DOMElements.chatContainer;
+    const totalMessages = messages.length;
+    const startIndex = Math.max(0, totalMessages - displayedMessageCount);
+    const msgsToRender = messages.slice(startIndex);
+
+    const historyLoader = document.getElementById('history-loader');
+    if (historyLoader) {
+        historyLoader.style.display = startIndex > 0 ? 'flex' : 'none';
+    }
+
+    DOMElements.emptyState.style.display = totalMessages === 0 ? 'flex' : 'none';
+
+    const oldScrollHeight = container.scrollHeight;
+    const oldScrollTop = container.scrollTop;
+    
+    container.innerHTML = '';
+
+    const fragment = new DocumentFragment();
+    
+    const spacer = document.createElement('div');
+    spacer.style.flex = '1';
+    fragment.appendChild(spacer);
+
+    let lastSenderRef = { current: null };
+    msgsToRender.forEach((msg, i) => {
+        const prevMsg = i > 0 ? msgsToRender[i - 1] : (startIndex > 0 ? messages[startIndex - 1] : null);
+        const nextMsg = i < msgsToRender.length - 1 ? msgsToRender[i + 1] : null;
+        const msgFragment = createMessageFragment(msg, prevMsg, nextMsg, lastSenderRef);
+        fragment.appendChild(msgFragment);
+    });
+
+    container.appendChild(fragment);
+
+    if (preserveScroll) {
+        const newScrollHeight = container.scrollHeight;
+        container.scrollTop = oldScrollTop + (newScrollHeight - oldScrollHeight);
+    } else {
+        requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight;
+        });
+    }
+}
+
+const addMessage = (message) => {
+    if (!(message.timestamp instanceof Date)) message.timestamp = new Date(message.timestamp);
+    
+    const container = DOMElements.chatContainer;
+    const wasEmpty = messages.length === 0;
+
+    const prevMsg = messages.length > 0 ? messages[messages.length - 1] : null;
+    messages.push(message);
+    
+    if (wasEmpty) {
+        DOMElements.emptyState.style.display = 'none';
+    }
+
+    // --- Update previous message if needed ---
+    const lastWrapper = container.querySelector('.message-wrapper:last-of-type');
+    if (lastWrapper && prevMsg) {
+        const currentTs = new Date(message.timestamp).getTime();
+        const prevTs = new Date(prevMsg.timestamp).getTime();
+
+        if (message.sender === prevMsg.sender && message.type === 'normal' && prevMsg.type === 'normal' && (currentTs - prevTs < 60000)) {
+            const timestampEl = lastWrapper.querySelector('.timestamp');
+            if (timestampEl) timestampEl.style.display = 'none';
+            if (prevMsg.sender === 'user') {
+                const receiptEl = lastWrapper.querySelector('.read-receipt');
+                if (receiptEl) receiptEl.style.display = 'none';
+            }
+        }
+    }
+    
+    // --- Append new message ---
+    let lastSenderRef = { current: null };
+    if (prevMsg) {
+        const prevGroupMember = (prevMsg.sender !== 'user' && typeof getGroupMemberForMessage === 'function') ? getGroupMemberForMessage(prevMsg.id) : null;
+        lastSenderRef.current = prevGroupMember ? ('group_' + prevGroupMember.name) : prevMsg.sender;
+    }
+    
+    const newMsgFragment = createMessageFragment(message, prevMsg, null, lastSenderRef);
+    
+    const spacer = container.querySelector('div[style*="flex: 1"]');
+    if (spacer) {
+        spacer.before(newMsgFragment);
+    } else {
+        container.appendChild(newMsgFragment);
+    }
+
+    requestAnimationFrame(() => {
+        container.scrollTop = container.scrollHeight;
+    });
+
+    throttledSaveData();
+};
 
         window._addCallEvent = (icon, label, detail) => {
             addMessage({
@@ -1389,7 +1441,7 @@ if (!isBatchMode && type === 'normal') {
             ro.observe(inputArea);
         })();
 
-        function simulateReply() {
+        window.simulateReply = function() {
             function showTypingIndicator() {
                 if (!settings.typingIndicatorEnabled) return;
                 const tiWrapper = document.getElementById('typing-indicator-wrapper');
@@ -1979,8 +2031,8 @@ if (customStatuses && customStatuses.length > 0) {
                 showNotification('数据迁移失败，部分旧数据可能丢失', 'error');
             }
         }
-async function initializeSession() {
-    
+
+window.initializeSession = async function() {
     await migrateData();
 
     const sessionsData = await localforage.getItem(`${APP_PREFIX}sessionList`);
@@ -1998,4 +2050,24 @@ async function initializeSession() {
 
     await localforage.setItem(`${APP_PREFIX}lastSessionId`, SESSION_ID);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const chatArea = document.querySelector('.main-chat-area');
+    const historyLoader = document.getElementById('history-loader');
+
+    if (chatArea && historyLoader) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && messages.length > displayedMessageCount) {
+                loadMoreHistory();
+            }
+        }, {
+            root: chatArea,
+            rootMargin: '200px 0px 0px 0px',
+            threshold: 0.01
+        });
+
+        observer.observe(historyLoader);
+    }
+});
+
 

@@ -842,8 +842,8 @@ function pickSyncDirectionManually(localMeta, cloudMeta) {
                     </div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:8px;">
-                    <button id="cloud-sync-push-local" class="modal-btn modal-btn-primary" style="width:100%;">上传本地 (覆盖云端)</button>
-                    <button id="cloud-sync-pull-cloud" class="modal-btn modal-btn-secondary" style="width:100%;">下载云端 (覆盖本地)</button>
+                    <button id="cloud-sync-push-local" class="modal-btn modal-btn-primary" style="width:100%;">上传本地数据 (覆盖云端)</button>
+                    <button id="cloud-sync-pull-cloud" class="modal-btn modal-btn-secondary" style="width:100%;">下载云端数据 (覆盖本地)</button>
                     <button id="cloud-sync-cancel" class="modal-btn modal-btn-secondary" style="width:100%;margin-top:4px;">取消</button>
                 </div>
             </div>

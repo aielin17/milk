@@ -74,7 +74,7 @@
         +     '<div class="dm-row-item" style="padding: 12px 16px;">'
         +       '<div class="dm-row-item-action-group" style="width: 100%; display: flex; gap: 10px;">'
         +         '<button class="dm-nav-btn" id="dm-supabase-check-btn" onclick="window.checkSupabaseCloud()" style="width:auto; flex:1; padding: 10px; border-radius: 12px;"><i class="fas fa-rotate"></i><span style="margin-left:6px;">检查云端</span></button>'
-        +         '<button class="dm-nav-btn" id="dm-supabase-sync-btn" onclick="window.syncSupabaseCloud()" style="width:auto; flex:1; padding: 10px; border-radius: 12px; background:var(--accent-color); color:#fff;"><i class="fas fa-cloud-arrow-up"></i><span style="margin-left:6px;">同步数据</span></button>'
+        +         '<button class="dm-nav-btn" id="dm-supabase-sync-btn" style="width:auto; flex:1; padding: 10px; border-radius: 12px; background:var(--accent-color); color:#fff;"><i class="fas fa-cloud-arrow-up"></i><span style="margin-left:6px;">同步数据</span></button>'
         +       '</div>'
         +     '</div>'
         +   '</div>'
