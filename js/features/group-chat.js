@@ -260,7 +260,7 @@ if (exportAllBtn) {
                     <div style="font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;">
                         <i class="fas fa-archive" style="color:var(--accent-color);font-size:14px;"></i>全量备份导出
                     </div>
-                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">图片/头像/背景等二进制文件已自动排除，选择需要备份的模块</div>
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">默认导出为 <strong>ZIP</strong>：<code style="font-size:11px;">backup.json</code> 仅存结构与引用，大图在 <code style="font-size:11px;">media/</code>，避免单文件 JSON 过大导致无法解析。</div>
                     <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:20px;">
                         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 12px;border:1px solid var(--border-color);border-radius:12px;background:var(--primary-bg);font-size:13px;color:var(--text-primary);">
                             <input type="checkbox" id="_bk_msgs" checked style="accent-color:var(--accent-color);width:15px;height:15px;">
@@ -292,6 +292,11 @@ if (exportAllBtn) {
                             <i class="fas fa-sun" style="color:var(--accent-color);width:16px;text-align:center;"></i>
                             <span>每日公告 / 心情数据</span>
                         </label>
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 12px;border:1px solid var(--border-color);border-radius:12px;background:var(--primary-bg);font-size:13px;color:var(--text-primary);">
+                            <input type="checkbox" id="_bk_stickers" style="accent-color:var(--accent-color);width:15px;height:15px;">
+                            <i class="fas fa-sticky-note" style="color:var(--accent-color);width:16px;text-align:center;"></i>
+                            <span>表情库 <span style="font-size:11px;color:var(--text-secondary);">(默认关，勾选后去重打包)</span></span>
+                        </label>
                     </div>
                     <div style="display:flex;gap:10px;">
                         <button id="_bk_cancel" style="flex:1;padding:11px;border:1px solid var(--border-color);border-radius:12px;background:none;color:var(--text-secondary);font-size:13px;cursor:pointer;font-family:var(--font-family);">取消</button>
@@ -304,137 +309,45 @@ if (exportAllBtn) {
 
             function closeBkDialog() { overlay.remove(); }
             overlay.addEventListener('click', ev => { if (ev.target === overlay) closeBkDialog(); });
-            document.getElementById('_bk_cancel').onclick = closeBkDialog;
+            const bkCancelBtn = document.getElementById('_bk_cancel');
+            const bkConfirmBtn = document.getElementById('_bk_confirm');
+            if (bkCancelBtn) bkCancelBtn.onclick = closeBkDialog;
 
-            document.getElementById('_bk_confirm').onclick = async function() {
+            if (bkConfirmBtn) bkConfirmBtn.onclick = async function() {
                 const inclMsgs    = document.getElementById('_bk_msgs').checked;
                 const inclSet     = document.getElementById('_bk_settings').checked;
                 const inclCustom  = document.getElementById('_bk_custom').checked;
                 const inclAnn     = document.getElementById('_bk_ann').checked;
                 const inclThemes  = document.getElementById('_bk_themes').checked;
                 const inclDg      = document.getElementById('_bk_dg').checked;
+                const inclStickers = document.getElementById('_bk_stickers') && document.getElementById('_bk_stickers').checked;
 
-                if (!inclMsgs && !inclSet && !inclCustom && !inclAnn && !inclThemes && !inclDg) {
+                if (!inclMsgs && !inclSet && !inclCustom && !inclAnn && !inclThemes && !inclDg && !inclStickers) {
                     showNotification('请至少选择一项', 'error');
                     return;
                 }
                 closeBkDialog();
 
                 try {
-                    const skipKeys = [
-                        'stickerLibrary', 'myStickerLibrary', 'backgroundGallery',
-                        'chatBackground', 'partnerAvatar', 'myAvatar', 'playerCover',
-                        'dg_header_bg', 'dg_overlay_bg'
-                    ];
-
-                    const moduleSkipPatterns = [];
-                    if (!inclMsgs)   moduleSkipPatterns.push('chatMessages');
-                    if (!inclSet)    moduleSkipPatterns.push('chatSettings', 'partnerPersonas', 'showPartnerNameInChat');
-                    if (!inclCustom) moduleSkipPatterns.push('customReplies', 'customPokes', 'customStatuses', 'customMottos', 'customIntros', 'customEmojis');
-                    if (!inclAnn)    moduleSkipPatterns.push('anniversaries');
-                    if (!inclThemes) moduleSkipPatterns.push('customThemes', 'themeSchemes');
-                    if (!inclDg)     moduleSkipPatterns.push('dg_custom_data', 'dg_status_pool', 'weekly_fortune');
-
-                    function deepCleanLargeData(obj, depth) {
-                        depth = depth || 0;
-                        if (depth > 10) return obj;
-                        if (obj === null || obj === undefined) return obj;
-                        if (typeof obj === 'string') {
-                            if (obj.startsWith('data:image/') && obj.length > 2000) return '[图片已跳过]';
-                            return obj;
-                        }
-                        if (Array.isArray(obj)) return obj.map(item => deepCleanLargeData(item, depth + 1));
-                        if (typeof obj === 'object') {
-                            const newObj = {};
-                            for (let k in obj) {
-                                if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
-                                if ((k === 'image' || k === 'decoImg' || k === 'iconImg' || k.includes('Avatar') || k.includes('Cover')) &&
-                                    typeof obj[k] === 'string' && obj[k].startsWith('data:image/') && obj[k].length > 2000) continue;
-                                newObj[k] = deepCleanLargeData(obj[k], depth + 1);
-                            }
-                            return newObj;
-                        }
-                        return obj;
+                    if (typeof ChatBackup !== 'undefined' && ChatBackup.buildBackupPayload && ChatBackup.serializeBackupV4) {
+                        const payload = await ChatBackup.buildBackupPayload({
+                            inclMsgs: inclMsgs,
+                            inclSet: inclSet,
+                            inclCustom: inclCustom,
+                            inclAnn: inclAnn,
+                            inclThemes: inclThemes,
+                            inclDg: inclDg,
+                            inclStickers: inclStickers
+                        });
+                        const jsonString = ChatBackup.serializeBackupV4(payload);
+                        const dateStr = new Date().toISOString().slice(0, 10);
+                        const fileName = `chatapp-backup-${dateStr}.json`;
+                        const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+                        downloadFileFallback(blob, fileName);
+                        if (typeof showNotification === 'function') showNotification('已导出 JSON 备份', 'success');
+                    } else {
+                        if (typeof showNotification === 'function') showNotification('备份模块或函数未加载，请刷新页面', 'error');
                     }
-
-                    const shouldSkipKey = (k) => {
-                        if (skipKeys.some(s => k.includes(s))) return true;
-                        if (k.startsWith('annHeaderBg_')) return true;
-                        if (moduleSkipPatterns.some(p => k.includes(p))) return true;
-                        if (!inclDg && (k === 'dg_custom_data' || k === 'dg_status_pool' || k.startsWith('customWeather_'))) return true;
-                        return false;
-                    };
-
-                    var backup = {
-                        version: 3,
-                        type: 'full-backup-lite',
-                        timestamp: new Date().toISOString(),
-                        modules: { messages: inclMsgs, settings: inclSet, custom: inclCustom, anniversaries: inclAnn, themes: inclThemes, dg: inclDg }
-                    };
-
-                    var lsData = {};
-                    for (var i = 0; i < localStorage.length; i++) {
-                        var k = localStorage.key(i);
-                        if (shouldSkipKey(k)) continue;
-                        try {
-                            let val = localStorage.getItem(k);
-                            try {
-                                let parsed = JSON.parse(val);
-                                val = JSON.stringify(deepCleanLargeData(parsed));
-                            } catch(e) {
-                                if (val.startsWith('data:image/') && val.length > 1000) continue;
-                            }
-                            lsData[k] = val;
-                        } catch(e) { console.warn('处理 localStorage 失败:', k); }
-                    }
-                    backup.localStorage = lsData;
-
-                    if (window.localforage) {
-                        var lfData = {};
-                        var keys = await localforage.keys();
-                        for (var ki = 0; ki < keys.length; ki++) {
-                            const key = keys[ki];
-                            if (shouldSkipKey(key)) continue;
-                            try {
-                                const rawVal = await localforage.getItem(key);
-                                if (rawVal === null || rawVal === undefined) continue;
-                                lfData[key] = deepCleanLargeData(rawVal);
-                            } catch(e) { console.warn('处理 localforage 失败:', key, e); }
-                        }
-                        backup.localforage = lfData;
-                        if (typeof SESSION_ID !== 'undefined') backup.sessionId = SESSION_ID;
-                    }
-
-                    var dataStr = JSON.stringify(backup, null, 0);
-                    var bom = '\uFEFF';
-                    var blob = new Blob([bom + dataStr], { type: 'application/json;charset=utf-8' });
-                    var exportFileName = 'chatapp-backup-' + new Date().toISOString().slice(0,10) + '.json';
-
-                    if (navigator.share && /Mobile|Android|iPhone|iPad/.test(navigator.userAgent)) {
-                        var shareFile = new File([blob], exportFileName, { type: 'application/json' });
-                        if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
-                            navigator.share({ files: [shareFile], title: '传讯全量备份', text: '备份日期：' + new Date().toLocaleDateString() })
-                                .catch(function() {
-                                    var url2 = URL.createObjectURL(blob);
-                                    var link2 = document.createElement('a');
-                                    link2.href = url2; link2.download = exportFileName;
-                                    document.body.appendChild(link2); link2.click(); document.body.removeChild(link2);
-                                    setTimeout(() => URL.revokeObjectURL(url2), 2000);
-                                });
-                            if (typeof showNotification === 'function') showNotification('备份导出成功', 'success');
-                            return;
-                        }
-                    }
-
-                    var url = URL.createObjectURL(blob);
-                    var link = document.createElement('a');
-                    link.href = url;
-                    link.download = exportFileName;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(url), 2000);
-                    if (typeof showNotification === 'function') showNotification('备份导出成功', 'success');
                 } catch(e) {
                     console.error('全量备份导出失败:', e);
                     if (typeof showNotification === 'function') showNotification('导出失败，请重试', 'error');
@@ -446,92 +359,42 @@ if (importAllBtn) {
         importAllBtn.addEventListener('click', function() {
             var input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.json';
+            input.accept = '.json,.zip,application/json,application/zip';
             input.onchange = async function(e) {
                 var file = e.target.files[0];
                 if (!file) return;
-                
-                if (file.size > 100 * 1024 * 1024) {
+
+                if (file.size > 220 * 1024 * 1024) {
                     if (typeof showNotification === 'function') showNotification('文件过大，请检查是否是正确的备份文件', 'error');
                     return;
                 }
-                
-                var reader = new FileReader();
-                reader.onload = async function(ev) {
-                    try {
-                        var backup;
-                        try {
-                            var rawText = ev.target.result;
-                            if (rawText.charCodeAt(0) === 0xFEFF) rawText = rawText.slice(1);
-                            backup = JSON.parse(rawText);
-                        } catch(parseErr) {
-                            if (typeof showNotification === 'function') showNotification('文件解析失败，文件可能已损坏或不是有效的 JSON', 'error');
-                            return;
-                        }
-                        
-                        if (!backup || !backup.type || !backup.type.includes('backup')) throw new Error('不是有效的传讯备份文件');
-                        
-                        if (!confirm('导入全量备份将覆盖当前的聊天记录和设置。\n\n注：你设备上现有的头像、背景和表情包会被安全保留。\n\n确定继续吗？')) return;
-                        
-                        if (backup.localStorage) {
-                            for (var k in backup.localStorage) {
-                                if (!Object.prototype.hasOwnProperty.call(backup.localStorage, k)) continue;
-                                try {
-                                    var lsVal = backup.localStorage[k];
-                                    if (typeof lsVal === 'string' && lsVal.startsWith('data:image/') && lsVal.length > 2000) continue;
-                                    localStorage.setItem(k, lsVal);
-                                } catch(e) { console.warn('恢复 localStorage 失败:', k); }
-                            }
-                        }
 
-                        if (window.localforage && backup.localforage) {
-                            var lfKeys = Object.keys(backup.localforage);
-                            
-                            var backupSessionId = backup.sessionId || null;
-                            if (!backupSessionId) {
-                                var pfxAuto = typeof APP_PREFIX !== 'undefined' ? APP_PREFIX : 'CHAT_APP_V3_';
-                                var skipParts = ['MIGRATION', 'sessionList', 'lastSessionId', 'customThemes', 'themeSchemes'];
-                                for (var si = 0; si < lfKeys.length; si++) {
-                                    var sk = lfKeys[si];
-                                    if (!sk.startsWith(pfxAuto)) continue;
-                                    if (skipParts.some(function(s) { return sk.startsWith(pfxAuto + s); })) continue;
-                                    var afterPfx = sk.slice(pfxAuto.length);
-                                    var uIdx = afterPfx.indexOf('_');
-                                    if (uIdx > 0) { backupSessionId = afterPfx.slice(0, uIdx); break; }
-                                }
-                            }
-
-                            var needRemap = backupSessionId && 
-                                           typeof SESSION_ID !== 'undefined' && 
-                                           SESSION_ID && 
-                                           backupSessionId !== SESSION_ID;
-
-                            for (var li = 0; li < lfKeys.length; li++) {
-                                var lk = lfKeys[li];
-                                var targetKey = lk;
-                                if (needRemap && lk.includes(backupSessionId)) {
-                                    targetKey = lk.replace(new RegExp(backupSessionId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), SESSION_ID);
-                                }
-                                try {
-                                    await localforage.setItem(targetKey, backup.localforage[lk]);
-                                } catch(e) { console.warn('恢复 localforage 失败:', targetKey, e); }
-                            }
-                            if (typeof APP_PREFIX !== 'undefined' && typeof SESSION_ID !== 'undefined') {
-                                try { await localforage.setItem(APP_PREFIX + 'lastSessionId', SESSION_ID); } catch(e) {}
-                            }
-                        }
-                        
-                        if (typeof showNotification === 'function') showNotification('数据恢复成功，即将刷新页面应用更改', 'success', 2000);
-                        setTimeout(function() { location.reload(); }, 2000);
-                    } catch(e) {
-                        if (typeof showNotification === 'function') showNotification('导入失败：' + e.message, 'error');
-                        console.error('导入报错:', e);
+                try {
+                    if (typeof ChatBackup === 'undefined' || !ChatBackup.loadBackupFromFile || !ChatBackup.applyBackupToStorage) {
+                        throw new Error('备份模块未加载，请刷新页面');
                     }
-                };
-                reader.onerror = function() {
-                    if (typeof showNotification === 'function') showNotification('文件读取失败，请重试', 'error');
-                };
-                reader.readAsText(file, 'UTF-8');
+                    var backup = await ChatBackup.loadBackupFromFile(file);
+
+                    var okShape = backup.type === 'chatapp-backup-v5' ||
+                        backup.type === 'full' ||
+                        (backup.type && backup.type.indexOf('backup') !== -1) ||
+                        backup.formatVersion === 4 ||
+                        backup.formatVersion === 5 ||
+                        backup.localforage ||
+                        backup.indexedDB;
+                    if (!okShape) throw new Error('不是有效的传讯备份文件');
+
+                    if (!confirm('导入全量备份将覆盖备份文件中包含的数据（按文件内容写入）。\n\nv5 ZIP：从 media/ 还原图片；v4 JSON：从 mediaStore 还原。\n\n确定继续吗？')) return;
+
+                    await ChatBackup.applyBackupToStorage(backup, { selective: false });
+
+                    if (typeof showNotification === 'function') showNotification('数据恢复成功，即将刷新页面应用更改', 'success', 2000);
+                    setTimeout(function() { location.reload(); }, 2000);
+                } catch (err) {
+                    var msg = err && err.message ? err.message : '未知错误';
+                    if (typeof showNotification === 'function') showNotification('导入失败：' + msg, 'error', 5000);
+                    console.error('导入报错:', err);
+                }
             };
             document.body.appendChild(input);
             input.click();

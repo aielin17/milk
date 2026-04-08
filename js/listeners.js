@@ -448,23 +448,23 @@ if (_chatSettingsEl) _chatSettingsEl.addEventListener('click', () => {
 
     const setSelect = (id, val) => {
         const el = document.getElementById(id);
-        if (el) el.value = val || 'tone_default';
+        if (el) el.value = val || 'tone_low';
     };
     const setInput = (id, val) => {
         const el = document.getElementById(id);
         if (el) el.value = val || '';
     };
 
-    setSelect('sound-my-send-preset', settings.mySendSoundPreset || 'tone_default');
+    setSelect('sound-my-send-preset', settings.mySendSoundPreset || 'tone_low');
     setInput('sound-my-send-custom-url', (settings.mySendCustomSoundUrl || '').trim() || legacyCustom);
 
-    setSelect('sound-partner-message-preset', settings.partnerMessageSoundPreset || 'tone_default');
+    setSelect('sound-partner-message-preset', settings.partnerMessageSoundPreset || 'tone_low');
     setInput('sound-partner-message-custom-url', (settings.partnerMessageCustomSoundUrl || '').trim() || legacyCustom);
 
-    setSelect('sound-my-poke-preset', settings.myPokeSoundPreset || 'tone_default');
+    setSelect('sound-my-poke-preset', settings.myPokeSoundPreset || 'tone_low');
     setInput('sound-my-poke-custom-url', (settings.myPokeCustomSoundUrl || '').trim() || legacyCustom);
 
-    setSelect('sound-partner-poke-preset', settings.partnerPokeSoundPreset || 'tone_default');
+    setSelect('sound-partner-poke-preset', settings.partnerPokeSoundPreset || 'tone_low');
     setInput('sound-partner-poke-custom-url', (settings.partnerPokeCustomSoundUrl || '').trim() || legacyCustom);
     document.querySelectorAll('.time-fmt-opt').forEach(opt => {
         opt.classList.toggle('active', opt.dataset.fmt === (settings.timeFormat || 'HH:mm'));
@@ -1900,9 +1900,12 @@ const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
 
             const closeOpt = () => overlay.remove();
             overlay.addEventListener('click', (ev) => { if(ev.target === overlay) closeOpt(); });
-            document.getElementById('_pl_opt_cancel').onclick = closeOpt;
+            const plOptCancelBtn = document.getElementById('_pl_opt_cancel');
+            const plOptExportBtn = document.getElementById('_pl_opt_export');
+            const plOptImportBtn = document.getElementById('_pl_opt_import');
+            if (plOptCancelBtn) plOptCancelBtn.onclick = closeOpt;
 
-            document.getElementById('_pl_opt_export').onclick = () => {
+            if (plOptExportBtn) plOptExportBtn.onclick = () => {
                 closeOpt();
                 if (songs.length === 0) {
                     showNotification('歌单为空，无法导出', 'warning');
@@ -1920,7 +1923,7 @@ const savedCover = safeGetItem(APP_PREFIX + 'playerCover');
                 showNotification('歌单导出成功', 'success');
             };
 
-            document.getElementById('_pl_opt_import').onclick = () => {
+            if (plOptImportBtn) plOptImportBtn.onclick = () => {
                 closeOpt();
                 const input = header.querySelector('#pl-import-input');
                 if (input) input.click();
@@ -2208,31 +2211,11 @@ playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 65 : 
 
         function initCoreListeners() {
 
-
             DOMElements.chatContainer.addEventListener('scroll', () => {
                 const container = DOMElements.chatContainer;
-
-
+                if (!container) return;
                 if (container.scrollTop < 50 && !isLoadingHistory && messages.length > displayedMessageCount) {
-                    isLoadingHistory = true;
-
-
-                    const loader = document.getElementById('history-loader');
-                    if (loader) loader.classList.add('visible');
-
-
-                    setTimeout(() => {
-
-                        displayedMessageCount += HISTORY_BATCH_SIZE;
-
-
-                        renderMessages(true);
-
-
-                        if (loader) loader.classList.remove('visible');
-                        isLoadingHistory = false;
-                    },
-                        600);
+                    if (typeof loadMoreHistory === 'function') loadMoreHistory();
                 }
             });
 

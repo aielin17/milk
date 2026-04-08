@@ -34,6 +34,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.warn('LocalForage 未加载，将使用 localStorage 降级方案');
         }
 
+        try {
+            const emergencyBackupRaw = localStorage.getItem('BACKUP_V1_critical');
+            if (emergencyBackupRaw) {
+                const emergencyBackup = JSON.parse(emergencyBackupRaw);
+                if (emergencyBackup && Array.isArray(emergencyBackup.messages) && emergencyBackup.messages.length > 0) {
+                    console.warn('[boot] 检测到紧急备份，可用于异常恢复');
+                }
+            }
+        } catch (e) {
+            console.warn('[boot] 紧急备份检查失败:', e);
+        }
+
         updateLoader('正在建立安全连接...', '10%');
         await safeAwait(initializeSession());
 
@@ -71,17 +83,48 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
-                clearTimeout(saveTimeout);
-                saveData().catch(e => console.error('[visibilitychange] 保存失败:', e));
+                try {
+                    if (typeof saveTimeout !== 'undefined') clearTimeout(saveTimeout);
+                } catch (e) {}
+                try { _backupCriticalData(); } catch (e) { console.warn('[visibilitychange] 紧急备份失败:', e); }
+                try {
+                    const p = saveData();
+                    if (p && typeof p.catch === 'function') {
+                        p.catch(e => console.error('[visibilitychange] 保存失败:', e));
+                    }
+                } catch (e) {
+                    console.error('[visibilitychange] 保存失败:', e);
+                }
+            } else if (document.visibilityState === 'visible') {
+                try {
+                    const backup = typeof _tryRecoverFromBackup === 'function' ? _tryRecoverFromBackup() : null;
+                    if (backup && Array.isArray(backup.messages) && backup.messages.length > 0 && Array.isArray(messages) && backup.messages.length > messages.length) {
+                        console.warn('[visibilitychange] 检测到备份消息比当前更多，自动尝试恢复');
+                        try {
+                            messages = backup.messages.map(m => ({
+                                ...m,
+                                timestamp: new Date(m.timestamp)
+                            }));
+                            if (backup.settings) Object.assign(settings, backup.settings);
+                            if (typeof updateUI === 'function') updateUI();
+                            if (typeof throttledSaveData === 'function') throttledSaveData();
+                            showNotification('已自动恢复本地临时备份内容', 'warning', 3500);
+                        } catch (restoreErr) {
+                            console.warn('[visibilitychange] 自动恢复失败，保留当前页面内容:', restoreErr);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[visibilitychange] 恢复备份失败:', e);
+                }
             }
         });
 
         window.addEventListener('pagehide', () => {
-            _backupCriticalData(); 
+            try { _backupCriticalData(); } catch (e) {}
         });
 
         window.addEventListener('beforeunload', () => {
-            _backupCriticalData();
+            try { _backupCriticalData(); } catch (e) {}
         });
 
         setInterval(() => {
@@ -115,6 +158,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (err) {
         console.error('严重初始化错误:', err);
+        try {
+            const backup = typeof _tryRecoverFromBackup === 'function' ? _tryRecoverFromBackup() : null;
+            if (backup && Array.isArray(backup.messages) && backup.messages.length > 0) {
+                messages = backup.messages.map(m => ({
+                    ...m,
+                    timestamp: new Date(m.timestamp)
+                }));
+                if (backup.settings) Object.assign(settings, backup.settings);
+                if (typeof updateUI === 'function') updateUI();
+                showNotification('初始化异常，已使用本地紧急备份恢复', 'warning', 5000);
+            }
+        } catch (recoverErr) {
+            console.warn('[boot] 初始化失败后的恢复也失败:', recoverErr);
+        }
         updateLoader('加载遇到问题，已强制进入...', '100%');
         setTimeout(hideWelcomeScreen, 3500);
     }

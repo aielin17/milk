@@ -53,6 +53,44 @@
         +     '<button id="import-chat-btn"></button>'
         +   '</div>'
 
+        +   '<div class="dm-section-label"><i class="fas fa-cloud"></i> 云同步 / Supabase</div>'
+        +   '<div class="dm-row-card">'
+        +     '<div class="dm-row-item" id="dm-supabase-guide-row" style="cursor:pointer">'
+        +       '<div class="dm-row-icon" style="background:rgba(62,207,142,0.14)"><i class="fas fa-cloud" style="color:#3ECF8E"></i></div>'
+        +       '<div class="dm-row-info">'
+        +         '<div class="dm-row-title">云端备份同步</div>'
+        +         '<div class="dm-row-desc" id="dm-supabase-status-text">未连接 Supabase（点击配置）</div>'
+        +       '</div>'
+        +       '<button class="dm-nav-btn" id="dm-supabase-guide-btn"><i class="fas fa-chevron-right"></i></button>'
+        +     '</div>'
+        +     '<div class="dm-row-item">'
+        +       '<div class="dm-row-icon" style="background:rgba(72,138,255,0.12)"><i class="fas fa-laptop" style="color:#488AFF"></i></div>'
+        +       '<div class="dm-row-info"><div class="dm-row-title">本地更新时间</div><div class="dm-row-desc" id="dm-local-backup-time">暂无</div></div>'
+        +     '</div>'
+        +     '<div class="dm-row-item">'
+        +       '<div class="dm-row-icon" style="background:rgba(62,207,142,0.12)"><i class="fas fa-server" style="color:#3ECF8E"></i></div>'
+        +       '<div class="dm-row-info"><div class="dm-row-title">云端更新时间</div><div class="dm-row-desc" id="dm-cloud-backup-time">暂无</div></div>'
+        +     '</div>'
+        +     '<div class="dm-row-item" id="dm-cloud-auto-sync-row" style="align-items:flex-start;">'
+        +       '<div class="dm-row-icon" style="background:rgba(62,207,142,0.12)"><i class="fas fa-clock" style="color:#3ECF8E"></i></div>'
+        +       '<div class="dm-row-info" style="min-width:0;">'
+        +         '<div class="dm-row-title">自动上传到云端</div>'
+        +         '<div class="dm-row-desc" id="dm-cloud-auto-sync-desc">关闭状态</div>'
+        +         '<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;">'
+        +           '<input type="number" id="dm-cloud-auto-sync-interval" min="1" max="360" step="1" value="10" style="width:86px;padding:8px 10px;border:1px solid var(--border-color);border-radius:10px;background:var(--primary-bg);color:var(--text-primary);font-size:12px;font-family:var(--font-family);outline:none;">'
+        +           '<span style="font-size:12px;color:var(--text-secondary);">分钟上传一次</span>'
+        +         '</div>'
+        +       '</div>'
+        +       '<label class="dm-toggle-pill" style="margin-left:8px;margin-top:4px;"><input type="checkbox" id="dm-cloud-auto-sync-toggle"><span class="dm-toggle-slider"></span></label>'
+        +     '</div>'
+        +     '<div class="dm-row-item" style="padding: 12px 16px;">'
+        +       '<div class="dm-row-item-action-group" style="width: 100%; display: flex; gap: 10px;">'
+        +         '<button class="dm-nav-btn" id="dm-supabase-check-btn" onclick="window.checkSupabaseCloud()" style="width:auto; flex:1; padding: 10px; border-radius: 12px;"><i class="fas fa-rotate"></i><span style="margin-left:6px;">检查云端</span></button>'
+        +         '<button class="dm-nav-btn" id="dm-supabase-sync-btn" style="width:auto; flex:1; padding: 10px; border-radius: 12px; background:var(--accent-color); color:#fff;"><i class="fas fa-cloud-arrow-up"></i><span style="margin-left:6px;">同步数据</span></button>'
+        +       '</div>'
+        +     '</div>'
+        +   '</div>'
+
         +   '<div class="dm-section-label"><i class="fas fa-bell"></i> 通知与关于</div>'
         +   '<div class="dm-row-card">'
         +     '<div class="dm-row-item">'
@@ -294,7 +332,7 @@
             if (importAllReal) importAllReal.addEventListener('click', function () {
                 closeDrawer('dm-drawer-full');
                 var inp = document.createElement('input');
-                inp.type = 'file'; inp.accept = '.json';
+                inp.type = 'file'; inp.accept = '.json,.zip,application/json,application/zip';
                 inp.onchange = function (e) {
                     var f = e.target.files && e.target.files[0];
                     if (f && typeof importAllData === 'function') importAllData(f);
@@ -363,7 +401,7 @@
         var importAll = mc.querySelector('#import-all-settings');
         if (importAll) importAll.addEventListener('click', function () {
             var inp = document.createElement('input');
-            inp.type = 'file'; inp.accept = '.json';
+            inp.type = 'file'; inp.accept = '.json,.zip,application/json,application/zip';
             inp.onchange = function (e) {
                 var f = e.target.files && e.target.files[0];
                 if (f && typeof importAllData === 'function') importAllData(f);
@@ -386,6 +424,61 @@
             };
             inp.click();
         });
+
+        var supabaseGuideRow = mc.querySelector('#dm-supabase-guide-row');
+        var supabaseGuideBtn = mc.querySelector('#dm-supabase-guide-btn');
+        var supabaseCheckBtn = mc.querySelector('#dm-supabase-check-btn');
+        var supabaseSyncBtn = mc.querySelector('#dm-supabase-sync-btn');
+        var cloudAutoSyncToggle = mc.querySelector('#dm-cloud-auto-sync-toggle');
+        var cloudAutoSyncInterval = mc.querySelector('#dm-cloud-auto-sync-interval');
+
+        if (supabaseGuideRow) supabaseGuideRow.addEventListener('click', function () {
+            if (typeof openSupabaseGuide === 'function') openSupabaseGuide(false);
+        });
+        if (supabaseGuideBtn) supabaseGuideBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (typeof openSupabaseGuide === 'function') openSupabaseGuide(true);
+        });
+        if (supabaseCheckBtn) supabaseCheckBtn.addEventListener('click', function () {
+            if (typeof checkSupabaseCloud === 'function') checkSupabaseCloud();
+        });
+        if (supabaseSyncBtn) supabaseSyncBtn.addEventListener('click', function () {
+            if (typeof syncSupabaseCloud === 'function') syncSupabaseCloud();
+        });
+        if (cloudAutoSyncToggle && typeof window.syncCloudAutoSyncSettingsUI === 'function') {
+            cloudAutoSyncToggle.addEventListener('change', function () {
+                if (typeof settings === 'undefined') return;
+                settings.cloudAutoSyncEnabled = !!cloudAutoSyncToggle.checked;
+                if (typeof window.applyCloudAutoSyncSettings === 'function') {
+                    window.applyCloudAutoSyncSettings('toggle');
+                }
+            });
+        }
+        if (cloudAutoSyncInterval && typeof window.syncCloudAutoSyncSettingsUI === 'function') {
+            cloudAutoSyncInterval.addEventListener('input', function () {
+                var val = parseInt(cloudAutoSyncInterval.value, 10);
+                if (!Number.isFinite(val)) return;
+                if (val < 1) val = 1;
+                if (val > 360) val = 360;
+                cloudAutoSyncInterval.value = String(val);
+                if (typeof settings === 'undefined') return;
+                settings.cloudAutoSyncInterval = val;
+                if (typeof window.syncCloudAutoSyncSettingsUI === 'function') {
+                    window.syncCloudAutoSyncSettingsUI();
+                }
+            });
+            cloudAutoSyncInterval.addEventListener('change', function () {
+                var val = parseInt(cloudAutoSyncInterval.value, 10);
+                if (!Number.isFinite(val)) val = 10;
+                val = Math.min(360, Math.max(1, val));
+                cloudAutoSyncInterval.value = String(val);
+                if (typeof settings === 'undefined') return;
+                settings.cloudAutoSyncInterval = val;
+                if (typeof window.applyCloudAutoSyncSettings === 'function') {
+                    window.applyCloudAutoSyncSettings('interval-change');
+                }
+            });
+        }
 
         var creditsBtn = mc.querySelector('#open-credits-btn');
         if (creditsBtn) creditsBtn.addEventListener('click', function () {
@@ -418,6 +511,8 @@
         setTimeout(function () {
             updateStats();
             syncToggles();
+            if (typeof window.syncCloudAutoSyncSettingsUI === 'function') window.syncCloudAutoSyncSettingsUI();
+            if (typeof refreshCloudSyncInfo === 'function') refreshCloudSyncInfo();
         }, 60);
     }
 

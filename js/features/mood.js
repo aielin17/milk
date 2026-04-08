@@ -778,8 +778,10 @@ function _showMoodImportPicker(data) {
     `;
 
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-    document.getElementById('mood-imp-cancel').onclick = () => overlay.remove();
-    document.getElementById('mood-imp-confirm').onclick = () => {
+    const moodImpCancelBtn = document.getElementById('mood-imp-cancel');
+    const moodImpConfirmBtn = document.getElementById('mood-imp-confirm');
+    if (moodImpCancelBtn) moodImpCancelBtn.onclick = () => overlay.remove();
+    if (moodImpConfirmBtn) moodImpConfirmBtn.onclick = () => {
         const selCal = document.getElementById('mood-imp-cal').checked;
         const selCustom = document.getElementById('mood-imp-custom').checked;
         const selTrash = document.getElementById('mood-imp-trash').checked;

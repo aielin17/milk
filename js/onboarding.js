@@ -646,13 +646,49 @@ async function fillAnnHeaderCard(ann) {
     const milestonesEl = document.getElementById('ann-header-milestones');
     if (milestonesEl) {
         milestonesEl.innerHTML = '';
+        milestonesEl.style.display = 'none';
+    }
+
+    const titleEl = document.getElementById('ann-header-title');
+    if (titleEl) titleEl.style.display = 'none';
+    const labelEl2 = document.getElementById('ann-header-label');
+    if (labelEl2) labelEl2.style.display = 'none';
+    const dateEl = document.getElementById('ann-header-date');
+    if (dateEl) dateEl.style.display = 'none';
+
+    const dataMilestonesEl = document.getElementById('ann-data-milestones');
+    if (dataMilestonesEl) {
+        const chips = [];
+        const pushChip = (t) => chips.push(`<span class="ann-milestone-chip">${t}</span>`);
+
         if (!isCountdown) {
-            const milestones = [];
-            if (diffDays >= 100) { const n = Math.floor(diffDays / 100); milestones.push(`🎉 第 ${n * 100} 天`); }
-            if (diffDays >= 365) { const n = Math.floor(diffDays / 365); milestones.push(`🎊 ${n} 周年`); }
-            if (diffDays > 0 && diffDays < 100) { milestones.push(`💫 距 100 天还有 ${100 - diffDays} 天`); }
-            milestones.forEach(m => milestonesEl.insertAdjacentHTML('beforeend', `<span class="ann-milestone-chip">${m}</span>`));
+            if (diffDays > 0 && diffDays < 100) {
+                pushChip(`💫 距 100 天还有 ${100 - diffDays} 天`);
+            }
+            const centPassed = Math.floor(diffDays / 100) * 100;
+            if (centPassed > 0) pushChip(`🎉 已到第 ${centPassed} 天`);
+
+            const yearsPassed = Math.floor(diffDays / 365);
+            if (yearsPassed > 0) pushChip(`🎊 已过 ${yearsPassed} 周年`);
+
+            if (diffDays >= 100 && diffDays < 365) {
+                const nextCent = 100 * (Math.floor(diffDays / 100) + 1);
+                pushChip(`⏳ 距下一段百天还有 ${nextCent - diffDays} 天`);
+            }
+        } else {
+            const daysLeft = diffDays;
+            if (daysLeft > 0 && daysLeft < 100) {
+                pushChip(`⏳ 距 100 天还有 ${100 - daysLeft} 天`);
+            }
+            if (daysLeft >= 100) {
+                const nextCent = 100 * Math.ceil(daysLeft / 100);
+                pushChip(`🎉 达到第 ${nextCent} 天段`);
+            }
+            const yearsLeft = Math.floor(daysLeft / 365);
+            if (yearsLeft > 0) pushChip(`🎊 距 ${yearsLeft} 年段还有…`);
         }
+
+        dataMilestonesEl.innerHTML = chips.join('') || `<span style="font-size:12px;opacity:0.65;color:var(--text-secondary);">—</span>`;
     }
 
     const bgEl = document.getElementById('ann-header-card-bg');
@@ -679,6 +715,10 @@ function renderAnniversariesList() {
     if (anniversaries.length === 0) {
         if (headerCard) headerCard.style.display = 'none';
         if (toolbar) toolbar.style.display = 'none';
+        const dataTabs = document.getElementById('ann-data-tabs');
+        const dataPanel = document.getElementById('ann-data-panel');
+        if (dataTabs) dataTabs.style.display = 'none';
+        if (dataPanel) dataPanel.style.display = 'none';
         listContainer.innerHTML = `
             <div class="ann-empty">
                 <div class="ann-empty-icon">💝</div>
@@ -690,6 +730,10 @@ function renderAnniversariesList() {
     const now = new Date();
     const defaultAnn = anniversaries.find(a => a.type === 'anniversary') || anniversaries[0];
     fillAnnHeaderCard(defaultAnn);
+    const dataTabs = document.getElementById('ann-data-tabs');
+    const dataPanel = document.getElementById('ann-data-panel');
+    if (dataTabs) dataTabs.style.display = 'flex';
+    if (dataPanel) dataPanel.style.display = 'none';
 
     anniversaries.forEach(ann => {
         const targetDate = new Date(ann.date);
@@ -749,6 +793,18 @@ window.clearAnnCardBg = async function() {
     showNotification('封面图已清除', 'success');
 };
 
+window.switchAnnDataTab = function(tab) {
+    const panel = document.getElementById('ann-data-panel');
+    const cardBtn = document.getElementById('ann-tab-card');
+    const dataBtn = document.getElementById('ann-tab-data');
+    if (!panel || !cardBtn || !dataBtn) return;
+    const showData = tab === 'data';
+    panel.style.display = showData ? 'block' : 'none';
+    // 保持按钮配色不变，用透明度表达当前页
+    cardBtn.style.opacity = showData ? '0.75' : '1';
+    dataBtn.style.opacity = showData ? '1' : '0.75';
+};
+
 
 function initAnniversaryModule() {
     const entryBtn = document.getElementById('anniversary-function');
@@ -767,6 +823,7 @@ function initAnniversaryModule() {
             
             if (advancedModal) hideModal(advancedModal);
             renderAnniversariesList();
+                if (typeof window.switchAnnDataTab === 'function') window.switchAnnDataTab('card');
             if (annModal) showModal(annModal);
         });
     }

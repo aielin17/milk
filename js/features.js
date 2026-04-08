@@ -550,33 +550,6 @@ function showPokeTab() {
         function initCoreListeners() {
 
 
-            DOMElements.chatContainer.addEventListener('scroll', () => {
-                const container = DOMElements.chatContainer;
-
-
-                if (container.scrollTop < 50 && !isLoadingHistory && messages.length > displayedMessageCount) {
-                    isLoadingHistory = true;
-
-
-                    const loader = document.getElementById('history-loader');
-                    if (loader) loader.classList.add('visible');
-
-
-                    setTimeout(() => {
-
-                        displayedMessageCount += HISTORY_BATCH_SIZE;
-
-
-                        renderMessages(true);
-
-
-                        if (loader) loader.classList.remove('visible');
-                        isLoadingHistory = false;
-                    },
-                        600);
-                }
-            });
-
             DOMElements.sendBtn.addEventListener('click', () => isBatchMode ? addToBatch(): sendMessage());
             DOMElements.messageInput.addEventListener('keydown', e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
