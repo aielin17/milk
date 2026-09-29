@@ -1338,7 +1338,7 @@ autoSendSlider.addEventListener('change', () => {
     const galleryBanner = document.getElementById('gallery-banner-entry');
     if (galleryBanner) {
         galleryBanner.addEventListener('click', () => {
-            window.open('https://aielin17.github.io/-/', '_blank');
+            window.open('https://gallery-cf.milk-gallery.workers.dev/', '_blank');
         });
         galleryBanner.addEventListener('mousedown', () => { galleryBanner.style.transform = 'scale(0.97)'; });
         galleryBanner.addEventListener('mouseup', () => { galleryBanner.style.transform = 'scale(1)'; });
